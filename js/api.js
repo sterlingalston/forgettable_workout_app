@@ -170,20 +170,44 @@ const API = (() => {
       .split('').map((c,i) => String.fromCharCode(c.charCodeAt(0) ^ _s.charCodeAt(i % _s.length))).join('');
   }
 
-  async function searchChannel(channelId, query, key, preferShort) {
-    const duration = preferShort ? '&videoDuration=short' : '';
-    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&channelId=${channelId}&maxResults=1${duration}&key=${key}`;
+  function parseDurationSeconds(iso) {
+    const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+    if (!m) return Infinity;
+    return (+(m[1] || 0)) * 3600 + (+(m[2] || 0)) * 60 + (+(m[3] || 0));
+  }
+
+  async function getVideosDuration(videoIds, key) {
+    const url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoIds.join(',')}&key=${key}`;
+    const res = await fetch(url);
+    if (!res.ok) return {};
+    const data = await res.json();
+    const map = {};
+    for (const item of (data.items || [])) {
+      map[item.id] = parseDurationSeconds(item.contentDetails.duration);
+    }
+    return map;
+  }
+
+  async function searchChannel(channelId, query, key) {
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&channelId=${channelId}&maxResults=5&videoDuration=short&key=${key}`;
     const res  = await fetch(url);
     if (!res.ok) return null;
     const data = await res.json();
-    return data.items?.[0]?.id?.videoId || null;
+    const ids  = (data.items || []).map(i => i.id.videoId).filter(Boolean);
+    if (!ids.length) return null;
+
+    const durations = await getVideosDuration(ids, key);
+    for (const id of ids) {
+      if ((durations[id] || Infinity) <= 30) return id;
+    }
+    return null;
   }
 
   async function getYouTubeVideoId(exerciseName) {
     const ytKey = Storage.getSettings().youtubeApiKey || _dyk();
     if (!ytKey) return null;
 
-    const cacheKey = 'yt2_' + exerciseName.toLowerCase().replace(/\s+/g, '_');
+    const cacheKey = 'yt3_' + exerciseName.toLowerCase().replace(/\s+/g, '_');
     const cached = Storage.getCached(cacheKey);
     if (cached !== null) return cached || null; // '' = no result, don't retry
 
@@ -193,8 +217,8 @@ const API = (() => {
         if (!channelId) continue;
         const query = ch.lang === 'fr'
           ? await translateToFrench(exerciseName)
-          : `${exerciseName} how to exercise tutorial`;
-        const videoId = await searchChannel(channelId, query, ytKey, !!ch.short);
+          : `"${exerciseName}" exercise demonstration proper form`;
+        const videoId = await searchChannel(channelId, query, ytKey);
         if (videoId) {
           Storage.setCached(cacheKey, videoId);
           return videoId;
