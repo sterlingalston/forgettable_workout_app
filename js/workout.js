@@ -155,24 +155,30 @@ const Workout = (() => {
           </div>`);
       } else {
         const unit = Storage.getSettings().weightUnit || 'lbs';
+        const prevHint = prevLog
+          ? `<div class="set-prev-hint">last: ${prevLog.weight ?? 0} ${unit} × ${prevLog.reps ?? 0} reps</div>`
+          : '';
         rows.push(`
           <div class="set-row ${done ? 'set-done' : ''}" data-set="${s}">
             <span class="set-label">Set ${s+1}</span>
-            <div class="set-inputs">
-              <div class="set-input-group">
-                <label>${unit}</label>
-                <input class="set-input input-sm" type="number" min="0" step="0.5"
-                       placeholder="${prevLog?.weight ?? '0'}"
-                       value="${set.weight ?? ''}"
-                       data-ex-index="${exIdx}" data-set-index="${s}" data-field="weight">
+            <div class="set-inputs-wrap">
+              <div class="set-inputs">
+                <div class="set-input-group">
+                  <label>${unit}</label>
+                  <input class="set-input input-sm" type="text" inputmode="decimal"
+                         placeholder="${prevLog?.weight ?? '0'}"
+                         value="${set.weight ?? ''}"
+                         data-ex-index="${exIdx}" data-set-index="${s}" data-field="weight">
+                </div>
+                <div class="set-input-group">
+                  <label>reps</label>
+                  <input class="set-input input-sm" type="text" inputmode="numeric"
+                         placeholder="${prevLog?.reps ?? ex.targetReps}"
+                         value="${set.reps ?? ''}"
+                         data-ex-index="${exIdx}" data-set-index="${s}" data-field="reps">
+                </div>
               </div>
-              <div class="set-input-group">
-                <label>reps</label>
-                <input class="set-input input-sm" type="number" min="1" max="999"
-                       placeholder="${prevLog?.reps ?? ex.targetReps}"
-                       value="${set.reps ?? ''}"
-                       data-ex-index="${exIdx}" data-set-index="${s}" data-field="reps">
-              </div>
+              ${prevHint}
             </div>
             <button class="set-done-btn btn-sm ${done ? 'btn-done' : 'btn-outline'}"
                     data-ex-index="${exIdx}" data-set-index="${s}">

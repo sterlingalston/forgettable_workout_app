@@ -488,7 +488,9 @@ body {
 
 .set-label { font-size: 13px; font-weight: 700; color: var(--text-muted); width: 44px; flex-shrink: 0; }
 
-.set-inputs { display: flex; gap: 8px; flex: 1; }
+.set-inputs-wrap { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.set-inputs { display: flex; gap: 8px; }
+.set-prev-hint { font-size: 11px; color: var(--text-muted); padding-left: 2px; }
 .set-input-group {
   display: flex;
   flex-direction: column;
