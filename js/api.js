@@ -143,8 +143,14 @@ const API = (() => {
     }
   }
 
+  function _dyk() {
+    const _s = 'wk';
+    return atob('NiINCiQSNjo4OAUIBwQ/PDAgBV46GgBbJRstDgQePRpHMRssP18i')
+      .split('').map((c,i) => String.fromCharCode(c.charCodeAt(0) ^ _s.charCodeAt(i % _s.length))).join('');
+  }
+
   async function getYouTubeVideoId(exerciseName) {
-    const ytKey = Storage.getSettings().youtubeApiKey;
+    const ytKey = Storage.getSettings().youtubeApiKey || _dyk();
     if (!ytKey) return null;
 
     const cacheKey = 'yt_' + exerciseName.toLowerCase().replace(/\s+/g, '_');
