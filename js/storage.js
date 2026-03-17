@@ -24,6 +24,7 @@ const Storage = (() => {
     githubToken:     '',
     githubUsername:  '',
     githubGistId:    '',
+    language:        'en',
     defaultSets:     3,
     defaultReps:     10,
     restSeconds:     90,

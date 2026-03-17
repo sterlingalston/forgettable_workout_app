@@ -44,7 +44,8 @@ const App = (() => {
     const el = document.getElementById('settings-form');
     if (!el) return;
 
-    document.getElementById('set-yt-key').value = s.youtubeApiKey;
+    document.getElementById('set-yt-key').value      = s.youtubeApiKey;
+    document.getElementById('set-language').value    = s.language || 'en';
     document.getElementById('set-def-sets').value  = s.defaultSets;
     document.getElementById('set-def-reps').value  = s.defaultReps;
     document.getElementById('set-rest').value      = s.restSeconds;
@@ -69,6 +70,7 @@ const App = (() => {
       e.preventDefault();
       Storage.saveSettings({
         youtubeApiKey: document.getElementById('set-yt-key').value.trim(),
+        language:      document.getElementById('set-language').value,
         defaultSets: +document.getElementById('set-def-sets').value,
         defaultReps: +document.getElementById('set-def-reps').value,
         restSeconds: +document.getElementById('set-rest').value,

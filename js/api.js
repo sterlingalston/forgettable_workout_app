@@ -141,20 +141,19 @@ const API = (() => {
   }
 
   // ── YouTube video search ──────────────────────────────────────────────────
-  // Searches preferred channels in priority order, falls back to @fit-distance last.
+  // Searches preferred channels in priority order.
   // Requires YouTube Data API v3 key in Settings.
   // Enable at: console.cloud.google.com → APIs → YouTube Data API v3
 
   // Priority channel handles. Known IDs are hardcoded to save quota; the rest
   // are resolved via the channels?forHandle API on first use and cached.
   const YT_CHANNELS = [
-    { handle: 'NasmOrgPersonalTrainer', id: 'UCjWgUFeyDbeQ3Q_eVCup_7Q', lang: 'en' },
-    { handle: 'gymvisual8018',          lang: 'en' },
-    { handle: 'BSNTraining',            lang: 'en' },
-    { handle: 'leveltencoaching2296',   lang: 'en', short: true },
-    { handle: 'ElliotGrahamCoaching',   lang: 'en' },
-    { handle: 'fit-distance',           id: 'UCcI0GmkD068idv12NRusuEw', lang: 'fr' },
-    { handle: 'strengthtools2494',      lang: 'en' },
+    { handle: 'NasmOrgPersonalTrainer', id: 'UCjWgUFeyDbeQ3Q_eVCup_7Q' },
+    { handle: 'gymvisual8018' },
+    { handle: 'BSNTraining' },
+    { handle: 'leveltencoaching2296' },
+    { handle: 'ElliotGrahamCoaching' },
+    { handle: 'strengthtools2494' },
   ];
 
   async function resolveChannelId(ch, key) {
@@ -173,12 +172,13 @@ const API = (() => {
     } catch { return null; }
   }
 
-  async function translateToFrench(text) {
-    const cacheKey = 'tr_' + text.toLowerCase().replace(/\s+/g, '_');
+  async function translateExerciseName(text, lang) {
+    if (!lang || lang === 'en') return text;
+    const cacheKey = `tr_${lang}_${text.toLowerCase().replace(/\s+/g, '_')}`;
     const cached = Storage.getCached(cacheKey);
     if (cached) return cached;
     try {
-      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|fr`;
+      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${lang}`;
       const res  = await fetch(url);
       const data = await res.json();
       const translated = data.responseData?.translatedText || text;
@@ -234,13 +234,28 @@ const API = (() => {
     const cached = Storage.getCached(cacheKey);
     if (cached !== null) return cached || null; // '' = no result, don't retry
 
+    const lang = Storage.getSettings().language || 'en';
+    const searchName = await translateExerciseName(exerciseName, lang);
+    const DEMO_SUFFIX = {
+      en: 'exercise demonstration proper form',
+      es: 'ejercicio demostración forma correcta',
+      fr: 'exercice démonstration forme correcte',
+      pt: 'exercício demonstração forma correta',
+      de: 'Übung Demonstration richtige Form',
+      it: 'esercizio dimostrazione forma corretta',
+      zh: '锻炼 示范 正确姿势',
+      ja: 'エクササイズ デモンストレーション 正しいフォーム',
+      ko: '운동 시범 올바른 자세',
+      ru: 'упражнение демонстрация правильная техника',
+      ar: 'تمرين عرض الشكل الصحيح',
+    };
+    const suffix = DEMO_SUFFIX[lang] || DEMO_SUFFIX.en;
+    const query = `"${searchName}" ${suffix}`;
+
     try {
       for (const ch of YT_CHANNELS) {
         const channelId = await resolveChannelId(ch, ytKey);
         if (!channelId) continue;
-        const query = ch.lang === 'fr'
-          ? await translateToFrench(exerciseName)
-          : `"${exerciseName}" exercise demonstration proper form`;
         const videoId = await searchChannel(channelId, query, ytKey);
         if (videoId) {
           Storage.setCached(cacheKey, videoId);
