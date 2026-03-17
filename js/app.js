@@ -75,6 +75,7 @@ const App = (() => {
         defaultReps: +document.getElementById('set-def-reps').value,
         restSeconds: +document.getElementById('set-rest').value,
       });
+      GithubSync.pushAll();
       toast('Settings saved');
     });
 

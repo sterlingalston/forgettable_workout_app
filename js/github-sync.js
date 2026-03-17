@@ -84,6 +84,7 @@ const GithubSync = (() => {
     return {
       routines:   Storage.getRoutines(),
       logs:       Storage.getLogs().filter(l => l.finishedAt),
+      settings:   Storage.getSettings(),
       updatedAt:  Date.now(),
     };
   }
@@ -118,6 +119,11 @@ const GithubSync = (() => {
       const data  = JSON.parse(raw);
       if (data.routines?.length) Storage.saveRoutines(_mergeById(Storage.getRoutines(), data.routines));
       if (data.logs?.length)     Storage.saveLogs(_mergeById(Storage.getLogs(), data.logs));
+      if (data.settings) {
+        // Restore settings but keep device-local auth credentials
+        const { githubToken, githubUsername, githubGistId, ...remote } = data.settings;
+        Storage.saveSettings(remote);
+      }
     } catch (e) { console.warn('Gist pull failed:', e.message); }
   }
 
