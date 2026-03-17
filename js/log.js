@@ -8,6 +8,7 @@ const Log = (() => {
 
     if (!logs.length) {
       el.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><p>No workouts logged yet.</p></div>`;
+      renderCalendar([]);
       return;
     }
 
@@ -47,7 +48,78 @@ const Log = (() => {
         }
       });
     });
+
+    renderCalendar(logs);
   }
+
+  // ── Calendar ───────────────────────────────────────────────────────────────
+
+  function renderCalendar(logs) {
+    const wrap = document.getElementById('log-calendar');
+    if (!wrap) return;
+
+    // Build a map: "YYYY-MM-DD" → [{ routineName, notes }]
+    const dayMap = {};
+    logs.forEach(l => {
+      const d = new Date(l.startedAt);
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      if (!dayMap[key]) dayMap[key] = [];
+      dayMap[key].push({ name: l.routineName, notes: l.notes || '' });
+    });
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const DOW   = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+    let html = `<div class="cal-year-label">${year}</div><div class="cal-grid">`;
+
+    for (let m = 0; m < 12; m++) {
+      const firstDay = new Date(year, m, 1).getDay(); // 0=Sun
+      const daysInMonth = new Date(year, m + 1, 0).getDate();
+
+      html += `<div class="cal-month">
+        <div class="cal-month-name">${MONTHS[m]}</div>
+        <div class="cal-dow-row">${DOW.map(d => `<span>${d}</span>`).join('')}</div>
+        <div class="cal-days">`;
+
+      // Empty cells before first day
+      for (let i = 0; i < firstDay; i++) html += `<span class="cal-day cal-empty"></span>`;
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const key = `${year}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const entries = dayMap[key];
+        const isToday = (d === now.getDate() && m === now.getMonth());
+        const hasLog  = !!entries;
+
+        let tooltip = '';
+        if (hasLog) {
+          tooltip = entries.map(e => e.name + (e.notes ? `: ${e.notes}` : '')).join('\n');
+        }
+
+        html += `<span class="cal-day${hasLog ? ' cal-has-log' : ''}${isToday ? ' cal-today' : ''}"
+                       ${hasLog ? `title="${tooltip.replace(/"/g, '&quot;')}"` : ''}
+                       data-key="${key}">${d}</span>`;
+      }
+
+      html += `</div></div>`;
+    }
+
+    html += `</div>`;
+    wrap.innerHTML = html;
+
+    // Tap on a day with logs → show detail tooltip on mobile
+    wrap.querySelectorAll('.cal-day.cal-has-log').forEach(span => {
+      span.addEventListener('click', () => {
+        const entries = dayMap[span.dataset.key];
+        if (!entries) return;
+        const text = entries.map(e => e.name + (e.notes ? `\n${e.notes}` : '')).join('\n\n');
+        alert(text);
+      });
+    });
+  }
+
+  // ── Detail modal ───────────────────────────────────────────────────────────
 
   function showDetail(id) {
     const l = Storage.getLog(id);
@@ -62,8 +134,9 @@ const Log = (() => {
 
     const exerciseRows = l.exercises.map(ex => {
       const doneSets = ex.sets.filter(s => s.done);
+      const unit = Storage.getSettings().weightUnit || 'lbs';
       const setsHtml = doneSets.length
-        ? doneSets.map((s, i) => `<div class="log-set-row">Set ${i+1}: ${s.weight ?? 0}kg × ${s.reps ?? 0} reps</div>`).join('')
+        ? doneSets.map((s, i) => `<div class="log-set-row">Set ${i+1}: ${s.weight ?? 0} ${unit} × ${s.reps ?? 0} reps</div>`).join('')
         : '<div class="log-set-row muted">No sets logged</div>';
       return `
         <div class="log-ex-block">
@@ -79,6 +152,7 @@ const Log = (() => {
           <div class="modal-body">
             <h2 class="modal-title">${l.routineName}</h2>
             <p class="log-detail-meta">${date} · ${duration}</p>
+            ${l.notes ? `<p class="log-detail-notes">${l.notes}</p>` : ''}
             ${exerciseRows}
           </div>
         </div>

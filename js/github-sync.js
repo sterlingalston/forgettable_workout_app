@@ -97,15 +97,27 @@ const GithubSync = (() => {
 
   // ── Push / Pull ───────────────────────────────────────────────────────────
 
+  const PENDING_KEY = 'gh_sync_pending';
+
   async function pushAll() {
     if (!_token || !_gistId) return;
+    if (!navigator.onLine) {
+      // Queue for when we're back online
+      localStorage.setItem(PENDING_KEY, '1');
+      console.log('Offline — sync queued');
+      return;
+    }
     try {
       await fetch(`${GH}/gists/${_gistId}`, {
         method: 'PATCH',
         headers: _headers(),
         body: JSON.stringify({ files: { [GIST_FILE]: { content: JSON.stringify(_buildPayload(), null, 2) } } }),
       });
-    } catch (e) { console.warn('Gist push failed:', e.message); }
+      localStorage.removeItem(PENDING_KEY);
+    } catch (e) {
+      localStorage.setItem(PENDING_KEY, '1');
+      console.warn('Gist push failed:', e.message);
+    }
   }
 
   async function pullAll() {
@@ -189,6 +201,14 @@ const GithubSync = (() => {
   // ── Init (auto-restore saved session) ────────────────────────────────────
 
   async function init() {
+    // When coming back online, flush any queued sync
+    window.addEventListener('online', async () => {
+      if (localStorage.getItem(PENDING_KEY) && _token && _gistId) {
+        console.log('Back online — flushing queued sync');
+        await pushAll();
+      }
+    });
+
     const s = Storage.getSettings();
     if (s.githubToken && s.githubUsername) {
       _token    = s.githubToken;

@@ -125,10 +125,17 @@ const API = (() => {
 
   async function getFitnessProgramerGif(exerciseName) {
     if (!_gifMap) {
-      try {
-        const res = await fetch('data/fitnessprogramer-gifs.json');
-        _gifMap = res.ok ? await res.json() : {};
-      } catch { _gifMap = {}; }
+      // Try localStorage cache first (available offline after first load)
+      const lsCached = Storage.getCached('fp_gifmap');
+      if (lsCached) {
+        _gifMap = lsCached;
+      } else {
+        try {
+          const res = await fetch('data/fitnessprogramer-gifs.json');
+          _gifMap = res.ok ? await res.json() : {};
+          if (Object.keys(_gifMap).length) Storage.setCached('fp_gifmap', _gifMap);
+        } catch { _gifMap = {}; }
+      }
     }
     const key = exerciseName.toLowerCase();
     // Exact match first
