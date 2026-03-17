@@ -42,6 +42,7 @@ const Log = (() => {
         e.stopPropagation();
         if (confirm('Delete this workout log?')) {
           Storage.deleteLog(btn.dataset.id);
+          GithubSync.pushAll();
           render();
         }
       });
