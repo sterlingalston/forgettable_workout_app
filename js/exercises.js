@@ -193,13 +193,15 @@ const Exercises = (() => {
     // Try to load YouTube video — replaces animation if found
     loadVideo(ex.displayName);
 
-    document.getElementById('modal-back-btn')?.addEventListener('click', () => {
+    modal.querySelector('#modal-back-btn')?.addEventListener('click', e => {
+      e.stopPropagation();
       closeDetail();
       App.showView('routines');
       Routine.renderList();
     });
 
-    document.getElementById('modal-add-ex')?.addEventListener('click', () => {
+    modal.querySelector('#modal-add-ex')?.addEventListener('click', e => {
+      e.stopPropagation();
       if (onPick) {
         onPick(ex);
         closeDetail();
