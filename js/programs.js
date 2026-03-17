@@ -1019,7 +1019,7 @@ const Programs = (() => {
       description: '3-day machine-focused program. Ideal for beginners learning movements safely with controlled resistance.',
       level: 'Beginner',
       frequency: '3×/week',
-      equipment: ['machine', 'cable'],
+      equipment: ['machine'],
       days: [
         {
           name: 'Upper Body A',
@@ -1063,7 +1063,7 @@ const Programs = (() => {
       description: '6-day PPL using machines and cables. Great for beginners who want structure without free-weight complexity.',
       level: 'Beginner–Intermediate',
       frequency: '6×/week',
-      equipment: ['machine', 'cable'],
+      equipment: ['machine'],
       days: [
         {
           name: 'Push',
@@ -1148,7 +1148,7 @@ const Programs = (() => {
       description: '4-day upper/lower split using only machines and cables. Ideal for injury prevention and beginners.',
       level: 'Beginner–Intermediate',
       frequency: '4×/week',
-      equipment: ['machine', 'cable'],
+      equipment: ['machine'],
       days: [
         {
           name: 'Upper A (Strength)',
@@ -1203,7 +1203,7 @@ const Programs = (() => {
       description: '3-day total body program using only gym machines. Perfect for true beginners building a foundation.',
       level: 'Beginner',
       frequency: '3×/week',
-      equipment: ['machine', 'cable'],
+      equipment: ['machine'],
       days: [
         {
           name: 'Day A',
@@ -1247,7 +1247,7 @@ const Programs = (() => {
       description: 'Dedicated machine-based bro split targeting each muscle group once per week. Classic hypertrophy focus.',
       level: 'Intermediate',
       frequency: '5×/week',
-      equipment: ['machine', 'cable'],
+      equipment: ['machine'],
       days: [
         {
           name: 'Chest',
@@ -1310,7 +1310,7 @@ const Programs = (() => {
       description: '4-day classic bro split — chest/tri, back/bi, legs, shoulders/abs. All machines and cables.',
       level: 'Intermediate',
       frequency: '4×/week',
-      equipment: ['machine', 'cable'],
+      equipment: ['machine'],
       days: [
         {
           name: 'Chest & Triceps',
@@ -1365,7 +1365,7 @@ const Programs = (() => {
       description: 'Heavy machine work at low reps to build maximal strength. 3 days, linear progression each session.',
       level: 'Intermediate–Advanced',
       frequency: '3×/week',
-      equipment: ['machine', 'cable'],
+      equipment: ['machine'],
       days: [
         {
           name: 'Day A — Push Focus',
@@ -1406,7 +1406,7 @@ const Programs = (() => {
       description: 'Minimal time commitment — two full body sessions per week on machines. Great for maintenance or beginners.',
       level: 'Beginner',
       frequency: '2×/week',
-      equipment: ['machine', 'cable'],
+      equipment: ['machine'],
       days: [
         {
           name: 'Day A',
@@ -1441,7 +1441,7 @@ const Programs = (() => {
       description: 'High-rep, short-rest machine circuits designed for fat loss and muscle definition. 4 days.',
       level: 'Beginner–Intermediate',
       frequency: '4×/week',
-      equipment: ['machine', 'cable'],
+      equipment: ['machine'],
       days: [
         {
           name: 'Upper Circuit A',
@@ -1496,7 +1496,7 @@ const Programs = (() => {
       description: 'High-frequency upper/lower split — each muscle group hit 3×/week. Best for intermediate hypertrophy.',
       level: 'Intermediate–Advanced',
       frequency: '6×/week',
-      equipment: ['machine', 'cable'],
+      equipment: ['machine'],
       days: [
         {
           name: 'Upper A (Strength)',
@@ -1570,7 +1570,7 @@ const Programs = (() => {
       description: 'Classic Arnold 3-day split (chest/back, shoulders/arms, legs) done twice per week on machines.',
       level: 'Intermediate',
       frequency: '6×/week',
-      equipment: ['machine', 'cable'],
+      equipment: ['machine'],
       days: [
         {
           name: 'Chest & Back',
@@ -1989,7 +1989,8 @@ const Programs = (() => {
     // If "bodyweight" is selected or nothing selected → show bodyweight programs
     const useBodyweight = selected.has('bodyweight') || selected.size === 0;
     const effectiveSet = useBodyweight ? new Set() : selected;
-    const matches = getMatching(effectiveSet);
+    const matches = getMatching(effectiveSet)
+      .filter(p => useBodyweight || p.equipment.length > 0);
 
     if (!matches.length) {
       list.innerHTML = `<p class="empty-msg">No programs match your equipment.<br>Try adding more equipment above.</p>`;
