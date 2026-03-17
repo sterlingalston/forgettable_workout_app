@@ -161,9 +161,14 @@ const App = (() => {
       Routine.renderList();
     });
 
-    // New routine button in header
+    // New routine button in header (custom)
     document.getElementById('btn-new-routine')?.addEventListener('click', () => {
       Routine.promptCreate();
+    });
+
+    // Browse pre-built programs
+    document.getElementById('btn-browse-programs')?.addEventListener('click', () => {
+      Programs.openBrowser();
     });
 
     // Rest overlay skip
