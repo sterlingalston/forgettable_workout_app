@@ -2,13 +2,12 @@
 
 const Storage = (() => {
   const KEYS = {
-    routines:    'wk_routines',
-    logs:        'wk_logs',
-    settings:    'wk_settings',
-    exCache:     'wk_ex_cache',
-    exCacheIdx:  'wk_ex_cache_idx',
-    freeDbMap:   'wk_freedb_map',
-    reqCount:    'wk_req_count',
+    routines:   'wk_routines',
+    logs:       'wk_logs',
+    settings:   'wk_settings',
+    exCache:    'wk_ex_cache',
+    exCacheIdx: 'wk_ex_cache_idx',
+    freeDbMap:  'wk_freedb_map',
   };
 
   function read(key, fallback) {
@@ -21,7 +20,6 @@ const Storage = (() => {
 
   // ── Settings ──────────────────────────────────────────────────────────────
   const defaultSettings = {
-    apiKey:        '',
     youtubeApiKey: '',
     formspreeId:   '',
     defaultSets:   3,
@@ -31,12 +29,7 @@ const Storage = (() => {
   function getSettings() { return { ...defaultSettings, ...read(KEYS.settings, {}) }; }
   function saveSettings(s) { write(KEYS.settings, { ...getSettings(), ...s }); }
 
-  // ── API request counter ───────────────────────────────────────────────────
-  function getReqCount() { return read(KEYS.reqCount, 0); }
-  function incReqCount() { write(KEYS.reqCount, getReqCount() + 1); }
-  function resetReqCount() { write(KEYS.reqCount, 0); }
-
-  // ── Exercise cache (wrkout.xyz responses) ─────────────────────────────────
+  // ── Exercise cache ────────────────────────────────────────────────────────
   // Index: { [cacheKey]: true }  — lets us know what's cached without loading all data
   function getCacheIndex() { return read(KEYS.exCacheIdx, {}); }
   function setCached(cacheKey, data) {
@@ -168,7 +161,6 @@ const Storage = (() => {
 
   return {
     getSettings, saveSettings,
-    getReqCount, incReqCount, resetReqCount,
     getCached, setCached, clearExCache,
     getFreeDbMap, setFreeDbMap,
     getRoutines, saveRoutines, getRoutine, createRoutine, updateRoutine, deleteRoutine,

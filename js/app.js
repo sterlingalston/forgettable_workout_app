@@ -44,8 +44,7 @@ const App = (() => {
     const el = document.getElementById('settings-form');
     if (!el) return;
 
-    document.getElementById('set-api-key').value  = s.apiKey;
-    document.getElementById('set-yt-key').value    = s.youtubeApiKey;
+    document.getElementById('set-yt-key').value = s.youtubeApiKey;
     document.getElementById('set-formspree').value = s.formspreeId;
     document.getElementById('set-def-sets').value  = s.defaultSets;
     document.getElementById('set-def-reps').value  = s.defaultReps;
@@ -57,7 +56,6 @@ const App = (() => {
     document.getElementById('settings-form')?.addEventListener('submit', e => {
       e.preventDefault();
       Storage.saveSettings({
-        apiKey:        document.getElementById('set-api-key').value.trim(),
         youtubeApiKey: document.getElementById('set-yt-key').value.trim(),
         formspreeId:   document.getElementById('set-formspree').value.trim(),
         defaultSets: +document.getElementById('set-def-sets').value,
@@ -69,8 +67,6 @@ const App = (() => {
 
     document.getElementById('btn-clear-ex-cache')?.addEventListener('click', () => {
       Storage.clearExCache();
-      Storage.resetReqCount();
-      document.getElementById('req-count').textContent = 0;
       toast('Exercise cache cleared');
     });
 
@@ -104,40 +100,6 @@ const App = (() => {
     el.classList.add('toast-show');
     clearTimeout(_toastTimer);
     _toastTimer = setTimeout(() => el.classList.remove('toast-show'), 2800);
-  }
-
-  // ── API key prompt (first run) ────────────────────────────────────────────
-
-  function promptApiKeyIfMissing() {
-    if (Storage.getSettings().apiKey) return;
-    const html = `
-      <div class="modal-overlay" id="apikey-modal">
-        <div class="modal modal-sheet">
-          <div class="modal-body">
-            <h2 class="modal-title">Enter wrkout.xyz API Key</h2>
-            <p class="settings-hint" style="margin-bottom:16px">
-              Required to browse exercises. Your key is stored only in this browser — never in code or git.
-            </p>
-            <input id="apikey-input" class="input" type="text"
-                   placeholder="Paste your API key here" autocomplete="off" spellcheck="false">
-            <button class="btn btn-primary full-w" id="apikey-save" style="margin-top:12px">Save</button>
-            <button class="btn btn-ghost full-w" id="apikey-skip" style="margin-top:8px">Skip for now</button>
-          </div>
-        </div>
-      </div>`;
-    document.body.insertAdjacentHTML('beforeend', html);
-
-    const save = () => {
-      const key = document.getElementById('apikey-input').value.trim();
-      if (!key) return;
-      Storage.saveSettings({ apiKey: key });
-      document.getElementById('apikey-modal').remove();
-    };
-    document.getElementById('apikey-save').addEventListener('click', save);
-    document.getElementById('apikey-input').addEventListener('keydown', e => { if (e.key === 'Enter') save(); });
-    document.getElementById('apikey-skip').addEventListener('click', () => {
-      document.getElementById('apikey-modal').remove();
-    });
   }
 
   // ── Init ──────────────────────────────────────────────────────────────────
@@ -178,7 +140,6 @@ const App = (() => {
     setupSettings();
     showView('routines');
     Routine.renderList();
-    promptApiKeyIfMissing();
 
     // Init Firebase in background — pulls data when auth state resolves
     Firebase.init();
