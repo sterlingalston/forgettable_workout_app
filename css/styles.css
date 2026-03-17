@@ -256,10 +256,20 @@ body {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.rd-ex-expanded { border-color: var(--accent); }
+.rd-ex-header {
   padding: 14px;
   display: flex;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+.rd-ex-chevron { font-size: 11px; color: var(--text-muted); }
+.rd-ex-video-wrap {
+  padding: 0 14px 14px;
 }
 .rd-ex-num {
   width: 24px;

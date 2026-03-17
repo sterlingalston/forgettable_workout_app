@@ -67,9 +67,11 @@ const Routine = (() => {
   // ── Routine detail ────────────────────────────────────────────────────────
 
   let currentRoutineId = null;
+  let expandedExIndex  = null;
 
   function openRoutine(id) {
     currentRoutineId = id;
+    expandedExIndex  = null;
     const r = Storage.getRoutine(id);
     if (!r) return;
 
@@ -106,20 +108,44 @@ const Routine = (() => {
       return;
     }
 
-    el.innerHTML = r.exercises.map((ex, i) => `
-      <div class="rd-ex-row" data-index="${i}">
-        <div class="rd-ex-num">${i + 1}</div>
-        <div class="rd-ex-info">
-          <div class="rd-ex-name">${ex.name}</div>
-          <div class="rd-ex-target">
-            ${ex.timed
-              ? `<span class="ex-target-edit" data-field="sets" data-index="${i}">${ex.sets}</span> sets × timed`
-              : `<span class="ex-target-edit" data-field="sets" data-index="${i}">${ex.sets}</span> × <span class="ex-target-edit" data-field="reps" data-index="${i}">${ex.reps}</span> reps`}
-            · <span class="ex-target-edit" data-field="restSeconds" data-index="${i}">${ex.restSeconds}s</span> rest
+    el.innerHTML = r.exercises.map((ex, i) => {
+      const isOpen = i === expandedExIndex;
+      return `
+        <div class="rd-ex-row ${isOpen ? 'rd-ex-expanded' : ''}" data-index="${i}">
+          <div class="rd-ex-header" data-index="${i}">
+            <div class="rd-ex-num">${i + 1}</div>
+            <div class="rd-ex-info">
+              <div class="rd-ex-name">${ex.name}</div>
+              <div class="rd-ex-target">
+                ${ex.timed
+                  ? `<span class="ex-target-edit" data-field="sets" data-index="${i}">${ex.sets}</span> sets × timed`
+                  : `<span class="ex-target-edit" data-field="sets" data-index="${i}">${ex.sets}</span> × <span class="ex-target-edit" data-field="reps" data-index="${i}">${ex.reps}</span> reps`}
+                · <span class="ex-target-edit" data-field="restSeconds" data-index="${i}">${ex.restSeconds}s</span> rest
+              </div>
+            </div>
+            <span class="rd-ex-chevron">${isOpen ? '▲' : '▼'}</span>
+            <button class="icon-btn rd-ex-menu" data-index="${i}" aria-label="Options">⋯</button>
           </div>
-        </div>
-        <button class="icon-btn rd-ex-menu" data-index="${i}" aria-label="Options">⋯</button>
-      </div>`).join('');
+          ${isOpen ? `
+            <div class="rd-ex-video-wrap" id="rd-video-wrap-${i}">
+              <div class="wk-video-loading"><div class="spinner"></div></div>
+            </div>` : ''}
+        </div>`;
+    }).join('');
+
+    // Toggle expand on row tap
+    el.querySelectorAll('.rd-ex-header').forEach(header => {
+      header.addEventListener('click', e => {
+        if (e.target.closest('.rd-ex-menu') || e.target.closest('.ex-target-edit')) return;
+        const idx = +header.dataset.index;
+        expandedExIndex = expandedExIndex === idx ? null : idx;
+        renderExerciseList(Storage.getRoutine(currentRoutineId));
+        if (expandedExIndex !== null) {
+          const ex = r.exercises[expandedExIndex];
+          loadRoutineVideo(ex.name, expandedExIndex);
+        }
+      });
+    });
 
     el.querySelectorAll('.ex-target-edit').forEach(span => {
       span.addEventListener('click', e => {
@@ -139,6 +165,27 @@ const Routine = (() => {
         showExMenu(+btn.dataset.index);
       });
     });
+
+    // Restore video if a row was already open
+    if (expandedExIndex !== null && r.exercises[expandedExIndex]) {
+      loadRoutineVideo(r.exercises[expandedExIndex].name, expandedExIndex);
+    }
+  }
+
+  async function loadRoutineVideo(exerciseName, index) {
+    const wrap = document.getElementById(`rd-video-wrap-${index}`);
+    if (!wrap) return;
+    const videoId = await API.getYouTubeVideoId(exerciseName);
+    if (!wrap.isConnected) return;
+    if (!videoId) { wrap.innerHTML = ''; return; }
+    wrap.innerHTML = `
+      <iframe
+        class="wk-video-frame"
+        src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&rel=0&modestbranding=1"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+        title="${exerciseName}">
+      </iframe>`;
   }
 
   function showExMenu(index) {
