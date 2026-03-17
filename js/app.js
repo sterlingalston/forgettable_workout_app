@@ -49,10 +49,23 @@ const App = (() => {
     document.getElementById('set-def-sets').value  = s.defaultSets;
     document.getElementById('set-def-reps').value  = s.defaultReps;
     document.getElementById('set-rest').value      = s.restSeconds;
-    document.getElementById('req-count').textContent = Storage.getReqCount();
+
+    // Unit toggle
+    const unit = s.weightUnit || 'lbs';
+    document.getElementById('unit-lbs')?.classList.toggle('active', unit === 'lbs');
+    document.getElementById('unit-kg')?.classList.toggle('active', unit === 'kg');
   }
 
   function setupSettings() {
+    // Unit toggle
+    document.querySelectorAll('.unit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        Storage.saveSettings({ weightUnit: btn.dataset.unit });
+      });
+    });
+
     document.getElementById('settings-form')?.addEventListener('submit', e => {
       e.preventDefault();
       Storage.saveSettings({

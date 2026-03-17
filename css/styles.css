@@ -736,9 +736,9 @@ body {
   50%, 100% { opacity: 0; }
 }
 
-/* ── YouTube embed ── */
+/* ── YouTube embed (exercise detail modal) ── */
 .ex-video-frame {
-  width: 100%;
+  width: 20%;
   aspect-ratio: 16/9;
   border: none;
   display: block;
@@ -755,11 +755,122 @@ body {
   padding: 16px 0;
 }
 .wk-video-frame {
-  width: 33%;
+  width: 100%;
   aspect-ratio: 16/9;
   border: none;
   display: block;
-  border-radius: 6px;
+  border-radius: 8px;
+}
+
+/* ── Workout completion modal ── */
+.completion-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 2000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.completion-card {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 28px 24px;
+  width: 100%; max-width: 380px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.completion-title {
+  font-size: 1.6rem; font-weight: 700;
+  margin-bottom: 4px;
+}
+.completion-subtitle {
+  color: var(--text-muted); font-size: .9rem;
+  margin-bottom: 24px;
+}
+.completion-stats {
+  display: flex; gap: 12px; justify-content: center;
+  margin-bottom: 24px;
+}
+.completion-stat {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 10px 16px;
+  flex: 1;
+}
+.completion-stat-val {
+  font-size: 1.4rem; font-weight: 700; color: var(--accent);
+}
+.completion-stat-lbl {
+  font-size: .7rem; color: var(--text-muted); text-transform: uppercase;
+}
+.rating-section { margin-bottom: 20px; }
+.rating-label {
+  font-size: .85rem; color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.rating-emojis {
+  display: flex; justify-content: space-between;
+  font-size: 1.4rem; margin-bottom: 6px;
+}
+.rating-slider {
+  width: 100%; accent-color: var(--accent);
+  cursor: pointer;
+}
+.rating-text {
+  font-size: .8rem; color: var(--text-muted);
+  margin-top: 4px;
+}
+.notes-section { margin-bottom: 20px; text-align: left; }
+.notes-section label {
+  font-size: .85rem; color: var(--text-muted);
+  display: block; margin-bottom: 6px;
+}
+.notes-input {
+  width: 100%; background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text);
+  font-size: .9rem; padding: 10px;
+  resize: vertical; min-height: 72px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+.notes-input:focus { outline: none; border-color: var(--accent); }
+
+/* ── Confetti ── */
+.confetti-wrap {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 1999;
+  overflow: hidden;
+}
+.confetti-piece {
+  position: absolute;
+  width: 8px; height: 12px;
+  top: -20px;
+  border-radius: 2px;
+  animation: confetti-fall linear forwards;
+}
+@keyframes confetti-fall {
+  0%   { transform: translateY(0) rotateZ(0deg) rotateX(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotateZ(720deg) rotateX(360deg); opacity: 0; }
+}
+
+/* ── Unit toggle ── */
+.unit-toggle {
+  display: flex; gap: 4px;
+}
+.unit-btn {
+  padding: 6px 18px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: .85rem; cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.unit-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
 }
 
 /* ── Auth ── */

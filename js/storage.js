@@ -25,6 +25,7 @@ const Storage = (() => {
     defaultSets:   3,
     defaultReps:   10,
     restSeconds:   90,
+    weightUnit:    'lbs',
   };
   function getSettings() { return { ...defaultSettings, ...read(KEYS.settings, {}) }; }
   function saveSettings(s) { write(KEYS.settings, { ...getSettings(), ...s }); }

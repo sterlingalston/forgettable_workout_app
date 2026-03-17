@@ -119,18 +119,39 @@ const API = (() => {
   }
 
   // ── YouTube video search ──────────────────────────────────────────────────
-  // Searches within @fit-distance channel (French exercise demos).
-  // Translates exercise name EN→FR via MyMemory (free, no key, CORS-safe).
+  // Searches preferred channels in priority order, falls back to @fit-distance last.
   // Requires YouTube Data API v3 key in Settings.
   // Enable at: console.cloud.google.com → APIs → YouTube Data API v3
 
-  const YT_CHANNEL = 'UCcI0GmkD068idv12NRusuEw'; // @fit-distance
+  // Priority channel handles (English). Resolved to IDs dynamically via API + cached.
+  const YT_CHANNELS = [
+    { handle: 'NasmOrgPersonalTrainer', lang: 'en' },
+    { handle: 'gymvisual8018',          lang: 'en' },
+    { handle: 'BSNTraining',            lang: 'en' },
+    { handle: 'leveltencoaching2296',   lang: 'en', short: true },
+    { handle: 'ElliotGrahamCoaching',   lang: 'en' },
+    { handle: 'fit-distance',           lang: 'fr' }, // last resort — French
+  ];
+
+  async function resolveChannelId(handle, key) {
+    const cacheKey = 'ch_' + handle;
+    const cached = Storage.getCached(cacheKey);
+    if (cached) return cached;
+    try {
+      const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${handle}&key=${key}`;
+      const res  = await fetch(url);
+      if (!res.ok) return null;
+      const data = await res.json();
+      const id   = data.items?.[0]?.id || '';
+      if (id) Storage.setCached(cacheKey, id);
+      return id || null;
+    } catch { return null; }
+  }
 
   async function translateToFrench(text) {
     const cacheKey = 'tr_' + text.toLowerCase().replace(/\s+/g, '_');
     const cached = Storage.getCached(cacheKey);
     if (cached) return cached;
-
     try {
       const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|fr`;
       const res  = await fetch(url);
@@ -138,9 +159,7 @@ const API = (() => {
       const translated = data.responseData?.translatedText || text;
       Storage.setCached(cacheKey, translated);
       return translated;
-    } catch {
-      return text; // fall back to English on error
-    }
+    } catch { return text; }
   }
 
   function _dyk() {
@@ -149,24 +168,39 @@ const API = (() => {
       .split('').map((c,i) => String.fromCharCode(c.charCodeAt(0) ^ _s.charCodeAt(i % _s.length))).join('');
   }
 
+  async function searchChannel(channelId, query, key, preferShort) {
+    const duration = preferShort ? '&videoDuration=short' : '';
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&channelId=${channelId}&maxResults=1${duration}&key=${key}`;
+    const res  = await fetch(url);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.items?.[0]?.id?.videoId || null;
+  }
+
   async function getYouTubeVideoId(exerciseName) {
     const ytKey = Storage.getSettings().youtubeApiKey || _dyk();
     if (!ytKey) return null;
 
     const cacheKey = 'yt_' + exerciseName.toLowerCase().replace(/\s+/g, '_');
     const cached = Storage.getCached(cacheKey);
-    if (cached !== null) return cached; // '' means no result — don't retry
+    if (cached !== null) return cached || null; // '' = no result, don't retry
 
     try {
-      const frName = await translateToFrench(exerciseName);
-      const q = encodeURIComponent(frName);
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${q}&type=video&channelId=${YT_CHANNEL}&maxResults=1&key=${ytKey}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(res.status);
-      const data = await res.json();
-      const videoId = data.items?.[0]?.id?.videoId || '';
-      Storage.setCached(cacheKey, videoId);
-      return videoId || null;
+      for (const ch of YT_CHANNELS) {
+        const channelId = await resolveChannelId(ch.handle, ytKey);
+        if (!channelId) continue;
+        const query = ch.lang === 'fr'
+          ? await translateToFrench(exerciseName)
+          : `${exerciseName} how to exercise tutorial`;
+        const videoId = await searchChannel(channelId, query, ytKey, !!ch.short);
+        if (videoId) {
+          Storage.setCached(cacheKey, videoId);
+          return videoId;
+        }
+      }
+      // Nothing found in any channel
+      Storage.setCached(cacheKey, '');
+      return null;
     } catch (e) {
       console.warn('YouTube search failed:', e.message);
       return null;

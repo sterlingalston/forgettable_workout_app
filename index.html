@@ -110,9 +110,7 @@
               <input id="set-yt-key" class="input" type="text" autocomplete="off" spellcheck="false">
             </div>
             <p class="settings-hint">
-              Embeds exercise demo clips from the
-              <a href="https://www.youtube.com/@fit-distance/videos" target="_blank" rel="noopener">@fit-distance</a>
-              YouTube channel (exercise names auto-translated EN→FR).<br><br>
+              Embeds exercise demo videos automatically when you work out.<br><br>
               To enable: open your
               <a href="https://console.cloud.google.com/apis/library/youtube.googleapis.com" target="_blank" rel="noopener">Google Cloud Console</a>,
               enable <strong>YouTube Data API v3</strong>, create a browser API key, and paste it here.
@@ -127,6 +125,17 @@
               <input id="set-formspree" class="input" type="text" placeholder="e.g. xpwzabcd" autocomplete="off">
             </div>
             <p class="settings-hint">If set, workout summary is also emailed via Formspree when you finish.</p>
+          </div>
+
+          <div class="settings-section">
+            <h3 class="settings-section-title">Weights</h3>
+            <div class="settings-row">
+              <label class="settings-label">Unit</label>
+              <div class="unit-toggle">
+                <button type="button" class="unit-btn active" id="unit-lbs" data-unit="lbs">lbs</button>
+                <button type="button" class="unit-btn" id="unit-kg" data-unit="kg">kg</button>
+              </div>
+            </div>
           </div>
 
           <div class="settings-section">

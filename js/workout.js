@@ -154,12 +154,13 @@ const Workout = (() => {
             ${done ? `<button class="set-undo-btn btn-text" data-ex-index="${exIdx}" data-set-index="${s}">undo</button>` : ''}
           </div>`);
       } else {
+        const unit = Storage.getSettings().weightUnit || 'lbs';
         rows.push(`
           <div class="set-row ${done ? 'set-done' : ''}" data-set="${s}">
             <span class="set-label">Set ${s+1}</span>
             <div class="set-inputs">
               <div class="set-input-group">
-                <label>kg</label>
+                <label>${unit}</label>
                 <input class="set-input input-sm" type="number" min="0" step="0.5"
                        placeholder="${prevLog?.weight ?? '0'}"
                        value="${set.weight ?? ''}"
@@ -249,12 +250,6 @@ const Workout = (() => {
     Storage.saveLog(log);
 
     render();
-
-    // Start rest timer
-    const restSecs = ex.restSeconds || Storage.getSettings().restSeconds;
-    Timer.startRest(restSecs, () => {
-      // vibrate done
-    });
   }
 
   function undoSet(exIdx, setIdx) {
@@ -289,25 +284,108 @@ const Workout = (() => {
     log.finishedAt = Date.now();
     Storage.saveLog(log);
 
-    const settings = Storage.getSettings();
-    if (settings.formspreeId) {
-      await submitToFormspree(settings.formspreeId);
-    }
-
-    App.toast('Workout saved!');
-    App.showView('log');
-    Log.render();
-    log = null;
+    showCompletionModal(log);
   }
 
-  async function submitToFormspree(formId) {
+  function showCompletionModal(finishedLog) {
+    const durationMin = Math.round((finishedLog.finishedAt - finishedLog.startedAt) / 60000);
+    const totalSets = finishedLog.exercises.reduce((n, ex) => n + ex.sets.filter(s => s.done).length, 0);
+
+    launchConfetti();
+
+    const RATINGS = ['😴 Very Easy', '🙂 Easy', '💪 Moderate', '😤 Hard', '💀 Max Effort'];
+
+    document.body.insertAdjacentHTML('beforeend', `
+      <div class="completion-overlay" id="completion-modal">
+        <div class="completion-card">
+          <div class="completion-title">Bien joué! 🎉</div>
+          <div class="completion-subtitle">Workout complete — great work!</div>
+          <div class="completion-stats">
+            <div class="completion-stat">
+              <div class="completion-stat-val">${durationMin}</div>
+              <div class="completion-stat-lbl">minutes</div>
+            </div>
+            <div class="completion-stat">
+              <div class="completion-stat-val">${finishedLog.exercises.length}</div>
+              <div class="completion-stat-lbl">exercises</div>
+            </div>
+            <div class="completion-stat">
+              <div class="completion-stat-val">${totalSets}</div>
+              <div class="completion-stat-lbl">sets done</div>
+            </div>
+          </div>
+          <div class="rating-section">
+            <div class="rating-label">How was the effort?</div>
+            <div class="rating-emojis">
+              <span>😴</span><span>🙂</span><span>💪</span><span>😤</span><span>💀</span>
+            </div>
+            <input type="range" class="rating-slider" id="completion-rating" min="1" max="5" value="3">
+            <div class="rating-text" id="rating-text">${RATINGS[2]}</div>
+          </div>
+          <div class="notes-section">
+            <label>Notes (optional)</label>
+            <textarea class="notes-input" id="completion-notes" placeholder="How did it feel? Any PRs?"></textarea>
+          </div>
+          <button class="btn btn-primary full-w" id="completion-save">Save & Done</button>
+        </div>
+      </div>`);
+
+    const slider = document.getElementById('completion-rating');
+    const ratingText = document.getElementById('rating-text');
+    slider.addEventListener('input', () => {
+      ratingText.textContent = RATINGS[slider.value - 1];
+    });
+
+    document.getElementById('completion-save').addEventListener('click', async () => {
+      finishedLog.rating = +slider.value;
+      finishedLog.notes  = document.getElementById('completion-notes').value.trim();
+      Storage.saveLog(finishedLog);
+      Firebase.pushLog(finishedLog);
+
+      const settings = Storage.getSettings();
+      if (settings.formspreeId) await submitToFormspree(settings.formspreeId, finishedLog);
+
+      document.getElementById('completion-modal')?.remove();
+      document.getElementById('confetti-wrap')?.remove();
+      App.showView('log');
+      Log.render();
+      log = null;
+    });
+  }
+
+  function launchConfetti() {
+    const wrap = document.createElement('div');
+    wrap.id = 'confetti-wrap';
+    wrap.className = 'confetti-wrap';
+    document.body.appendChild(wrap);
+
+    const colors = ['#5b5ef4','#34c77b','#f4c25b','#f45b8d','#5bf4e8','#f4855b'];
+    for (let i = 0; i < 90; i++) {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.style.cssText = [
+        `left:${Math.random() * 100}%`,
+        `background:${colors[Math.floor(Math.random() * colors.length)]}`,
+        `animation-duration:${1.5 + Math.random() * 2}s`,
+        `animation-delay:${Math.random() * 1.2}s`,
+        `width:${6 + Math.random() * 8}px`,
+        `height:${8 + Math.random() * 10}px`,
+        `opacity:${0.7 + Math.random() * 0.3}`,
+      ].join(';');
+      wrap.appendChild(el);
+    }
+  }
+
+  async function submitToFormspree(formId, logData) {
     const payload = {
-      routine: log.routineName,
-      date: new Date(log.startedAt).toISOString(),
-      duration_min: Math.round((log.finishedAt - log.startedAt) / 60000),
-      exercises: log.exercises.map(ex => ({
+      routine: logData.routineName,
+      date: new Date(logData.startedAt).toISOString(),
+      duration_min: Math.round((logData.finishedAt - logData.startedAt) / 60000),
+      rating: logData.rating,
+      notes: logData.notes,
+      exercises: logData.exercises.map(ex => ({
         name: ex.name,
-        sets: ex.sets.filter(s => s.done).map(s => `${s.weight ?? 0}kg × ${s.reps ?? 0}`).join(', '),
+        sets: ex.sets.filter(s => s.done).map(s => `${s.weight ?? 0}${Storage.getSettings().weightUnit || 'lbs'} × ${s.reps ?? 0}`).join(', '),
       })),
     };
 
