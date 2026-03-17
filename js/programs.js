@@ -1986,11 +1986,18 @@ const Programs = (() => {
     const list = modal.querySelector('#programs-list');
     if (!list) return;
 
-    // If "bodyweight" is selected or nothing selected → show bodyweight programs
-    const useBodyweight = selected.has('bodyweight') || selected.size === 0;
-    const effectiveSet = useBodyweight ? new Set() : selected;
-    const matches = getMatching(effectiveSet)
-      .filter(p => useBodyweight || p.equipment.length > 0);
+    let matches;
+    if (selected.size === 0 || selected.has('bodyweight')) {
+      // Show only programs that need no equipment
+      matches = PROGRAMS.filter(p => p.equipment.length === 0);
+    } else {
+      // Show programs that require only equipment the user has selected
+      // Explicitly exclude pure-bodyweight programs (equipment: [])
+      matches = PROGRAMS.filter(p =>
+        p.equipment.length > 0 &&
+        p.equipment.every(req => selected.has(req))
+      );
+    }
 
     if (!matches.length) {
       list.innerHTML = `<p class="empty-msg">No programs match your equipment.<br>Try adding more equipment above.</p>`;
