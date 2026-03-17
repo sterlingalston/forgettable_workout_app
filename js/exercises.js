@@ -204,24 +204,28 @@ const Exercises = (() => {
   }
 
   async function loadVideo(exerciseName) {
-    const videoId = await API.getYouTubeVideoId(exerciseName);
+    const [videoId, gifUrl] = await Promise.all([
+      API.getYouTubeVideoId(exerciseName),
+      API.getFitnessProgramerGif(exerciseName),
+    ]);
     const wrap = document.getElementById('modal-media-wrap');
     if (!wrap) return;
 
-    if (!videoId) {
+    if (videoId) {
+      wrap.innerHTML = `
+        <iframe
+          class="ex-video-frame"
+          src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&rel=0&modestbranding=1"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          loading="lazy"
+          title="${exerciseName}">
+        </iframe>`;
+    } else if (gifUrl) {
+      wrap.innerHTML = `<img class="modal-media-gif" src="${gifUrl}" alt="${exerciseName}" loading="lazy">`;
+    } else {
       wrap.innerHTML = `<div class="modal-media-ph">🎬<br><small>No video found</small></div>`;
-      return;
     }
-
-    wrap.innerHTML = `
-      <iframe
-        class="ex-video-frame"
-        src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&rel=0&modestbranding=1"
-        allow="autoplay; encrypted-media"
-        allowfullscreen
-        loading="lazy"
-        title="${exerciseName}">
-      </iframe>`;
   }
 
   function closeDetail() {

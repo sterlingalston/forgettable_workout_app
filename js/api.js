@@ -118,6 +118,28 @@ const API = (() => {
     return ex?.imageUrl || '';
   }
 
+  // ── FitnessProgramer GIF fallback ────────────────────────────────────────
+  // Scraped GIF map: exercise name (lowercase) → animated GIF URL
+
+  let _gifMap = null;
+
+  async function getFitnessProgramerGif(exerciseName) {
+    if (!_gifMap) {
+      try {
+        const res = await fetch('data/fitnessprogramer-gifs.json');
+        _gifMap = res.ok ? await res.json() : {};
+      } catch { _gifMap = {}; }
+    }
+    const key = exerciseName.toLowerCase();
+    // Exact match first
+    if (_gifMap[key]) return _gifMap[key];
+    // Partial match: gif name contains or is contained by the exercise name
+    for (const [k, v] of Object.entries(_gifMap)) {
+      if (k.includes(key) || key.includes(k)) return v;
+    }
+    return null;
+  }
+
   // ── YouTube video search ──────────────────────────────────────────────────
   // Searches preferred channels in priority order, falls back to @fit-distance last.
   // Requires YouTube Data API v3 key in Settings.
@@ -263,6 +285,7 @@ const API = (() => {
     getExercise,
     getImageUrl,
     getYouTubeVideoId,
+    getFitnessProgramerGif,
     MUSCLES, EQUIPMENT, CATEGORIES, LEVELS,
     fmt,
   };
