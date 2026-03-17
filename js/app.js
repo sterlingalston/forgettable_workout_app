@@ -22,14 +22,17 @@ const App = (() => {
 
     // Header title
     const titles = {
-      routines: 'Routines',
+      routines: 'LIFT',
       exercises: 'Exercises',
       workout: 'Workout',
       log: 'History',
       settings: 'Settings',
     };
     const titleEl = document.getElementById('header-title');
-    if (titleEl && titles[name]) titleEl.textContent = titles[name];
+    if (titleEl && titles[name]) {
+      titleEl.textContent = titles[name];
+      titleEl.classList.toggle('header-title-brand', name === 'routines');
+    }
   }
 
   function addExToActiveWorkout(ex) {
@@ -153,6 +156,7 @@ const App = (() => {
 
     setupSettings();
     showView('routines');
+    document.getElementById('header-title')?.classList.add('header-title-brand');
     Routine.renderList();
 
     // Init GitHub sync in background — auto-restores saved session

@@ -11,9 +11,9 @@ const Routine = (() => {
 
     if (!routines.length) {
       el.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon">📋</div>
-          <p>No routines yet.</p>
+        <div class="empty-state lift-hero">
+          <div class="lift-hero-mark">🏋</div>
+          <p class="lift-hero-sub">No routines yet. Build your first one.</p>
           <button class="btn btn-primary" id="btn-new-routine-empty">Create Routine</button>
         </div>`;
       document.getElementById('btn-new-routine-empty')
