@@ -183,7 +183,7 @@ const API = (() => {
     const ytKey = Storage.getSettings().youtubeApiKey || _dyk();
     if (!ytKey) return null;
 
-    const cacheKey = 'yt_' + exerciseName.toLowerCase().replace(/\s+/g, '_');
+    const cacheKey = 'yt2_' + exerciseName.toLowerCase().replace(/\s+/g, '_');
     const cached = Storage.getCached(cacheKey);
     if (cached !== null) return cached || null; // '' = no result, don't retry
 
