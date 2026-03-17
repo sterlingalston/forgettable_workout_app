@@ -92,16 +92,12 @@ const Exercises = (() => {
         return;
       }
 
-      await attachImages(exercises);
-
       const compact = !!onPick;
       exercises.forEach(ex => {
         grid?.insertAdjacentHTML('beforeend', cardHtml(ex, compact));
       });
 
-      // cursor for next page — last item's cursor field
-      const last = exercises[exercises.length - 1];
-      cursor = last.cursor || null;
+      cursor = result._nextCursor || null;
       hasMore = !!cursor;
       if (sentinel) sentinel.innerHTML = '';
     } catch (e) {

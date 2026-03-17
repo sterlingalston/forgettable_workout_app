@@ -1,102 +1,125 @@
-// wrkout.xyz API client — 100 req/month budget, cache everything in localStorage
-// free-exercise-db for images (no quota)
+// Exercise data — free-exercise-db (primary, no CORS issues, no API key)
+// https://github.com/yuhonas/free-exercise-db — Unlicense / public domain
+// wrkout.xyz removed: their API does not allow browser (cross-origin) requests.
 
 const API = (() => {
-  const BASE = 'https://api.wrkout.xyz';
-  const FREE_DB = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main';
+  const RAW = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main';
 
-  // Obfuscated fallback — XOR + base64. User-supplied key in Settings takes priority.
-  function _dk() {
-    const _s = 'wk';
-    return atob('T1wVDkMOQg5aCUBYR0ZDCEAIWlJGXkJGRlhBUhEIRVsRX05e')
-      .split('').map((c,i) => String.fromCharCode(c.charCodeAt(0) ^ _s.charCodeAt(i % _s.length))).join('');
+  let _cache = null; // full dataset, in-memory after first load
+
+  // ── Load full dataset once ─────────────────────────────────────────────────
+
+  async function loadAll() {
+    if (_cache) return _cache;
+
+    // Try localStorage cache first
+    const stored = Storage.getCached('freedb_all');
+    if (stored) { _cache = stored; return _cache; }
+
+    const res = await fetch(`${RAW}/dist/exercises.json`);
+    if (!res.ok) throw new Error(`Failed to load exercise database (${res.status})`);
+    const raw = await res.json();
+
+    // Normalise to a consistent schema
+    _cache = raw.map(ex => ({
+      id:             ex.id,
+      displayName:    ex.name,
+      category:       (ex.category || '').toUpperCase(),
+      level:          (ex.level    || '').toUpperCase(),
+      mechanic:       (ex.mechanic || '').toUpperCase(),
+      force:          (ex.force    || '').toUpperCase(),
+      equipment:      normaliseEquipment(ex.equipment),
+      primaryMuscle:  (ex.primaryMuscles  || []).map(m => m.toUpperCase().replace(/ /g, '_')),
+      secondaryMuscle:(ex.secondaryMuscles|| []).map(m => m.toUpperCase().replace(/ /g, '_')),
+      instructions:   ex.instructions || [],
+      imageUrl:       imgUrl(ex),
+      _imageUrl:      imgUrl(ex),
+    }));
+
+    Storage.setCached('freedb_all', _cache);
+    return _cache;
   }
 
-  function key() { return Storage.getSettings().apiKey || _dk(); }
-
-  function headers() {
-    return { 'X-API-Key': key(), 'Content-Type': 'application/json' };
+  function imgUrl(ex) {
+    if (!ex.images?.length) return '';
+    const img = ex.images[0];
+    return img.includes('/')
+      ? `${RAW}/exercises/${img}`
+      : `${RAW}/exercises/${ex.id}/${img}`;
   }
 
-  async function apiFetch(path, params = {}) {
-    const url = new URL(BASE + path);
-    Object.entries(params).forEach(([k, v]) => {
-      if (Array.isArray(v)) v.forEach(item => url.searchParams.append(k, item));
-      else url.searchParams.set(k, v);
-    });
-    Storage.incReqCount();
-    const res = await fetch(url, { headers: headers() });
-    if (!res.ok) throw new Error(`wrkout ${res.status}: ${res.statusText}`);
-    return res.json();
+  function normaliseEquipment(eq) {
+    if (!eq) return 'OTHER';
+    return eq.toUpperCase()
+      .replace(/ /g, '_')
+      .replace('BODY_WEIGHT', 'BODY_ONLY')
+      .replace('BODY ONLY',   'BODY_ONLY')
+      .replace('E-Z_CURL_BAR','E_Z_CURL_BAR')
+      .replace('MEDICINE_BALL','MEDICINE_BALL');
   }
 
-  // ── Exercise query with cache ─────────────────────────────────────────────
+  // ── Filtered + paginated (all client-side) ────────────────────────────────
+
   async function queryExercises(filters = {}, cursor = null) {
-    const params = { limit: 25, ...filters };
-    if (cursor) params.after = cursor;
+    const all = await loadAll();
+    let data = applyFilters(all, filters);
+    const PAGE = 24;
+    const offset = cursor ? parseInt(cursor, 10) : 0;
+    const slice  = data.slice(offset, offset + PAGE);
+    const next   = offset + PAGE < data.length ? String(offset + PAGE) : null;
+    return {
+      exercises: slice.map(ex => ({ ...ex, cursor: String(offset + slice.indexOf(ex) + 1) })),
+      pagination: { total: data.length },
+      _nextCursor: next,
+    };
+  }
 
-    const cacheKey = btoa(JSON.stringify({ filters, cursor })).replace(/[^a-z0-9]/gi, '');
-    const cached = Storage.getCached(cacheKey);
-    if (cached) return cached;
+  function applyFilters(data, filters) {
+    return data.filter(ex => {
+      if (filters.category     && ex.category    !== filters.category)    return false;
+      if (filters.level        && ex.level        !== filters.level)        return false;
+      if (filters.mechanic     && ex.mechanic     !== filters.mechanic)     return false;
+      if (filters.force        && ex.force        !== filters.force)        return false;
+      if (filters.equipment    && ex.equipment    !== filters.equipment)    return false;
+      if (filters.primaryMuscle && !ex.primaryMuscle.includes(filters.primaryMuscle)) return false;
+      return true;
+    });
+  }
 
-    const data = await apiFetch('/exercise/query', params);
-    Storage.setCached(cacheKey, data);
-    return data;
+  async function searchExercises(query, cursor = null) {
+    const all  = await loadAll();
+    const q    = query.toLowerCase();
+    const data = all.filter(ex =>
+      ex.displayName.toLowerCase().includes(q) ||
+      ex.primaryMuscle.some(m => m.toLowerCase().includes(q)) ||
+      ex.equipment.toLowerCase().includes(q) ||
+      ex.category.toLowerCase().includes(q)
+    );
+    const PAGE   = 24;
+    const offset = cursor ? parseInt(cursor, 10) : 0;
+    const slice  = data.slice(offset, offset + PAGE);
+    const next   = offset + PAGE < data.length ? String(offset + PAGE) : null;
+    return {
+      exercises:    slice.map(ex => ({ ...ex, cursor: String(offset + slice.indexOf(ex) + 1) })),
+      _nextCursor:  next,
+      pagination:   { total: data.length },
+    };
   }
 
   async function getExercise(id) {
-    const cacheKey = `ex_${id}`;
-    const cached = Storage.getCached(cacheKey);
-    if (cached) return cached;
-    const data = await apiFetch(`/exercise/${id}`);
-    Storage.setCached(cacheKey, data);
-    return data;
+    const all = await loadAll();
+    return all.find(ex => ex.id === id) || null;
   }
 
-  async function searchExercises(name, cursor = null) {
-    return queryExercises({ name }, cursor);
-  }
-
-  // ── free-exercise-db image lookup ─────────────────────────────────────────
-  let freeDbMap = null; // name (normalized) → imageUrl
-
-  function normalize(str) {
-    return (str || '').toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, ' ').trim();
-  }
-
-  async function loadFreeDb() {
-    if (freeDbMap) return freeDbMap;
-
-    const stored = Storage.getFreeDbMap();
-    if (stored) { freeDbMap = stored; return freeDbMap; }
-
-    try {
-      const res = await fetch(`${FREE_DB}/dist/exercises.json`);
-      const exercises = await res.json();
-      freeDbMap = {};
-      exercises.forEach(ex => {
-        const key = normalize(ex.name);
-        if (ex.images?.length) {
-          const img = ex.images[0];
-          const url = img.includes('/')
-            ? `${FREE_DB}/exercises/${img}`
-            : `${FREE_DB}/exercises/${ex.id}/${img}`;
-          freeDbMap[key] = url;
-        }
-      });
-      Storage.setFreeDbMap(freeDbMap);
-    } catch {
-      freeDbMap = {};
-    }
-    return freeDbMap;
-  }
-
+  // Kept for backward compat — images are already on each exercise object
   async function getImageUrl(displayName) {
-    const map = await loadFreeDb();
-    return map[normalize(displayName)] || '';
+    const all = await loadAll();
+    const ex  = all.find(e => e.displayName.toLowerCase() === displayName.toLowerCase());
+    return ex?.imageUrl || '';
   }
 
-  // ── Filter option lists (cached) ──────────────────────────────────────────
+  // ── Static filter lists ───────────────────────────────────────────────────
+
   const MUSCLES = [
     'ABDOMINALS','ABDUCTORS','ADDUCTORS','BICEPS','CALVES','CHEST',
     'FOREARMS','GLUTES','HAMSTRINGS','LATS','LOWER_BACK','MIDDLE_BACK',
@@ -112,14 +135,17 @@ const API = (() => {
   ];
   const LEVELS = ['BEGINNER','INTERMEDIATE','EXPERT'];
 
-  function fmt(s) { return s.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()); }
+  function fmt(s) {
+    return (s || '').replace(/_/g, ' ')
+      .toLowerCase()
+      .replace(/\b\w/g, c => c.toUpperCase());
+  }
 
   return {
     queryExercises,
-    getExercise,
     searchExercises,
+    getExercise,
     getImageUrl,
-    loadFreeDb,
     MUSCLES, EQUIPMENT, CATEGORIES, LEVELS,
     fmt,
   };
