@@ -45,7 +45,6 @@ const App = (() => {
     if (!el) return;
 
     document.getElementById('set-yt-key').value = s.youtubeApiKey;
-    document.getElementById('set-formspree').value = s.formspreeId;
     document.getElementById('set-def-sets').value  = s.defaultSets;
     document.getElementById('set-def-reps').value  = s.defaultReps;
     document.getElementById('set-rest').value      = s.restSeconds;
@@ -70,7 +69,6 @@ const App = (() => {
       e.preventDefault();
       Storage.saveSettings({
         youtubeApiKey: document.getElementById('set-yt-key').value.trim(),
-        formspreeId:   document.getElementById('set-formspree').value.trim(),
         defaultSets: +document.getElementById('set-def-sets').value,
         defaultReps: +document.getElementById('set-def-reps').value,
         restSeconds: +document.getElementById('set-rest').value,
@@ -84,20 +82,20 @@ const App = (() => {
     });
 
     document.getElementById('btn-clear-local')?.addEventListener('click', async () => {
-      if (!confirm('Clear local data and reload from Firebase?\nYou must be signed in.')) return;
+      if (!confirm('Clear local data and reload from sync?\nYou must be signed in.')) return;
       Storage.clearLocalUserData();
-      if (Firebase.isSignedIn()) {
-        await Firebase.pullAll();
+      if (GithubSync.isSignedIn()) {
+        await GithubSync.pullAll();
         Routine.renderList();
         Log.render();
-        toast('Reloaded from Firebase');
+        toast('Reloaded from sync');
       } else {
-        toast('Cleared — sign in to reload from Firebase');
+        toast('Cleared — sign in to reload');
       }
     });
 
     document.getElementById('btn-clear-all')?.addEventListener('click', () => {
-      if (!confirm('Delete ALL data (local + Firebase)? This cannot be undone.')) return;
+      if (!confirm('Delete ALL local data? This cannot be undone.')) return;
       Storage.clearAll();
       location.reload();
     });
@@ -154,8 +152,8 @@ const App = (() => {
     showView('routines');
     Routine.renderList();
 
-    // Init Firebase in background — pulls data when auth state resolves
-    Firebase.init();
+    // Init GitHub sync in background — auto-restores saved session
+    GithubSync.init();
   }
 
   return { init, showView, toast, addExToActiveWorkout };

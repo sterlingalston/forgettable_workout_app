@@ -340,10 +340,7 @@ const Workout = (() => {
       finishedLog.rating = +slider.value;
       finishedLog.notes  = document.getElementById('completion-notes').value.trim();
       Storage.saveLog(finishedLog);
-      Firebase.pushLog(finishedLog);
-
-      const settings = Storage.getSettings();
-      if (settings.formspreeId) await submitToFormspree(settings.formspreeId, finishedLog);
+      GithubSync.pushLog(finishedLog);
 
       document.getElementById('completion-modal')?.remove();
       document.getElementById('confetti-wrap')?.remove();
@@ -373,31 +370,6 @@ const Workout = (() => {
         `opacity:${0.7 + Math.random() * 0.3}`,
       ].join(';');
       wrap.appendChild(el);
-    }
-  }
-
-  async function submitToFormspree(formId, logData) {
-    const payload = {
-      routine: logData.routineName,
-      date: new Date(logData.startedAt).toISOString(),
-      duration_min: Math.round((logData.finishedAt - logData.startedAt) / 60000),
-      rating: logData.rating,
-      notes: logData.notes,
-      exercises: logData.exercises.map(ex => ({
-        name: ex.name,
-        sets: ex.sets.filter(s => s.done).map(s => `${s.weight ?? 0}${Storage.getSettings().weightUnit || 'lbs'} × ${s.reps ?? 0}`).join(', '),
-      })),
-    };
-
-    try {
-      await fetch(`https://formspree.io/f/${formId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      App.toast('Workout submitted ✓');
-    } catch {
-      App.toast('Submit failed — saved locally');
     }
   }
 
