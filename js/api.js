@@ -119,9 +119,29 @@ const API = (() => {
   }
 
   // ── YouTube video search ──────────────────────────────────────────────────
-  // Uses YouTube Data API v3. Enable it at:
-  // console.cloud.google.com → APIs → YouTube Data API v3 → Enable
-  // Then create a browser API key (restrict to your GitHub Pages domain).
+  // Searches within @fit-distance channel (French exercise demos).
+  // Translates exercise name EN→FR via MyMemory (free, no key, CORS-safe).
+  // Requires YouTube Data API v3 key in Settings.
+  // Enable at: console.cloud.google.com → APIs → YouTube Data API v3
+
+  const YT_CHANNEL = 'UCcI0GmkD068idv12NRusuEw'; // @fit-distance
+
+  async function translateToFrench(text) {
+    const cacheKey = 'tr_' + text.toLowerCase().replace(/\s+/g, '_');
+    const cached = Storage.getCached(cacheKey);
+    if (cached) return cached;
+
+    try {
+      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|fr`;
+      const res  = await fetch(url);
+      const data = await res.json();
+      const translated = data.responseData?.translatedText || text;
+      Storage.setCached(cacheKey, translated);
+      return translated;
+    } catch {
+      return text; // fall back to English on error
+    }
+  }
 
   async function getYouTubeVideoId(exerciseName) {
     const ytKey = Storage.getSettings().youtubeApiKey;
@@ -129,17 +149,18 @@ const API = (() => {
 
     const cacheKey = 'yt_' + exerciseName.toLowerCase().replace(/\s+/g, '_');
     const cached = Storage.getCached(cacheKey);
-    if (cached !== null) return cached; // may be '' if no result found
+    if (cached !== null) return cached; // '' means no result — don't retry
 
     try {
-      const q = encodeURIComponent(`${exerciseName} exercise demonstration proper form`);
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${q}&type=video&videoDuration=short&maxResults=1&key=${ytKey}`;
+      const frName = await translateToFrench(exerciseName);
+      const q = encodeURIComponent(frName);
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${q}&type=video&channelId=${YT_CHANNEL}&maxResults=1&key=${ytKey}`;
       const res = await fetch(url);
       if (!res.ok) throw new Error(res.status);
       const data = await res.json();
       const videoId = data.items?.[0]?.id?.videoId || '';
-      Storage.setCached(cacheKey, videoId); // cache even empty results
-      return videoId;
+      Storage.setCached(cacheKey, videoId);
+      return videoId || null;
     } catch (e) {
       console.warn('YouTube search failed:', e.message);
       return null;
