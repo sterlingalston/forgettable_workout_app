@@ -159,8 +159,12 @@ const Exercises = (() => {
     try { ex = await API.getExercise(id); }
     catch (e) { App.toast(e.message); return; }
 
-    const imageUrl = ex._imageUrl || await API.getImageUrl(ex.displayName);
-    const ytQuery = encodeURIComponent(`${ex.displayName} exercise form tutorial`);
+    // Build second image URL for animation fallback
+    const RAW = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main';
+    const img0 = ex.imageUrl || '';
+    const img1 = (ex.id && ex.images?.[1])
+      ? (ex.images[1].includes('/') ? `${RAW}/exercises/${ex.images[1]}` : `${RAW}/exercises/${ex.id}/${ex.images[1]}`)
+      : img0;
 
     const instructions = (ex.instructions || [])
       .map((s, i) => `<li><span class="step-n">${i+1}</span>${s}</li>`)
@@ -175,16 +179,21 @@ const Exercises = (() => {
       ? `<button class="btn btn-primary full-w" id="modal-add-ex">+ Add to Routine</button>`
       : `<button class="btn btn-primary full-w" id="modal-add-ex">+ Add to Workout</button>`;
 
+    // Media section — video iframe or two-frame animation
+    const mediaHtml = `
+      <div class="modal-media" id="modal-media-wrap">
+        ${img0 ? `
+          <div class="ex-anim" id="ex-anim">
+            <img class="ex-anim-frame" id="ex-frame-0" src="${img0}" alt="${ex.displayName}">
+            <img class="ex-anim-frame ex-anim-frame-2" id="ex-frame-1" src="${img1}" alt="${ex.displayName}">
+          </div>` : '<div class="modal-media-ph">💪</div>'}
+      </div>`;
+
     const html = `
       <div class="modal-overlay" id="ex-detail-modal">
         <div class="modal modal-sheet">
           <button class="modal-close" aria-label="Close">✕</button>
-          <div class="modal-media">
-            ${imageUrl
-              ? `<img src="${imageUrl}" alt="${ex.displayName}"
-                      onerror="this.style.display='none'">`
-              : '<div class="modal-media-ph">💪</div>'}
-          </div>
+          ${mediaHtml}
           <div class="modal-body">
             <h2 class="modal-title">${ex.displayName}</h2>
             <div class="chip-row">
@@ -198,8 +207,6 @@ const Exercises = (() => {
             ${instructions
               ? `<h4 class="section-label">Instructions</h4><ol class="steps">${instructions}</ol>`
               : ''}
-            <a class="btn btn-ghost full-w" href="https://www.youtube.com/results?search_query=${ytQuery}"
-               target="_blank" rel="noopener">▶ Watch on YouTube</a>
             ${addBtn}
           </div>
         </div>
@@ -211,6 +218,9 @@ const Exercises = (() => {
     modal.addEventListener('click', e => { if (e.target === modal) closeDetail(); });
     document.addEventListener('keydown', _escDetail);
 
+    // Try to load YouTube video — replaces animation if found
+    loadVideo(ex.displayName);
+
     document.getElementById('modal-add-ex')?.addEventListener('click', () => {
       if (onPick) {
         onPick(ex);
@@ -220,6 +230,25 @@ const Exercises = (() => {
         closeDetail();
       }
     });
+  }
+
+  async function loadVideo(exerciseName) {
+    const videoId = await API.getYouTubeVideoId(exerciseName);
+    if (!videoId) return; // no key or no result — keep the animation
+
+    const wrap = document.getElementById('modal-media-wrap');
+    if (!wrap) return;
+
+    // Replace animation with YouTube embed
+    wrap.innerHTML = `
+      <iframe
+        class="ex-video-frame"
+        src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&rel=0&modestbranding=1"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+        loading="lazy"
+        title="${exerciseName}">
+      </iframe>`;
   }
 
   function closeDetail() {

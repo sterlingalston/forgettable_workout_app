@@ -45,6 +45,7 @@ const App = (() => {
     if (!el) return;
 
     document.getElementById('set-api-key').value  = s.apiKey;
+    document.getElementById('set-yt-key').value    = s.youtubeApiKey;
     document.getElementById('set-formspree').value = s.formspreeId;
     document.getElementById('set-def-sets').value  = s.defaultSets;
     document.getElementById('set-def-reps').value  = s.defaultReps;
@@ -56,8 +57,9 @@ const App = (() => {
     document.getElementById('settings-form')?.addEventListener('submit', e => {
       e.preventDefault();
       Storage.saveSettings({
-        apiKey:      document.getElementById('set-api-key').value.trim(),
-        formspreeId: document.getElementById('set-formspree').value.trim(),
+        apiKey:        document.getElementById('set-api-key').value.trim(),
+        youtubeApiKey: document.getElementById('set-yt-key').value.trim(),
+        formspreeId:   document.getElementById('set-formspree').value.trim(),
         defaultSets: +document.getElementById('set-def-sets').value,
         defaultReps: +document.getElementById('set-def-reps').value,
         restSeconds: +document.getElementById('set-rest').value,

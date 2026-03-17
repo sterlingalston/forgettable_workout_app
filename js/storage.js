@@ -21,11 +21,12 @@ const Storage = (() => {
 
   // ── Settings ──────────────────────────────────────────────────────────────
   const defaultSettings = {
-    apiKey:      '',
-    formspreeId: '',
-    defaultSets: 3,
-    defaultReps: 10,
-    restSeconds: 90,
+    apiKey:        '',
+    youtubeApiKey: '',
+    formspreeId:   '',
+    defaultSets:   3,
+    defaultReps:   10,
+    restSeconds:   90,
   };
   function getSettings() { return { ...defaultSettings, ...read(KEYS.settings, {}) }; }
   function saveSettings(s) { write(KEYS.settings, { ...getSettings(), ...s }); }

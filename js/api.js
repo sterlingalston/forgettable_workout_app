@@ -118,6 +118,34 @@ const API = (() => {
     return ex?.imageUrl || '';
   }
 
+  // ── YouTube video search ──────────────────────────────────────────────────
+  // Uses YouTube Data API v3. Enable it at:
+  // console.cloud.google.com → APIs → YouTube Data API v3 → Enable
+  // Then create a browser API key (restrict to your GitHub Pages domain).
+
+  async function getYouTubeVideoId(exerciseName) {
+    const ytKey = Storage.getSettings().youtubeApiKey;
+    if (!ytKey) return null;
+
+    const cacheKey = 'yt_' + exerciseName.toLowerCase().replace(/\s+/g, '_');
+    const cached = Storage.getCached(cacheKey);
+    if (cached !== null) return cached; // may be '' if no result found
+
+    try {
+      const q = encodeURIComponent(`${exerciseName} exercise demonstration proper form`);
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${q}&type=video&videoDuration=short&maxResults=1&key=${ytKey}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(res.status);
+      const data = await res.json();
+      const videoId = data.items?.[0]?.id?.videoId || '';
+      Storage.setCached(cacheKey, videoId); // cache even empty results
+      return videoId;
+    } catch (e) {
+      console.warn('YouTube search failed:', e.message);
+      return null;
+    }
+  }
+
   // ── Static filter lists ───────────────────────────────────────────────────
 
   const MUSCLES = [
@@ -146,6 +174,7 @@ const API = (() => {
     searchExercises,
     getExercise,
     getImageUrl,
+    getYouTubeVideoId,
     MUSCLES, EQUIPMENT, CATEGORIES, LEVELS,
     fmt,
   };
