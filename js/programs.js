@@ -107,6 +107,98 @@ const Programs = (() => {
       ],
     },
 
+    {
+      id: 'bw_fullbody_intermediate',
+      name: 'Bodyweight Full Body (Intermediate)',
+      description: '4-day bodyweight program with progressions like archer push-ups, pistol squats, and L-sits.',
+      level: 'Intermediate',
+      frequency: '4×/week',
+      equipment: [],
+      days: [
+        {
+          name: 'Day A — Strength',
+          exercises: [
+            { name: 'Push-Up',                         sets: 5, reps: 20, restSeconds: 60 },
+            { name: 'Close Grip Push-Up',              sets: 4, reps: 15, restSeconds: 60 },
+            { name: 'Bodyweight Bulgarian Split Squat', sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Alternating Superman',            sets: 4, reps: 15, restSeconds: 45 },
+            { name: 'Plank',                           sets: 3, reps: 60, restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Day B — Power',
+          exercises: [
+            { name: 'Pike Push-Up',                    sets: 4, reps: 12, restSeconds: 90 },
+            { name: 'Bodyweight Squat',                sets: 5, reps: 25, restSeconds: 60 },
+            { name: 'Triceps Dip',                     sets: 4, reps: 15, restSeconds: 60 },
+            { name: 'Bodyweight Walking Lunge',        sets: 4, reps: 15, restSeconds: 60 },
+            { name: 'Air Bicycle',                     sets: 4, reps: 30, restSeconds: 30 },
+          ],
+        },
+        {
+          name: 'Day C — Strength',
+          exercises: [
+            { name: 'Close Grip Push-Up',              sets: 5, reps: 20, restSeconds: 60 },
+            { name: 'Bodyweight Reverse Alternating Lunge', sets: 4, reps: 12, restSeconds: 60 },
+            { name: 'Pike Push-Up',                    sets: 4, reps: 15, restSeconds: 90 },
+            { name: 'Bodyweight Step-Up',              sets: 4, reps: 15, restSeconds: 60 },
+            { name: 'Plank',                           sets: 4, reps: 60, restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Day D — Volume',
+          exercises: [
+            { name: 'Push-Up',                         sets: 6, reps: 20, restSeconds: 45 },
+            { name: 'Bodyweight Bulgarian Split Squat', sets: 4, reps: 12, restSeconds: 90 },
+            { name: 'Triceps Dip',                     sets: 4, reps: 15, restSeconds: 60 },
+            { name: 'Alternating Toe Touch',           sets: 4, reps: 20, restSeconds: 30 },
+            { name: 'Air Bicycle',                     sets: 4, reps: 30, restSeconds: 30 },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'bw_ppl_advanced',
+      name: 'Bodyweight PPL (Advanced)',
+      description: 'Hard calisthenics 6-day PPL. Targets handstand push-up progressions, muscle-up prep, and pistol squat work.',
+      level: 'Advanced',
+      frequency: '6×/week',
+      equipment: ['pullup-bar'],
+      days: [
+        {
+          name: 'Push',
+          exercises: [
+            { name: 'Pike Push-Up',                    sets: 5, reps: 15, restSeconds: 90 },
+            { name: 'Close Grip Push-Up',              sets: 4, reps: 20, restSeconds: 60 },
+            { name: 'Triceps Dip',                     sets: 4, reps: 15, restSeconds: 60 },
+            { name: 'Push-Up',                         sets: 4, reps: 25, restSeconds: 45 },
+            { name: 'Plank',                           sets: 3, reps: 90, restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Pull',
+          exercises: [
+            { name: 'Wide-Grip Pull-Up',               sets: 5, reps: 10, restSeconds: 120 },
+            { name: 'Close-Grip Pull-Up',              sets: 4, reps: 10, restSeconds: 120 },
+            { name: 'Hanging Knee Raise',              sets: 4, reps: 20, restSeconds: 60  },
+            { name: 'Inverted Row',                    sets: 4, reps: 15, restSeconds: 90  },
+            { name: 'Alternating Superman',            sets: 3, reps: 20, restSeconds: 45  },
+          ],
+        },
+        {
+          name: 'Legs',
+          exercises: [
+            { name: 'Bodyweight Bulgarian Split Squat', sets: 5, reps: 12, restSeconds: 90 },
+            { name: 'Bodyweight Squat',                sets: 5, reps: 30, restSeconds: 60 },
+            { name: 'Bodyweight Walking Lunge',        sets: 4, reps: 16, restSeconds: 60 },
+            { name: 'Bodyweight Reverse Alternating Lunge', sets: 4, reps: 12, restSeconds: 60 },
+            { name: 'Air Bicycle',                     sets: 4, reps: 30, restSeconds: 30 },
+          ],
+        },
+      ],
+    },
+
     // ── DUMBBELL ────────────────────────────────────────────────────────────
     {
       id: 'db_fullbody',
@@ -201,6 +293,172 @@ const Programs = (() => {
             { name: 'Dumbbell Step-Up',               sets: 3, reps: 10, restSeconds: 90 },
             { name: 'Dumbbell Romanian Deadlift',     sets: 3, reps: 12, restSeconds: 90 },
             { name: 'Plank',                          sets: 3, reps: 45, restSeconds: 45, timed: true },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'db_ppl',
+      name: 'Dumbbell PPL',
+      description: '6-day push/pull/legs with dumbbells only. Full hypertrophy program for home gym.',
+      level: 'Intermediate',
+      frequency: '6×/week',
+      equipment: ['dumbbell'],
+      days: [
+        {
+          name: 'Push',
+          exercises: [
+            { name: 'Dumbbell Bench Press',            sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Shoulder Press',         sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Incline Bench Press',    sets: 3, reps: 12, restSeconds: 90 },
+            { name: 'Dumbbell Lateral Raise',          sets: 4, reps: 15, restSeconds: 45 },
+            { name: 'Dumbbell Lying Tricep Extension (2 Arm)', sets: 4, reps: 12, restSeconds: 60 },
+            { name: 'Dumbbell Fly',                    sets: 3, reps: 15, restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Pull',
+          exercises: [
+            { name: 'Dumbbell Bent-Over Row',          sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Lying Incline Row',      sets: 4, reps: 12, restSeconds: 90 },
+            { name: 'Dumbbell Back Fly',               sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Dumbbell Curl',                   sets: 4, reps: 12, restSeconds: 60 },
+            { name: 'Dumbbell Hammer Curl',            sets: 3, reps: 12, restSeconds: 60 },
+            { name: 'Alternating Superman',            sets: 3, reps: 15, restSeconds: 45 },
+          ],
+        },
+        {
+          name: 'Legs',
+          exercises: [
+            { name: 'Dumbbell Goblet Squat',           sets: 4, reps: 12, restSeconds: 90 },
+            { name: 'Dumbbell Romanian Deadlift',      sets: 4, reps: 12, restSeconds: 90 },
+            { name: 'Dumbbell Lunge',                  sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Bulgarian Split Squat',  sets: 3, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Hip Thrust',             sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Air Bicycle',                     sets: 3, reps: 20, restSeconds: 45 },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'db_bro_split',
+      name: 'Dumbbell Bro Split',
+      description: '5-day classic bro split with dumbbells. Chest/tri, back/bi, legs, shoulders, arms.',
+      level: 'Intermediate',
+      frequency: '5×/week',
+      equipment: ['dumbbell'],
+      days: [
+        {
+          name: 'Chest & Triceps',
+          exercises: [
+            { name: 'Dumbbell Bench Press',            sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Incline Bench Press',    sets: 4, reps: 12, restSeconds: 90 },
+            { name: 'Dumbbell Fly',                    sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Dumbbell Lying Tricep Extension (2 Arm)', sets: 4, reps: 12, restSeconds: 60 },
+            { name: 'Close Grip Push-Up',              sets: 3, reps: 15, restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Back & Biceps',
+          exercises: [
+            { name: 'Dumbbell Bent-Over Row',          sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Lying Incline Row',      sets: 4, reps: 12, restSeconds: 90 },
+            { name: 'Dumbbell Back Fly',               sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Dumbbell Curl',                   sets: 4, reps: 12, restSeconds: 60 },
+            { name: 'Dumbbell Hammer Curl',            sets: 3, reps: 12, restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Legs',
+          exercises: [
+            { name: 'Dumbbell Goblet Squat',           sets: 5, reps: 12, restSeconds: 90 },
+            { name: 'Dumbbell Romanian Deadlift',      sets: 4, reps: 12, restSeconds: 90 },
+            { name: 'Dumbbell Lunge',                  sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Hip Thrust',             sets: 3, reps: 15, restSeconds: 90 },
+            { name: 'Dumbbell Step-Up',                sets: 3, reps: 12, restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Shoulders',
+          exercises: [
+            { name: 'Dumbbell Shoulder Press',         sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Lateral Raise',          sets: 5, reps: 15, restSeconds: 45 },
+            { name: 'Dumbbell Arnold Press',           sets: 3, reps: 12, restSeconds: 90 },
+            { name: 'Dumbbell Back Fly',               sets: 4, reps: 15, restSeconds: 45 },
+            { name: 'Dumbbell Lateral to Front Shoulder Raise', sets: 3, reps: 12, restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Arms',
+          exercises: [
+            { name: 'Dumbbell Curl',                   sets: 4, reps: 12, restSeconds: 60 },
+            { name: 'Dumbbell Hammer Curl',            sets: 3, reps: 12, restSeconds: 60 },
+            { name: 'Dumbbell Bicep 21s',              sets: 3, reps: 21, restSeconds: 90 },
+            { name: 'Dumbbell Lying Tricep Extension (2 Arm)', sets: 4, reps: 12, restSeconds: 60 },
+            { name: 'Close Grip Push-Up',              sets: 3, reps: 20, restSeconds: 60 },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'db_fullbody_5day',
+      name: 'Dumbbell 5-Day Full Body',
+      description: 'High-frequency full body training 5 days per week with dumbbells. Each session hits everything.',
+      level: 'Intermediate–Advanced',
+      frequency: '5×/week',
+      equipment: ['dumbbell'],
+      days: [
+        {
+          name: 'Day A',
+          exercises: [
+            { name: 'Dumbbell Goblet Squat',           sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Bench Press',            sets: 4, reps: 8,  restSeconds: 90 },
+            { name: 'Dumbbell Bent-Over Row',          sets: 4, reps: 8,  restSeconds: 90 },
+            { name: 'Dumbbell Shoulder Press',         sets: 3, reps: 10, restSeconds: 90 },
+            { name: 'Air Bicycle',                     sets: 3, reps: 20, restSeconds: 45 },
+          ],
+        },
+        {
+          name: 'Day B',
+          exercises: [
+            { name: 'Dumbbell Romanian Deadlift',      sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Incline Bench Press',    sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Lying Incline Row',      sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Lateral Raise',          sets: 4, reps: 15, restSeconds: 45 },
+            { name: 'Plank',                           sets: 3, reps: 45, restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Day C',
+          exercises: [
+            { name: 'Dumbbell Bulgarian Split Squat',  sets: 4, reps: 8,  restSeconds: 90 },
+            { name: 'Dumbbell Fly',                    sets: 4, reps: 12, restSeconds: 60 },
+            { name: 'Dumbbell Back Fly',               sets: 4, reps: 12, restSeconds: 60 },
+            { name: 'Dumbbell Arnold Press',           sets: 3, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Curl',                   sets: 3, reps: 12, restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Day D',
+          exercises: [
+            { name: 'Dumbbell Front Squat',            sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Bench Press',            sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Bent-Over Row',          sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Hip Thrust',             sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Dumbbell Lying Tricep Extension (2 Arm)', sets: 3, reps: 12, restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Day E',
+          exercises: [
+            { name: 'Dumbbell Lunge',                  sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Incline Bench Press',    sets: 4, reps: 12, restSeconds: 90 },
+            { name: 'Dumbbell Lying Incline Row',      sets: 4, reps: 12, restSeconds: 90 },
+            { name: 'Dumbbell Lateral Raise',          sets: 4, reps: 15, restSeconds: 45 },
+            { name: 'Air Bicycle',                     sets: 4, reps: 25, restSeconds: 30 },
           ],
         },
       ],
@@ -523,6 +781,176 @@ const Programs = (() => {
             { name: 'Kettlebell Halo',            sets: 4, reps: 10, restSeconds: 60  },
             { name: 'Kettlebell Swing',           sets: 5, reps: 15, restSeconds: 45  },
             { name: 'Plank',                      sets: 3, reps: 60, restSeconds: 45, timed: true },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'kb_ppl',
+      name: 'Kettlebell PPL',
+      description: '6-day push/pull/legs with a single kettlebell. Brutal conditioning and strength.',
+      level: 'Intermediate',
+      frequency: '6×/week',
+      equipment: ['kettlebell'],
+      days: [
+        {
+          name: 'Push',
+          exercises: [
+            { name: 'Kettlebell Military Press',       sets: 5, reps: 8,  restSeconds: 90 },
+            { name: 'Kettlebell Clean and Press',      sets: 4, reps: 5,  restSeconds: 120 },
+            { name: 'Push-Up',                         sets: 4, reps: 20, restSeconds: 60  },
+            { name: 'Kettlebell Halo',                 sets: 3, reps: 10, restSeconds: 60  },
+            { name: 'Plank',                           sets: 3, reps: 60, restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Pull',
+          exercises: [
+            { name: 'Kettlebell Row',                  sets: 5, reps: 10, restSeconds: 90  },
+            { name: 'Kettlebell Single Leg Deadlift',  sets: 4, reps: 8,  restSeconds: 90  },
+            { name: 'Alternating Superman',            sets: 4, reps: 15, restSeconds: 45  },
+            { name: 'Kettlebell Windmill',             sets: 3, reps: 6,  restSeconds: 90  },
+            { name: 'Air Bicycle',                     sets: 3, reps: 20, restSeconds: 45  },
+          ],
+        },
+        {
+          name: 'Legs',
+          exercises: [
+            { name: 'Kettlebell Goblet Squat',         sets: 5, reps: 15, restSeconds: 90 },
+            { name: 'Kettlebell Sumo Deadlift',        sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Kettlebell Swing',                sets: 5, reps: 20, restSeconds: 60 },
+            { name: 'Bodyweight Bulgarian Split Squat', sets: 3, reps: 12, restSeconds: 90 },
+            { name: 'Bodyweight Walking Lunge',        sets: 3, reps: 15, restSeconds: 60 },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'kb_upper_lower',
+      name: 'Kettlebell Upper / Lower',
+      description: '4-day upper/lower kettlebell split. Builds strength and muscle with minimal equipment.',
+      level: 'Beginner–Intermediate',
+      frequency: '4×/week',
+      equipment: ['kettlebell'],
+      days: [
+        {
+          name: 'Upper A',
+          exercises: [
+            { name: 'Kettlebell Military Press',       sets: 4, reps: 8,  restSeconds: 90 },
+            { name: 'Kettlebell Row',                  sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Kettlebell Halo',                 sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Push-Up',                         sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Alternating Superman',            sets: 3, reps: 15, restSeconds: 45 },
+          ],
+        },
+        {
+          name: 'Lower A',
+          exercises: [
+            { name: 'Kettlebell Goblet Squat',         sets: 4, reps: 12, restSeconds: 90 },
+            { name: 'Kettlebell Swing',                sets: 5, reps: 20, restSeconds: 60 },
+            { name: 'Kettlebell Single Leg Deadlift',  sets: 3, reps: 8,  restSeconds: 90 },
+            { name: 'Bodyweight Walking Lunge',        sets: 3, reps: 12, restSeconds: 60 },
+            { name: 'Air Bicycle',                     sets: 3, reps: 20, restSeconds: 45 },
+          ],
+        },
+        {
+          name: 'Upper B',
+          exercises: [
+            { name: 'Kettlebell Clean and Press',      sets: 4, reps: 5,  restSeconds: 120 },
+            { name: 'Kettlebell Row',                  sets: 4, reps: 12, restSeconds: 90  },
+            { name: 'Kettlebell Windmill',             sets: 3, reps: 5,  restSeconds: 90  },
+            { name: 'Push-Up',                         sets: 4, reps: 20, restSeconds: 60  },
+            { name: 'Plank',                           sets: 3, reps: 60, restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Lower B',
+          exercises: [
+            { name: 'Kettlebell Sumo Deadlift',        sets: 5, reps: 8,  restSeconds: 90 },
+            { name: 'Kettlebell Goblet Squat',         sets: 4, reps: 15, restSeconds: 90 },
+            { name: 'Kettlebell Swing',                sets: 5, reps: 15, restSeconds: 60 },
+            { name: 'Bodyweight Bulgarian Split Squat', sets: 3, reps: 10, restSeconds: 90 },
+            { name: 'Plank',                           sets: 3, reps: 60, restSeconds: 45, timed: true },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'kb_simple_sinister',
+      name: 'Kettlebell Simple & Sinister',
+      description: 'Pavel Tsatsouline\'s minimalist KB program. 100 swings + 10 Turkish get-ups daily. Deceptively hard.',
+      level: 'Intermediate–Advanced',
+      frequency: '5×/week',
+      equipment: ['kettlebell'],
+      days: [
+        {
+          name: 'Simple Session',
+          exercises: [
+            { name: 'Kettlebell Swing',                sets: 10, reps: 10, restSeconds: 30 },
+            { name: 'Kettlebell Turkish Get-Up',       sets: 10, reps: 1,  restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Sinister Session',
+          exercises: [
+            { name: 'Kettlebell Swing',                sets: 10, reps: 10, restSeconds: 30 },
+            { name: 'Kettlebell Turkish Get-Up',       sets: 10, reps: 1,  restSeconds: 60 },
+            { name: 'Kettlebell Clean and Press',      sets: 5,  reps: 5,  restSeconds: 90 },
+            { name: 'Kettlebell Goblet Squat',         sets: 5,  reps: 10, restSeconds: 60 },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'kb_fullbody_4day',
+      name: 'Kettlebell Full Body (4-Day)',
+      description: '4-day kettlebell program hitting every muscle group twice per week. Progressive overload via reps.',
+      level: 'Intermediate',
+      frequency: '4×/week',
+      equipment: ['kettlebell'],
+      days: [
+        {
+          name: 'Day A — Strength',
+          exercises: [
+            { name: 'Kettlebell Clean and Press',      sets: 5, reps: 5,  restSeconds: 120 },
+            { name: 'Kettlebell Goblet Squat',         sets: 5, reps: 8,  restSeconds: 90  },
+            { name: 'Kettlebell Row',                  sets: 5, reps: 8,  restSeconds: 90  },
+            { name: 'Kettlebell Single Leg Deadlift',  sets: 4, reps: 6,  restSeconds: 90  },
+            { name: 'Plank',                           sets: 3, reps: 60, restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Day B — Power',
+          exercises: [
+            { name: 'Kettlebell Swing',                sets: 6, reps: 20, restSeconds: 60  },
+            { name: 'Kettlebell Military Press',       sets: 4, reps: 10, restSeconds: 90  },
+            { name: 'Kettlebell Sumo Deadlift',        sets: 4, reps: 10, restSeconds: 90  },
+            { name: 'Kettlebell Halo',                 sets: 3, reps: 10, restSeconds: 60  },
+            { name: 'Air Bicycle',                     sets: 4, reps: 25, restSeconds: 30  },
+          ],
+        },
+        {
+          name: 'Day C — Strength',
+          exercises: [
+            { name: 'Kettlebell Clean and Press',      sets: 5, reps: 6,  restSeconds: 120 },
+            { name: 'Kettlebell Goblet Squat',         sets: 5, reps: 10, restSeconds: 90  },
+            { name: 'Kettlebell Row',                  sets: 5, reps: 10, restSeconds: 90  },
+            { name: 'Kettlebell Windmill',             sets: 3, reps: 5,  restSeconds: 90  },
+            { name: 'Plank',                           sets: 3, reps: 60, restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Day D — Conditioning',
+          exercises: [
+            { name: 'Kettlebell Swing',                sets: 8, reps: 20, restSeconds: 30  },
+            { name: 'Kettlebell Turkish Get-Up',       sets: 4, reps: 3,  restSeconds: 120 },
+            { name: 'Kettlebell Sumo Deadlift',        sets: 4, reps: 12, restSeconds: 60  },
+            { name: 'Kettlebell Military Press',       sets: 4, reps: 10, restSeconds: 60  },
+            { name: 'Air Bicycle',                     sets: 4, reps: 30, restSeconds: 30  },
           ],
         },
       ],
@@ -1182,6 +1610,181 @@ const Programs = (() => {
     },
 
     // ── FULL GYM ─────────────────────────────────────────────────────────────
+    {
+      id: 'fullgym_fullbody_3day',
+      name: 'Full Gym Full Body (3-Day)',
+      description: 'Classic 3-day total body program using barbells, dumbbells, and cables. Great all-around strength builder.',
+      level: 'Beginner–Intermediate',
+      frequency: '3×/week',
+      equipment: ['barbell', 'dumbbell', 'cable', 'bench'],
+      days: [
+        {
+          name: 'Day A',
+          exercises: [
+            { name: 'Barbell Squat',                   sets: 4, reps: 5,  restSeconds: 180 },
+            { name: 'Barbell Bench Press',             sets: 4, reps: 5,  restSeconds: 180 },
+            { name: 'Barbell Bent-Over Row',           sets: 4, reps: 5,  restSeconds: 180 },
+            { name: 'Dumbbell Shoulder Press',         sets: 3, reps: 10, restSeconds: 90  },
+            { name: 'Cable Kneeling Crunch',           sets: 3, reps: 15, restSeconds: 60  },
+          ],
+        },
+        {
+          name: 'Day B',
+          exercises: [
+            { name: 'Deadlift',                        sets: 3, reps: 5,  restSeconds: 180 },
+            { name: 'Barbell Shoulder Press',          sets: 4, reps: 5,  restSeconds: 180 },
+            { name: 'Cable Lat Pulldown',              sets: 4, reps: 8,  restSeconds: 90  },
+            { name: 'Dumbbell Lunge',                  sets: 3, reps: 10, restSeconds: 90  },
+            { name: 'Air Bicycle',                     sets: 3, reps: 20, restSeconds: 45  },
+          ],
+        },
+        {
+          name: 'Day C',
+          exercises: [
+            { name: 'Barbell Squat',                   sets: 4, reps: 8,  restSeconds: 120 },
+            { name: 'Dumbbell Incline Bench Press',    sets: 4, reps: 10, restSeconds: 90  },
+            { name: 'Cable Seated Row',                sets: 4, reps: 10, restSeconds: 90  },
+            { name: 'Dumbbell Lateral Raise',          sets: 3, reps: 15, restSeconds: 60  },
+            { name: 'Dumbbell Romanian Deadlift',      sets: 3, reps: 10, restSeconds: 90  },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'fullgym_fullbody_5day',
+      name: 'Full Gym Full Body (5-Day)',
+      description: 'High-frequency 5-day full body using all gym equipment. Each session is shorter but hits everything.',
+      level: 'Intermediate–Advanced',
+      frequency: '5×/week',
+      equipment: ['barbell', 'dumbbell', 'cable', 'machine', 'bench'],
+      days: [
+        {
+          name: 'Monday',
+          exercises: [
+            { name: 'Barbell Squat',                   sets: 4, reps: 6,  restSeconds: 180 },
+            { name: 'Barbell Bench Press',             sets: 4, reps: 6,  restSeconds: 180 },
+            { name: 'Cable Lat Pulldown',              sets: 4, reps: 8,  restSeconds: 90  },
+            { name: 'Dumbbell Shoulder Press',         sets: 3, reps: 10, restSeconds: 90  },
+            { name: 'Air Bicycle',                     sets: 3, reps: 20, restSeconds: 45  },
+          ],
+        },
+        {
+          name: 'Tuesday',
+          exercises: [
+            { name: 'Deadlift',                        sets: 3, reps: 5,  restSeconds: 180 },
+            { name: 'Dumbbell Incline Bench Press',    sets: 4, reps: 10, restSeconds: 90  },
+            { name: 'Cable Seated Row',                sets: 4, reps: 10, restSeconds: 90  },
+            { name: 'Dumbbell Lateral Raise',          sets: 4, reps: 15, restSeconds: 45  },
+            { name: 'Cable Curl',                      sets: 3, reps: 12, restSeconds: 60  },
+          ],
+        },
+        {
+          name: 'Wednesday',
+          exercises: [
+            { name: 'Leg Press',                       sets: 4, reps: 12, restSeconds: 120 },
+            { name: 'Barbell Shoulder Press',          sets: 4, reps: 8,  restSeconds: 120 },
+            { name: 'Dumbbell Bent-Over Row',          sets: 4, reps: 10, restSeconds: 90  },
+            { name: 'Cable Tricep Pushdown',           sets: 3, reps: 12, restSeconds: 60  },
+            { name: 'Plank',                           sets: 3, reps: 60, restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Thursday',
+          exercises: [
+            { name: 'Barbell Squat',                   sets: 4, reps: 10, restSeconds: 90  },
+            { name: 'Dumbbell Fly',                    sets: 4, reps: 15, restSeconds: 60  },
+            { name: 'Cable Lat Pulldown',              sets: 4, reps: 12, restSeconds: 90  },
+            { name: 'Dumbbell Hip Thrust',             sets: 3, reps: 15, restSeconds: 90  },
+            { name: 'Cable Face Pull',                 sets: 3, reps: 20, restSeconds: 45  },
+          ],
+        },
+        {
+          name: 'Friday',
+          exercises: [
+            { name: 'Dumbbell Romanian Deadlift',      sets: 4, reps: 12, restSeconds: 90  },
+            { name: 'Barbell Bench Press',             sets: 4, reps: 10, restSeconds: 90  },
+            { name: 'Cable Seated Row',                sets: 4, reps: 12, restSeconds: 90  },
+            { name: 'Machine Calf Raise',              sets: 4, reps: 20, restSeconds: 45  },
+            { name: 'Air Bicycle',                     sets: 4, reps: 25, restSeconds: 30  },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'fullgym_ppl_intermediate',
+      name: 'PPL Intermediate (Gym)',
+      description: 'Intermediate 6-day PPL with higher volume and more accessory work than the beginner version.',
+      level: 'Intermediate',
+      frequency: '6×/week',
+      equipment: ['barbell', 'dumbbell', 'cable', 'bench'],
+      days: [
+        {
+          name: 'Push A',
+          exercises: [
+            { name: 'Barbell Bench Press',             sets: 4, reps: 6,  restSeconds: 180 },
+            { name: 'Barbell Shoulder Press',          sets: 3, reps: 8,  restSeconds: 120 },
+            { name: 'Dumbbell Incline Bench Press',    sets: 3, reps: 12, restSeconds: 90  },
+            { name: 'Dumbbell Lateral Raise',          sets: 4, reps: 15, restSeconds: 45  },
+            { name: 'Cable Tricep Pushdown',           sets: 3, reps: 15, restSeconds: 60  },
+            { name: 'Dumbbell Lying Tricep Extension (2 Arm)', sets: 3, reps: 12, restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Pull A',
+          exercises: [
+            { name: 'Barbell Bent-Over Row',           sets: 4, reps: 6,  restSeconds: 180 },
+            { name: 'Cable Lat Pulldown',              sets: 3, reps: 10, restSeconds: 90  },
+            { name: 'Dumbbell Lying Incline Row',      sets: 3, reps: 12, restSeconds: 90  },
+            { name: 'Cable Face Pull',                 sets: 3, reps: 20, restSeconds: 45  },
+            { name: 'Dumbbell Curl',                   sets: 3, reps: 12, restSeconds: 60  },
+            { name: 'Dumbbell Hammer Curl',            sets: 3, reps: 12, restSeconds: 60  },
+          ],
+        },
+        {
+          name: 'Legs A',
+          exercises: [
+            { name: 'Barbell Squat',                   sets: 4, reps: 6,  restSeconds: 180 },
+            { name: 'Dumbbell Romanian Deadlift',      sets: 3, reps: 10, restSeconds: 120 },
+            { name: 'Dumbbell Lunge',                  sets: 3, reps: 10, restSeconds: 90  },
+            { name: 'Dumbbell Hip Thrust',             sets: 3, reps: 12, restSeconds: 90  },
+            { name: 'Cable Kneeling Crunch',           sets: 3, reps: 15, restSeconds: 60  },
+          ],
+        },
+        {
+          name: 'Push B',
+          exercises: [
+            { name: 'Dumbbell Incline Bench Press',    sets: 4, reps: 10, restSeconds: 90  },
+            { name: 'Dumbbell Shoulder Press',         sets: 4, reps: 10, restSeconds: 90  },
+            { name: 'Dumbbell Fly',                    sets: 3, reps: 15, restSeconds: 60  },
+            { name: 'Dumbbell Arnold Press',           sets: 3, reps: 12, restSeconds: 90  },
+            { name: 'Cable Tricep Pushdown',           sets: 4, reps: 15, restSeconds: 60  },
+          ],
+        },
+        {
+          name: 'Pull B',
+          exercises: [
+            { name: 'Dumbbell Bent-Over Row',          sets: 4, reps: 10, restSeconds: 90  },
+            { name: 'Cable Seated Row',                sets: 4, reps: 12, restSeconds: 90  },
+            { name: 'Dumbbell Back Fly',               sets: 3, reps: 15, restSeconds: 60  },
+            { name: 'Dumbbell Bicep 21s',              sets: 3, reps: 21, restSeconds: 90  },
+            { name: 'Cable Face Pull',                 sets: 3, reps: 20, restSeconds: 45  },
+          ],
+        },
+        {
+          name: 'Legs B',
+          exercises: [
+            { name: 'Deadlift',                        sets: 4, reps: 5,  restSeconds: 180 },
+            { name: 'Barbell Squat',                   sets: 3, reps: 10, restSeconds: 120 },
+            { name: 'Dumbbell Bulgarian Split Squat',  sets: 3, reps: 10, restSeconds: 90  },
+            { name: 'Leg Press',                       sets: 3, reps: 15, restSeconds: 90  },
+            { name: 'Air Bicycle',                     sets: 4, reps: 25, restSeconds: 30  },
+          ],
+        },
+      ],
+    },
+
     {
       id: 'upper_lower_gym',
       name: 'Upper / Lower (Gym)',
