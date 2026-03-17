@@ -744,6 +744,24 @@ body {
   display: block;
 }
 
+/* ── Workout view video ── */
+.wk-video-wrap {
+  width: 100%;
+  margin-bottom: 12px;
+}
+.wk-video-loading {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+}
+.wk-video-frame {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border: none;
+  display: block;
+  border-radius: 8px;
+}
+
 /* ── Auth ── */
 .btn-google {
   background: #fff;

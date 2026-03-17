@@ -76,6 +76,11 @@ const Workout = (() => {
         </div>`;
     }).join('');
 
+    // Load video for expanded exercise
+    if (expanded !== null && log.exercises[expanded]) {
+      loadWorkoutVideo(log.exercises[expanded].name);
+    }
+
     // Delegation
     container.querySelectorAll('.wk-ex-header').forEach(h => {
       h.addEventListener('click', e => {
@@ -179,9 +184,31 @@ const Workout = (() => {
 
     return `
       <div class="wk-ex-body">
+        <div class="wk-video-wrap" id="wk-video-wrap">
+          <div class="wk-video-loading"><div class="spinner"></div></div>
+        </div>
         ${rows.join('')}
         <button class="btn btn-ghost btn-sm add-set-btn" data-ex-index="${exIdx}">+ Add Set</button>
       </div>`;
+  }
+
+  async function loadWorkoutVideo(exerciseName) {
+    const wrap = document.getElementById('wk-video-wrap');
+    if (!wrap) return;
+    const videoId = await API.getYouTubeVideoId(exerciseName);
+    if (!wrap.isConnected) return; // user may have collapsed before it resolved
+    if (!videoId) {
+      wrap.innerHTML = '';
+      return;
+    }
+    wrap.innerHTML = `
+      <iframe
+        class="wk-video-frame"
+        src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&rel=0&modestbranding=1"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+        title="${exerciseName}">
+      </iframe>`;
   }
 
   function progressRing(done, total) {
