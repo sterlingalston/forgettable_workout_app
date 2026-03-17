@@ -714,6 +714,168 @@ const Programs = (() => {
       ],
     },
 
+    {
+      id: 'machine_upper_lower',
+      name: 'Machine Upper / Lower',
+      description: '4-day upper/lower split using only machines and cables. Ideal for injury prevention and beginners.',
+      level: 'Beginner–Intermediate',
+      frequency: '4×/week',
+      equipment: ['machine', 'cable'],
+      days: [
+        {
+          name: 'Upper A (Strength)',
+          exercises: [
+            { name: 'Machine Chest Press',       sets: 4, reps: 8,  restSeconds: 120 },
+            { name: 'Cable Lat Pulldown',         sets: 4, reps: 8,  restSeconds: 120 },
+            { name: 'Machine Shoulder Press',     sets: 3, reps: 10, restSeconds: 90  },
+            { name: 'Cable Seated Row',           sets: 3, reps: 10, restSeconds: 90  },
+            { name: 'Cable Curl',                 sets: 3, reps: 12, restSeconds: 60  },
+            { name: 'Cable Tricep Pushdown',      sets: 3, reps: 12, restSeconds: 60  },
+          ],
+        },
+        {
+          name: 'Lower A',
+          exercises: [
+            { name: 'Leg Press',                  sets: 4, reps: 10, restSeconds: 120 },
+            { name: 'Machine Lying Leg Curl',     sets: 3, reps: 12, restSeconds: 90  },
+            { name: 'Machine Leg Extension',      sets: 3, reps: 12, restSeconds: 90  },
+            { name: 'Machine Hip Abduction',      sets: 3, reps: 15, restSeconds: 60  },
+            { name: 'Machine Calf Raise',         sets: 4, reps: 20, restSeconds: 45  },
+            { name: 'Cable Kneeling Crunch',      sets: 3, reps: 15, restSeconds: 60  },
+          ],
+        },
+        {
+          name: 'Upper B (Hypertrophy)',
+          exercises: [
+            { name: 'Machine Chest Fly',          sets: 4, reps: 15, restSeconds: 90  },
+            { name: 'Cable Lat Pulldown',         sets: 4, reps: 12, restSeconds: 90  },
+            { name: 'Cable Face Pull',            sets: 3, reps: 20, restSeconds: 60  },
+            { name: 'Cable Lateral Raise',        sets: 4, reps: 15, restSeconds: 60  },
+            { name: 'Cable Curl',                 sets: 4, reps: 15, restSeconds: 60  },
+            { name: 'Cable Overhead Tricep Extension', sets: 3, reps: 15, restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Lower B',
+          exercises: [
+            { name: 'Leg Press',                  sets: 5, reps: 15, restSeconds: 90  },
+            { name: 'Machine Leg Extension',      sets: 4, reps: 15, restSeconds: 60  },
+            { name: 'Machine Lying Leg Curl',     sets: 4, reps: 15, restSeconds: 60  },
+            { name: 'Machine Hip Adduction',      sets: 3, reps: 15, restSeconds: 60  },
+            { name: 'Machine Calf Raise',         sets: 5, reps: 25, restSeconds: 45  },
+            { name: 'Air Bicycle',                sets: 3, reps: 20, restSeconds: 45  },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'machine_fullbody',
+      name: 'Machine Full Body',
+      description: '3-day total body program using only gym machines. Perfect for true beginners building a foundation.',
+      level: 'Beginner',
+      frequency: '3×/week',
+      equipment: ['machine', 'cable'],
+      days: [
+        {
+          name: 'Day A',
+          exercises: [
+            { name: 'Leg Press',                  sets: 3, reps: 12, restSeconds: 90 },
+            { name: 'Machine Chest Press',        sets: 3, reps: 12, restSeconds: 90 },
+            { name: 'Cable Lat Pulldown',         sets: 3, reps: 12, restSeconds: 90 },
+            { name: 'Machine Shoulder Press',     sets: 3, reps: 12, restSeconds: 90 },
+            { name: 'Machine Calf Raise',         sets: 3, reps: 20, restSeconds: 45 },
+            { name: 'Cable Kneeling Crunch',      sets: 3, reps: 15, restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Day B',
+          exercises: [
+            { name: 'Leg Press',                  sets: 3, reps: 15, restSeconds: 90 },
+            { name: 'Machine Chest Fly',          sets: 3, reps: 15, restSeconds: 90 },
+            { name: 'Cable Seated Row',           sets: 3, reps: 12, restSeconds: 90 },
+            { name: 'Cable Lateral Raise',        sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Cable Curl',                 sets: 3, reps: 12, restSeconds: 60 },
+            { name: 'Cable Tricep Pushdown',      sets: 3, reps: 12, restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Day C',
+          exercises: [
+            { name: 'Machine Leg Extension',      sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Machine Lying Leg Curl',     sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Machine Chest Press',        sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Cable Lat Pulldown',         sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Cable Face Pull',            sets: 3, reps: 20, restSeconds: 60 },
+            { name: 'Machine Calf Raise',         sets: 4, reps: 20, restSeconds: 45 },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'machine_hypertrophy_5day',
+      name: 'Machine 5-Day Split',
+      description: 'Dedicated machine-based bro split targeting each muscle group once per week. Classic hypertrophy focus.',
+      level: 'Intermediate',
+      frequency: '5×/week',
+      equipment: ['machine', 'cable'],
+      days: [
+        {
+          name: 'Chest',
+          exercises: [
+            { name: 'Machine Chest Press',        sets: 4, reps: 12, restSeconds: 90 },
+            { name: 'Machine Chest Fly',          sets: 4, reps: 15, restSeconds: 60 },
+            { name: 'Cable Crossover',            sets: 4, reps: 15, restSeconds: 60 },
+            { name: 'Cable Chest Press',          sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Cable Tricep Pushdown',      sets: 3, reps: 15, restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Back',
+          exercises: [
+            { name: 'Cable Lat Pulldown',         sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Cable Seated Row',           sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Cable Straight Arm Pulldown',sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Cable Face Pull',            sets: 4, reps: 20, restSeconds: 60 },
+            { name: 'Cable Curl',                 sets: 3, reps: 12, restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Legs',
+          exercises: [
+            { name: 'Leg Press',                  sets: 5, reps: 12, restSeconds: 120 },
+            { name: 'Machine Leg Extension',      sets: 4, reps: 15, restSeconds: 60  },
+            { name: 'Machine Lying Leg Curl',     sets: 4, reps: 15, restSeconds: 60  },
+            { name: 'Machine Hip Abduction',      sets: 3, reps: 15, restSeconds: 60  },
+            { name: 'Machine Hip Adduction',      sets: 3, reps: 15, restSeconds: 60  },
+            { name: 'Machine Calf Raise',         sets: 5, reps: 20, restSeconds: 45  },
+          ],
+        },
+        {
+          name: 'Shoulders',
+          exercises: [
+            { name: 'Machine Shoulder Press',     sets: 4, reps: 12, restSeconds: 90 },
+            { name: 'Cable Lateral Raise',        sets: 5, reps: 15, restSeconds: 60 },
+            { name: 'Cable Face Pull',            sets: 4, reps: 20, restSeconds: 60 },
+            { name: 'Cable Overhead Tricep Extension', sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Cable Tricep Pushdown',      sets: 3, reps: 15, restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Arms',
+          exercises: [
+            { name: 'Cable Curl',                 sets: 4, reps: 12, restSeconds: 60 },
+            { name: 'Cable Hammer Curl',          sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Cable Tricep Pushdown',      sets: 4, reps: 12, restSeconds: 60 },
+            { name: 'Cable Overhead Tricep Extension', sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Cable Kneeling Crunch',      sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Air Bicycle',                sets: 3, reps: 20, restSeconds: 45 },
+          ],
+        },
+      ],
+    },
+
     // ── FULL GYM ─────────────────────────────────────────────────────────────
     {
       id: 'upper_lower_gym',

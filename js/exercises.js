@@ -16,16 +16,9 @@ const Exercises = (() => {
   }
 
   function cardHtml(ex, compact = false) {
-    const img = ex._imageUrl
-      ? `<img src="${ex._imageUrl}" alt="${ex.displayName}" loading="lazy"
-              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-      : '';
-    const placeholder = `<div class="card-img-placeholder" style="display:${ex._imageUrl ? 'none' : 'flex'}">💪</div>`;
-
     if (compact) {
       return `
         <div class="ex-row" data-id="${ex.id}" tabindex="0" role="button">
-          <div class="ex-row-thumb">${img}${placeholder}</div>
           <div class="ex-row-info">
             <div class="ex-row-name">${ex.displayName}</div>
             <div class="ex-row-chips">
@@ -39,7 +32,6 @@ const Exercises = (() => {
 
     return `
       <div class="ex-card" data-id="${ex.id}" tabindex="0" role="button">
-        <div class="ex-card-img">${img}${placeholder}</div>
         <div class="ex-card-body">
           <div class="ex-card-name">${ex.displayName}</div>
           <div class="ex-card-chips">
@@ -52,16 +44,6 @@ const Exercises = (() => {
           </div>
         </div>
       </div>`;
-  }
-
-  // ── Image loading ─────────────────────────────────────────────────────────
-
-  async function attachImages(exercises) {
-    await Promise.all(exercises.map(async ex => {
-      if (!ex._imageUrl) {
-        ex._imageUrl = await API.getImageUrl(ex.displayName);
-      }
-    }));
   }
 
   // ── Data loading ──────────────────────────────────────────────────────────
@@ -159,13 +141,6 @@ const Exercises = (() => {
     try { ex = await API.getExercise(id); }
     catch (e) { App.toast(e.message); return; }
 
-    // Build second image URL for animation fallback
-    const RAW = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main';
-    const img0 = ex.imageUrl || '';
-    const img1 = (ex.id && ex.images?.[1])
-      ? (ex.images[1].includes('/') ? `${RAW}/exercises/${ex.images[1]}` : `${RAW}/exercises/${ex.id}/${ex.images[1]}`)
-      : img0;
-
     const instructions = (ex.instructions || [])
       .map((s, i) => `<li><span class="step-n">${i+1}</span>${s}</li>`)
       .join('');
@@ -179,14 +154,10 @@ const Exercises = (() => {
       ? `<button class="btn btn-primary full-w" id="modal-add-ex">+ Add to Routine</button>`
       : `<button class="btn btn-primary full-w" id="modal-add-ex">+ Add to Workout</button>`;
 
-    // Media section — video iframe or two-frame animation
+    // Media section — YouTube video (loading spinner while fetching)
     const mediaHtml = `
       <div class="modal-media" id="modal-media-wrap">
-        ${img0 ? `
-          <div class="ex-anim" id="ex-anim">
-            <img class="ex-anim-frame" id="ex-frame-0" src="${img0}" alt="${ex.displayName}">
-            <img class="ex-anim-frame ex-anim-frame-2" id="ex-frame-1" src="${img1}" alt="${ex.displayName}">
-          </div>` : '<div class="modal-media-ph">💪</div>'}
+        <div class="modal-video-loading"><div class="spinner"></div></div>
       </div>`;
 
     const html = `
@@ -234,12 +205,14 @@ const Exercises = (() => {
 
   async function loadVideo(exerciseName) {
     const videoId = await API.getYouTubeVideoId(exerciseName);
-    if (!videoId) return; // no key or no result — keep the animation
-
     const wrap = document.getElementById('modal-media-wrap');
     if (!wrap) return;
 
-    // Replace animation with YouTube embed
+    if (!videoId) {
+      wrap.innerHTML = `<div class="modal-media-ph">🎬<br><small>No video found</small></div>`;
+      return;
+    }
+
     wrap.innerHTML = `
       <iframe
         class="ex-video-frame"
