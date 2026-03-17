@@ -132,6 +132,7 @@ const API = (() => {
     { handle: 'leveltencoaching2296',   lang: 'en', short: true },
     { handle: 'ElliotGrahamCoaching',   lang: 'en' },
     { handle: 'fit-distance',           id: 'UCcI0GmkD068idv12NRusuEw', lang: 'fr' },
+    { handle: 'strengthtools2494',      lang: 'en' },
   ];
 
   async function resolveChannelId(ch, key) {
