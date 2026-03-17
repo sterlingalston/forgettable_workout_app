@@ -179,6 +179,7 @@ const Exercises = (() => {
               ? `<h4 class="section-label">Instructions</h4><ol class="steps">${instructions}</ol>`
               : ''}
             ${addBtn}
+            <button class="btn btn-ghost full-w" id="modal-back-btn" style="margin-top:8px">← Back</button>
           </div>
         </div>
       </div>`;
@@ -191,6 +192,12 @@ const Exercises = (() => {
 
     // Try to load YouTube video — replaces animation if found
     loadVideo(ex.displayName);
+
+    document.getElementById('modal-back-btn')?.addEventListener('click', () => {
+      closeDetail();
+      App.showView('routines');
+      Routine.renderList();
+    });
 
     document.getElementById('modal-add-ex')?.addEventListener('click', () => {
       if (onPick) {
