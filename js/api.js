@@ -123,22 +123,24 @@ const API = (() => {
   // Requires YouTube Data API v3 key in Settings.
   // Enable at: console.cloud.google.com → APIs → YouTube Data API v3
 
-  // Priority channel handles (English). Resolved to IDs dynamically via API + cached.
+  // Priority channel handles. Known IDs are hardcoded to save quota; the rest
+  // are resolved via the channels?forHandle API on first use and cached.
   const YT_CHANNELS = [
-    { handle: 'NasmOrgPersonalTrainer', lang: 'en' },
+    { handle: 'NasmOrgPersonalTrainer', id: 'UCjWgUFeyDbeQ3Q_eVCup_7Q', lang: 'en' },
     { handle: 'gymvisual8018',          lang: 'en' },
     { handle: 'BSNTraining',            lang: 'en' },
     { handle: 'leveltencoaching2296',   lang: 'en', short: true },
     { handle: 'ElliotGrahamCoaching',   lang: 'en' },
-    { handle: 'fit-distance',           lang: 'fr' }, // last resort — French
+    { handle: 'fit-distance',           id: 'UCcI0GmkD068idv12NRusuEw', lang: 'fr' },
   ];
 
-  async function resolveChannelId(handle, key) {
-    const cacheKey = 'ch_' + handle;
+  async function resolveChannelId(ch, key) {
+    if (ch.id) return ch.id; // hardcoded — no API call needed
+    const cacheKey = 'ch_' + ch.handle;
     const cached = Storage.getCached(cacheKey);
     if (cached) return cached;
     try {
-      const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${handle}&key=${key}`;
+      const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${ch.handle}&key=${key}`;
       const res  = await fetch(url);
       if (!res.ok) return null;
       const data = await res.json();
@@ -187,7 +189,7 @@ const API = (() => {
 
     try {
       for (const ch of YT_CHANNELS) {
-        const channelId = await resolveChannelId(ch.handle, ytKey);
+        const channelId = await resolveChannelId(ch, ytKey);
         if (!channelId) continue;
         const query = ch.lang === 'fr'
           ? await translateToFrench(exerciseName)
