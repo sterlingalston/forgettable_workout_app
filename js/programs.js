@@ -1962,7 +1962,14 @@ const Programs = (() => {
         } else {
           // Deselect "bodyweight only" if selecting real equipment
           modal.querySelector('.eq-pill[data-id="bodyweight"]')?.classList.remove('active');
-          pill.classList.toggle('active');
+          const isActive = pill.classList.contains('active');
+          // Don't allow deselecting if it's the only active pill (would show bodyweight)
+          const activeCount = modal.querySelectorAll('.eq-pill.active').length;
+          if (isActive && activeCount <= 1) {
+            // Already the only selection — do nothing
+          } else {
+            pill.classList.toggle('active');
+          }
         }
         saveEquipment(modal);
         renderPrograms(modal, getSelected(modal));
@@ -1988,11 +1995,8 @@ const Programs = (() => {
 
     let matches;
     if (selected.size === 0 || selected.has('bodyweight')) {
-      // Show only programs that need no equipment
       matches = PROGRAMS.filter(p => p.equipment.length === 0);
     } else {
-      // Show programs that require only equipment the user has selected
-      // Explicitly exclude pure-bodyweight programs (equipment: [])
       matches = PROGRAMS.filter(p =>
         p.equipment.length > 0 &&
         p.equipment.every(req => selected.has(req))
