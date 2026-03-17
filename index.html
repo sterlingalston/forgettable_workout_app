@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Workout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Firebase compat SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <!-- ── Fixed header ── -->
+  <header class="app-header">
+    <button class="icon-btn" id="btn-back" hidden aria-label="Back">‹</button>
+    <h1 class="header-title" id="header-title">Routines</h1>
+    <button class="icon-btn header-right" id="btn-new-routine" aria-label="New routine">+</button>
+  </header>
+
+  <!-- ── Views ── -->
+  <main class="app-main">
+
+    <!-- Routines list -->
+    <section id="view-routines" class="view">
+      <div id="routines-list" class="list-container"></div>
+    </section>
+
+    <!-- Routine detail -->
+    <section id="view-routine-detail" class="view" hidden>
+      <div class="rd-header">
+        <h2 class="rd-title" id="rd-title"></h2>
+        <div class="rd-tabs">
+          <button class="rd-tab active">Exercises</button>
+          <!-- Expandable later: Overview, Notes -->
+        </div>
+      </div>
+      <div id="rd-exercises" class="list-container"></div>
+      <div class="rd-footer">
+        <button class="btn btn-ghost" id="btn-add-ex-to-routine">+ Add Exercise</button>
+        <button class="btn btn-primary" id="btn-start-workout">▶ Start Workout</button>
+      </div>
+    </section>
+
+    <!-- Exercise browser -->
+    <section id="view-exercises" class="view" hidden>
+      <div class="ex-search-wrap">
+        <input id="ex-search" class="input" type="search" placeholder="Search exercises…" autocomplete="off">
+      </div>
+      <div id="ex-filter-bar"></div>
+      <div id="ex-grid" class="ex-grid"></div>
+      <div id="ex-sentinel"></div>
+    </section>
+
+    <!-- Active workout -->
+    <section id="view-workout" class="view" hidden>
+      <div class="wk-header">
+        <div>
+          <div class="wk-title" id="wk-title"></div>
+          <div class="wk-date" id="wk-date"></div>
+        </div>
+        <button class="btn btn-finish" id="btn-finish-workout">Finish</button>
+      </div>
+      <div id="wk-exercises" class="wk-exercises"></div>
+      <div class="wk-footer">
+        <button class="btn btn-ghost btn-sm" id="btn-add-ex-workout"
+                onclick="Exercises.openPicker(null, ex => Workout.addExercise(ex))">
+          + Add Exercise
+        </button>
+      </div>
+    </section>
+
+    <!-- Log / History -->
+    <section id="view-log" class="view" hidden>
+      <div id="log-list" class="list-container"></div>
+    </section>
+
+    <!-- Settings -->
+    <section id="view-settings" class="view" hidden>
+      <div class="settings-container">
+        <!-- Google Sign-In -->
+        <div class="settings-section">
+          <h3 class="settings-section-title">Account</h3>
+          <div id="auth-section"></div>
+        </div>
+
+        <form id="settings-form" class="settings-form">
+
+          <div class="settings-section">
+            <h3 class="settings-section-title">Exercise API (wrkout.xyz)</h3>
+            <div class="settings-row">
+              <label class="settings-label">API Key</label>
+              <input id="set-api-key" class="input" type="text" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="settings-row info-row">
+              <span class="settings-label">Requests used</span>
+              <span id="req-count" class="settings-value">0</span>
+              <span class="settings-hint" style="margin:0"> / 100 this month</span>
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-ex-cache">
+              Clear exercise cache + reset counter
+            </button>
+          </div>
+
+          <div class="settings-section">
+            <h3 class="settings-section-title">Formspree (optional)</h3>
+            <div class="settings-row">
+              <label class="settings-label">Form ID</label>
+              <input id="set-formspree" class="input" type="text" placeholder="e.g. xpwzabcd" autocomplete="off">
+            </div>
+            <p class="settings-hint">If set, workout summary is also emailed via Formspree when you finish.</p>
+          </div>
+
+          <div class="settings-section">
+            <h3 class="settings-section-title">Defaults</h3>
+            <div class="settings-row">
+              <label class="settings-label">Default sets</label>
+              <input id="set-def-sets" class="input input-sm" type="number" min="1" max="20">
+            </div>
+            <div class="settings-row">
+              <label class="settings-label">Default reps</label>
+              <input id="set-def-reps" class="input input-sm" type="number" min="1" max="100">
+            </div>
+            <div class="settings-row">
+              <label class="settings-label">Rest (seconds)</label>
+              <input id="set-rest" class="input input-sm" type="number" min="0" max="600">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary full-w">Save Settings</button>
+
+          <div class="settings-section danger-zone">
+            <h3 class="settings-section-title">Data</h3>
+            <button type="button" class="btn btn-ghost full-w" id="btn-clear-local"
+                    style="margin-bottom:8px">
+              Clear local data (reload from Firebase)
+            </button>
+            <button type="button" class="btn btn-danger full-w" id="btn-clear-all">
+              Delete All Data (local + Firebase)
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Bottom navigation ── -->
+  <nav class="bottom-nav">
+    <button class="nav-tab active" data-view="routines">
+      <span class="nav-icon">📋</span>
+      <span class="nav-label">Routines</span>
+    </button>
+    <button class="nav-tab" data-view="exercises">
+      <span class="nav-icon">🔍</span>
+      <span class="nav-label">Exercises</span>
+    </button>
+    <button class="nav-tab" data-view="log">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">History</span>
+    </button>
+    <button class="nav-tab" data-view="settings">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-label">Settings</span>
+    </button>
+  </nav>
+
+  <!-- ── Rest timer overlay ── -->
+  <div id="rest-overlay" class="rest-overlay hidden">
+    <div class="rest-card">
+      <div class="rest-label">Rest</div>
+      <svg class="rest-ring" viewBox="0 0 120 120" width="160" height="160">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="var(--border)" stroke-width="6"/>
+        <circle id="rest-ring-fill" cx="60" cy="60" r="52" fill="none"
+                stroke="var(--accent)" stroke-width="6"
+                stroke-dasharray="0 326.7" stroke-linecap="round"
+                transform="rotate(-90 60 60)"
+                style="transition: stroke-dashoffset .25s linear"/>
+        <text x="60" y="55" text-anchor="middle" fill="var(--text)" font-size="26" font-weight="700" id="rest-countdown">01:30</text>
+        <text x="60" y="75" text-anchor="middle" fill="var(--text-muted)" font-size="12" id="rest-total">of 01:30</text>
+      </svg>
+      <div class="rest-actions">
+        <button class="btn btn-ghost" id="rest-add-btn">+30s</button>
+        <button class="btn btn-primary" id="rest-skip-btn">Skip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toast ── -->
+  <div id="toast"></div>
+
+  <!-- Scripts (order matters) -->
+  <script src="js/storage.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/exercises.js"></script>
+  <script src="js/routine.js"></script>
+  <script src="js/workout.js"></script>
+  <script src="js/log.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+// Routine management — list view + detail view
+
+const Routine = (() => {
+
+  // ── Routines list ─────────────────────────────────────────────────────────
+
+  function renderList() {
+    const el = document.getElementById('routines-list');
+    if (!el) return;
+    const routines = Storage.getRoutines();
+
+    if (!routines.length) {
+      el.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <p>No routines yet.</p>
+          <button class="btn btn-primary" id="btn-new-routine-empty">Create Routine</button>
+        </div>`;
+      document.getElementById('btn-new-routine-empty')
+        ?.addEventListener('click', promptCreate);
+      return;
+    }
+
+    el.innerHTML = routines.map(r => `
+      <div class="routine-card" data-id="${r.id}">
+        <div class="routine-card-body">
+          <div class="routine-card-name">${r.name}</div>
+          <div class="routine-card-meta">${r.exercises.length} exercise${r.exercises.length !== 1 ? 's' : ''}</div>
+        </div>
+        <button class="icon-btn routine-menu-btn" data-id="${r.id}" aria-label="Menu">⋯</button>
+      </div>`).join('');
+
+    el.querySelectorAll('.routine-card').forEach(card => {
+      card.addEventListener('click', e => {
+        if (e.target.closest('.routine-menu-btn')) return;
+        openRoutine(card.dataset.id);
+      });
+    });
+
+    el.querySelectorAll('.routine-menu-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        showRoutineMenu(btn.dataset.id);
+      });
+    });
+  }
+
+  function promptCreate() {
+    const name = prompt('Routine name:');
+    if (!name?.trim()) return;
+    Storage.createRoutine(name.trim());
+    renderList();
+    App.toast('Routine created');
+  }
+
+  function showRoutineMenu(id) {
+    const r = Storage.getRoutine(id);
+    if (!r) return;
+    const choice = confirm(`Delete "${r.name}"?\n\nOK = Delete  |  Cancel = Keep`);
+    if (choice) {
+      Storage.deleteRoutine(id);
+      renderList();
+      App.toast('Routine deleted');
+    }
+  }
+
+  // ── Routine detail ────────────────────────────────────────────────────────
+
+  let currentRoutineId = null;
+
+  function openRoutine(id) {
+    currentRoutineId = id;
+    const r = Storage.getRoutine(id);
+    if (!r) return;
+
+    App.showView('routine-detail');
+
+    document.getElementById('rd-title').textContent = r.name;
+    renderExerciseList(r);
+
+    document.getElementById('btn-start-workout')?.addEventListener('click', () => {
+      Workout.start(currentRoutineId);
+    }, { once: true });
+
+    document.getElementById('btn-add-ex-to-routine')?.addEventListener('click', () => {
+      Exercises.openPicker(currentRoutineId, ex => {
+        Storage.addExerciseToRoutine(currentRoutineId, {
+          id: ex.id,
+          displayName: ex.displayName,
+          sets: Storage.getSettings().defaultSets,
+          reps: Storage.getSettings().defaultReps,
+          restSeconds: Storage.getSettings().restSeconds,
+        });
+        renderExerciseList(Storage.getRoutine(currentRoutineId));
+        App.toast(`${ex.displayName} added`);
+      });
+    }, { once: true });
+  }
+
+  function renderExerciseList(r) {
+    const el = document.getElementById('rd-exercises');
+    if (!el) return;
+
+    if (!r.exercises.length) {
+      el.innerHTML = `<p class="empty-msg">No exercises. Tap "+ Add Exercise" to get started.</p>`;
+      return;
+    }
+
+    el.innerHTML = r.exercises.map((ex, i) => `
+      <div class="rd-ex-row" data-index="${i}">
+        <div class="rd-ex-num">${i + 1}</div>
+        <div class="rd-ex-info">
+          <div class="rd-ex-name">${ex.name}</div>
+          <div class="rd-ex-target">
+            ${ex.timed
+              ? `<span class="ex-target-edit" data-field="sets" data-index="${i}">${ex.sets}</span> sets × timed`
+              : `<span class="ex-target-edit" data-field="sets" data-index="${i}">${ex.sets}</span> × <span class="ex-target-edit" data-field="reps" data-index="${i}">${ex.reps}</span> reps`}
+            · <span class="ex-target-edit" data-field="restSeconds" data-index="${i}">${ex.restSeconds}s</span> rest
+          </div>
+        </div>
+        <button class="icon-btn rd-ex-menu" data-index="${i}" aria-label="Options">⋯</button>
+      </div>`).join('');
+
+    el.querySelectorAll('.ex-target-edit').forEach(span => {
+      span.addEventListener('click', e => {
+        e.stopPropagation();
+        const { field, index } = span.dataset;
+        const labels = { sets: 'Sets', reps: 'Reps', restSeconds: 'Rest (seconds)' };
+        const val = prompt(`${labels[field]}:`, span.textContent.replace('s',''));
+        if (val === null || isNaN(+val)) return;
+        Storage.updateExInRoutine(currentRoutineId, +index, { [field]: +val });
+        renderExerciseList(Storage.getRoutine(currentRoutineId));
+      });
+    });
+
+    el.querySelectorAll('.rd-ex-menu').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        showExMenu(+btn.dataset.index);
+      });
+    });
+  }
+
+  function showExMenu(index) {
+    const r = Storage.getRoutine(currentRoutineId);
+    const ex = r?.exercises[index];
+    if (!ex) return;
+
+    const actions = ['Remove', 'Toggle Timed', 'View Exercise'];
+    const choice = prompt(`"${ex.name}"\n\n1. Remove\n2. Toggle Timed (${ex.timed ? 'ON' : 'OFF'})\n3. View Exercise\n\nEnter number:`);
+
+    if (choice === '1') {
+      Storage.removeExFromRoutine(currentRoutineId, index);
+      renderExerciseList(Storage.getRoutine(currentRoutineId));
+    } else if (choice === '2') {
+      Storage.updateExInRoutine(currentRoutineId, index, { timed: !ex.timed });
+      renderExerciseList(Storage.getRoutine(currentRoutineId));
+    } else if (choice === '3') {
+      Exercises.openDetail(ex.exId);
+    }
+  }
+
+  return { renderList, openRoutine, promptCreate };
+})();
