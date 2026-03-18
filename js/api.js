@@ -229,14 +229,17 @@ const API = (() => {
   async function searchChannel(channelId, query, key) {
     const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&channelId=${channelId}&maxResults=5&videoDuration=short&key=${key}`;
     const res  = await fetch(url);
-    if (!res.ok) return null;
+    // Throw on API errors (quota exceeded, bad key, etc.) so the caller
+    // doesn't cache an empty result for a transient failure
+    if (!res.ok) throw new Error(`YT API error ${res.status}`);
     const data = await res.json();
+    if (data.error) throw new Error(data.error.message || 'YT API error');
     const ids  = (data.items || []).map(i => i.id.videoId).filter(Boolean);
     if (!ids.length) return null;
 
     const durations = await getVideosDuration(ids, key);
     for (const id of ids) {
-      if ((durations[id] || Infinity) <= 30) return id;
+      if ((durations[id] || Infinity) <= 90) return id;
     }
     return null;
   }
@@ -245,9 +248,10 @@ const API = (() => {
     const ytKey = Storage.getSettings().youtubeApiKey || _dyk();
     if (!ytKey) return null;
 
-    const cacheKey = 'yt3_' + exerciseName.toLowerCase().replace(/\s+/g, '_');
+    // yt4_: bumped to clear cached empty results from overly strict 30s filter
+    const cacheKey = 'yt4_' + exerciseName.toLowerCase().replace(/\s+/g, '_');
     const cached = Storage.getCached(cacheKey);
-    if (cached !== null) return cached || null; // '' = no result, don't retry
+    if (cached !== null) return cached || null; // '' = confirmed no result
 
     const lang = Storage.getSettings().language || 'en';
     const searchName = await translateExerciseName(exerciseName, lang);
