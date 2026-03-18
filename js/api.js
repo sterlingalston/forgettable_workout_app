@@ -156,36 +156,8 @@ const API = (() => {
   }
 
   // ── YouTube video search ──────────────────────────────────────────────────
-  // Searches preferred channels in priority order.
+  // Global search — 2 quota units per exercise vs 30+ with per-channel approach.
   // Requires YouTube Data API v3 key in Settings.
-  // Enable at: console.cloud.google.com → APIs → YouTube Data API v3
-
-  // Priority channel handles. Known IDs are hardcoded to save quota; the rest
-  // are resolved via the channels?forHandle API on first use and cached.
-  const YT_CHANNELS = [
-    { handle: 'NasmOrgPersonalTrainer', id: 'UCjWgUFeyDbeQ3Q_eVCup_7Q' },
-    { handle: 'gymvisual8018' },
-    { handle: 'BSNTraining' },
-    { handle: 'leveltencoaching2296' },
-    { handle: 'ElliotGrahamCoaching' },
-    { handle: 'strengthtools2494' },
-  ];
-
-  async function resolveChannelId(ch, key) {
-    if (ch.id) return ch.id; // hardcoded — no API call needed
-    const cacheKey = 'ch_' + ch.handle;
-    const cached = Storage.getCached(cacheKey);
-    if (cached) return cached;
-    try {
-      const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${ch.handle}&key=${key}`;
-      const res  = await fetch(url);
-      if (!res.ok) return null;
-      const data = await res.json();
-      const id   = data.items?.[0]?.id || '';
-      if (id) Storage.setCached(cacheKey, id);
-      return id || null;
-    } catch { return null; }
-  }
 
   async function translateExerciseName(text, lang) {
     if (!lang || lang === 'en') return text;
@@ -226,67 +198,54 @@ const API = (() => {
     return map;
   }
 
-  async function searchChannel(channelId, query, key) {
-    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&channelId=${channelId}&maxResults=5&videoDuration=short&key=${key}`;
-    const res  = await fetch(url);
-    // Throw on API errors (quota exceeded, bad key, etc.) so the caller
-    // doesn't cache an empty result for a transient failure
-    if (!res.ok) throw new Error(`YT API error ${res.status}`);
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message || 'YT API error');
-    const ids  = (data.items || []).map(i => i.id.videoId).filter(Boolean);
-    if (!ids.length) return null;
-
-    const durations = await getVideosDuration(ids, key);
-    for (const id of ids) {
-      if ((durations[id] || Infinity) <= 90) return id;
-    }
-    return null;
-  }
-
   async function getYouTubeVideoId(exerciseName) {
     const ytKey = Storage.getSettings().youtubeApiKey || _dyk();
     if (!ytKey) return null;
 
-    // yt4_: bumped to clear cached empty results from overly strict 30s filter
-    const cacheKey = 'yt4_' + exerciseName.toLowerCase().replace(/\s+/g, '_');
+    const cacheKey = 'yt5_' + exerciseName.toLowerCase().replace(/\s+/g, '_');
     const cached = Storage.getCached(cacheKey);
     if (cached !== null) return cached || null; // '' = confirmed no result
 
     const lang = Storage.getSettings().language || 'en';
     const searchName = await translateExerciseName(exerciseName, lang);
     const DEMO_SUFFIX = {
-      en: 'exercise demonstration proper form',
-      es: 'ejercicio demostración forma correcta',
-      fr: 'exercice démonstration forme correcte',
-      pt: 'exercício demonstração forma correta',
-      de: 'Übung Demonstration richtige Form',
-      it: 'esercizio dimostrazione forma corretta',
-      zh: '锻炼 示范 正确姿势',
-      ja: 'エクササイズ デモンストレーション 正しいフォーム',
-      ko: '운동 시범 올바른 자세',
-      ru: 'упражнение демонстрация правильная техника',
-      ar: 'تمرين عرض الشكل الصحيح',
+      en: 'exercise demonstration',
+      es: 'ejercicio demostración',
+      fr: 'exercice démonstration',
+      pt: 'exercício demonstração',
+      de: 'Übung Demonstration',
+      it: 'esercizio dimostrazione',
+      zh: '锻炼 示范',
+      ja: 'エクササイズ デモ',
+      ko: '운동 시범',
+      ru: 'упражнение демонстрация',
+      ar: 'تمرين عرض',
     };
     const suffix = DEMO_SUFFIX[lang] || DEMO_SUFFIX.en;
-    const query = `"${searchName}" ${suffix}`;
+    const query = `${searchName} ${suffix}`;
 
     try {
-      for (const ch of YT_CHANNELS) {
-        const channelId = await resolveChannelId(ch, ytKey);
-        if (!channelId) continue;
-        const videoId = await searchChannel(channelId, query, ytKey);
-        if (videoId) {
-          Storage.setCached(cacheKey, videoId);
-          return videoId;
+      // Single global search — far more quota-efficient than per-channel searches
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=5&videoDuration=short&key=${ytKey}`;
+      const res  = await fetch(url);
+      if (!res.ok) throw new Error(`YT API ${res.status}`);
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message);
+      const ids = (data.items || []).map(i => i.id.videoId).filter(Boolean);
+      if (ids.length) {
+        const durations = await getVideosDuration(ids, ytKey);
+        for (const id of ids) {
+          if ((durations[id] || Infinity) <= 90) {
+            Storage.setCached(cacheKey, id);
+            return id;
+          }
         }
       }
-      // Nothing found in any channel
       Storage.setCached(cacheKey, '');
       return null;
     } catch (e) {
       console.warn('YouTube search failed:', e.message);
-      return null;
+      return null; // don't cache — quota errors are transient
     }
   }
 
