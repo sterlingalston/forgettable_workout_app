@@ -81,10 +81,12 @@ const GithubSync = (() => {
   }
 
   function _buildPayload() {
+    // Strip device-local auth credentials — never store them in the gist
+    const { githubToken, githubUsername, githubGistId, ...settings } = Storage.getSettings();
     return {
       routines:   Storage.getRoutines(),
       logs:       Storage.getLogs().filter(l => l.finishedAt),
-      settings:   Storage.getSettings(),
+      settings,
       videoCache: Storage.getVideoCache(),
       updatedAt:  Date.now(),
     };
