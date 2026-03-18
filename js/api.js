@@ -161,6 +161,7 @@ const API = (() => {
   const YT_CHANNELS = [
     { handle: 'NasmOrgPersonalTrainer', id: 'UCjWgUFeyDbeQ3Q_eVCup_7Q' },
     { handle: 'OnnitAcademy' },
+    { handle: 'MyPTHub' },
     { handle: 'gymvisual8018' },
     { handle: 'BSNTraining' },
     { handle: 'leveltencoaching2296' },
