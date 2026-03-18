@@ -2,8 +2,10 @@
 
 const App = (() => {
   const views = ['routines', 'routine-detail', 'exercises', 'workout', 'log', 'settings'];
+  let _currentView = 'routines';
 
   function showView(name) {
+    _currentView = name;
     views.forEach(v => {
       const el = document.getElementById(`view-${v}`);
       if (el) el.hidden = (v !== name);
@@ -18,6 +20,14 @@ const App = (() => {
     const backBtn = document.getElementById('btn-back');
     if (backBtn) {
       backBtn.hidden = !['routine-detail', 'workout'].includes(name);
+    }
+
+    // Header + button — hide on sub-views and settings
+    const newBtn = document.getElementById('btn-new-routine');
+    if (newBtn) {
+      newBtn.hidden = ['routine-detail', 'workout', 'settings'].includes(name);
+      const labels = { routines: 'New routine', exercises: 'New exercise', log: 'Log workout' };
+      newBtn.setAttribute('aria-label', labels[name] || 'New');
     }
 
     // Header title
@@ -140,9 +150,11 @@ const App = (() => {
       Routine.renderList();
     });
 
-    // New routine button in header (custom)
+    // Header + button — context-aware per active view
     document.getElementById('btn-new-routine')?.addEventListener('click', () => {
-      Routine.promptCreate();
+      if (_currentView === 'exercises') Exercises.promptCreateCustom();
+      else if (_currentView === 'log')  Log.promptAddManual();
+      else                              Routine.promptCreate();
     });
 
     // Browse pre-built programs

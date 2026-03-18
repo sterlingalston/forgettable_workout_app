@@ -94,12 +94,13 @@ const GithubSync = (() => {
     // Strip device-local auth credentials — never store them in the gist
     const { githubToken, githubUsername, githubGistId, ...settings } = Storage.getSettings();
     return {
-      routines:    Storage.getRoutines(),
-      logs:        Storage.getLogs().filter(l => l.finishedAt),
+      routines:        Storage.getRoutines(),
+      logs:            Storage.getLogs().filter(l => l.finishedAt),
       settings,
-      videoCache:  Storage.getVideoCache(),
-      customMedia: Storage.getCustomMedia(),
-      updatedAt:   Date.now(),
+      videoCache:      Storage.getVideoCache(),
+      customMedia:     Storage.getCustomMedia(),
+      customExercises: Storage.getCustomExercises(),
+      updatedAt:       Date.now(),
     };
   }
 
@@ -156,8 +157,9 @@ const GithubSync = (() => {
         }
         if (Object.keys(safe).length) Storage.saveSettings(safe);
       }
-      if (data.videoCache)  Storage.mergeVideoCache(data.videoCache);
-      if (data.customMedia) Storage.mergeCustomMedia(data.customMedia);
+      if (data.videoCache)       Storage.mergeVideoCache(data.videoCache);
+      if (data.customMedia)      Storage.mergeCustomMedia(data.customMedia);
+      if (data.customExercises?.length) Storage.mergeCustomExercises(data.customExercises);
     } catch (e) { console.warn('Gist pull failed:', e.message); }
   }
 

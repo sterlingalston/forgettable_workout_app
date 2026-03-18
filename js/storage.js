@@ -2,14 +2,15 @@
 
 const Storage = (() => {
   const KEYS = {
-    routines:    'wk_routines',
-    logs:        'wk_logs',
-    settings:    'wk_settings',
-    exCache:     'wk_ex_cache',
-    exCacheIdx:  'wk_ex_cache_idx',
-    freeDbMap:   'wk_freedb_map',
-    videoCache:  'wk_video_cache',
-    customMedia: 'wk_custom_media',
+    routines:        'wk_routines',
+    logs:            'wk_logs',
+    settings:        'wk_settings',
+    exCache:         'wk_ex_cache',
+    exCacheIdx:      'wk_ex_cache_idx',
+    freeDbMap:       'wk_freedb_map',
+    videoCache:      'wk_video_cache',
+    customMedia:     'wk_custom_media',
+    customExercises: 'wk_custom_exercises',
   };
   // Auth lives in its own key — saveSettings() NEVER touches this key.
   // The only way to clear it is clearAuth() (explicit sign-out).
@@ -113,6 +114,22 @@ const Storage = (() => {
   function saveCustomMedia(name, data) { const m = getCustomMedia(); m[name.toLowerCase()] = data; write(KEYS.customMedia, m); }
   function getCustomMediaFor(name)     { return getCustomMedia()[name.toLowerCase()] || null; }
   function mergeCustomMedia(remote)    { write(KEYS.customMedia, { ...getCustomMedia(), ...remote }); } // remote wins
+
+  // ── Custom exercises (user-created) ──────────────────────────────────────
+  function getCustomExercises()         { return read(KEYS.customExercises, []); }
+  function saveCustomExercises(list)    { write(KEYS.customExercises, list); }
+  function saveCustomExercise(ex) {
+    const list = getCustomExercises();
+    const idx = list.findIndex(e => e.id === ex.id);
+    if (idx >= 0) list[idx] = ex; else list.push(ex);
+    saveCustomExercises(list);
+  }
+  function deleteCustomExercise(id)     { saveCustomExercises(getCustomExercises().filter(e => e.id !== id)); }
+  function mergeCustomExercises(remote) {
+    const map = new Map(getCustomExercises().map(e => [e.id, e]));
+    remote.forEach(e => map.set(e.id, e));
+    saveCustomExercises([...map.values()]);
+  }
 
   // ── free-exercise-db name→images map ─────────────────────────────────────
   function getFreeDbMap() { return read(KEYS.freeDbMap, null); }
@@ -227,6 +244,7 @@ const Storage = (() => {
     getRoutines, saveRoutines, getRoutine, createRoutine, updateRoutine, deleteRoutine,
     addExerciseToRoutine, removeExFromRoutine, updateExInRoutine,
     getLogs, saveLogs, saveLog, getLog, deleteLog, createWorkoutLog,
+    getCustomExercises, saveCustomExercises, saveCustomExercise, deleteCustomExercise, mergeCustomExercises,
     clearLocalUserData, clearAll, uid,
   };
 })();

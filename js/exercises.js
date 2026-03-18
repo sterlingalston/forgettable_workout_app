@@ -9,6 +9,8 @@ const Exercises = (() => {
   let onPick = null; // callback when in picker mode
   let pickerRoutineId = null;
   let _sentinelObs = null;
+  let _escCustomEx = null;
+  let _viewInited = false;
 
   // ── Render ────────────────────────────────────────────────────────────────
 
@@ -16,12 +18,15 @@ const Exercises = (() => {
     return label ? `<span class="chip ${cls}">${API.fmt(label)}</span>` : '';
   }
 
+  const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
   function cardHtml(ex, compact = false) {
+    const customBadge = ex.custom ? `<span class="chip chip-custom">Custom</span>` : '';
     if (compact) {
       return `
         <div class="ex-row" data-id="${ex.id}" tabindex="0" role="button">
           <div class="ex-row-info">
-            <div class="ex-row-name">${ex.displayName}</div>
+            <div class="ex-row-name">${escHtml(ex.displayName)} ${customBadge}</div>
             <div class="ex-row-chips">
               ${chipHtml(ex.primaryMuscle?.[0], 'chip-muscle')}
               ${chipHtml(ex.equipment, 'chip-equip')}
@@ -34,7 +39,7 @@ const Exercises = (() => {
     return `
       <div class="ex-card" data-id="${ex.id}" tabindex="0" role="button">
         <div class="ex-card-body">
-          <div class="ex-card-name">${ex.displayName}</div>
+          <div class="ex-card-name">${escHtml(ex.displayName)} ${customBadge}</div>
           <div class="ex-card-chips">
             ${chipHtml(ex.category, 'chip-cat')}
             ${chipHtml(ex.level, 'chip-level chip-level-' + (ex.level || '').toLowerCase())}
@@ -49,6 +54,26 @@ const Exercises = (() => {
 
   // ── Data loading ──────────────────────────────────────────────────────────
 
+  function _getFilteredCustomExercises() {
+    let exs = Storage.getCustomExercises();
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      exs = exs.filter(ex =>
+        ex.displayName.toLowerCase().includes(q) ||
+        (ex.primaryMuscle || []).some(m => m.toLowerCase().includes(q)) ||
+        (ex.equipment || '').toLowerCase().includes(q) ||
+        (ex.category || '').toLowerCase().includes(q)
+      );
+    } else if (activeFilters.category) {
+      exs = exs.filter(ex => ex.category === activeFilters.category);
+    } else if (activeFilters.primaryMuscle) {
+      exs = exs.filter(ex => (ex.primaryMuscle || []).includes(activeFilters.primaryMuscle));
+    } else if (activeFilters.equipment) {
+      exs = exs.filter(ex => ex.equipment === activeFilters.equipment);
+    }
+    return exs;
+  }
+
   async function loadMore() {
     if (isLoading || !hasMore) return;
     isLoading = true;
@@ -58,6 +83,13 @@ const Exercises = (() => {
     if (sentinel) sentinel.innerHTML = '<div class="spinner"></div>';
 
     try {
+      // On first page, prepend custom exercises at the top
+      if (cursor === null) {
+        const customExs = _getFilteredCustomExercises();
+        const compact = !!onPick;
+        customExs.forEach(ex => grid?.insertAdjacentHTML('beforeend', cardHtml(ex, compact)));
+      }
+
       let result;
       if (searchQuery) {
         result = await API.searchExercises(searchQuery, cursor);
@@ -68,9 +100,12 @@ const Exercises = (() => {
       const exercises = result.exercises || result;
       if (!exercises?.length) {
         hasMore = false;
-        if (sentinel) sentinel.innerHTML = cursor === null
-          ? '<p class="empty-msg">No exercises found.</p>'
-          : '';
+        if (sentinel) {
+          const hasCustom = cursor === null && _getFilteredCustomExercises().length > 0;
+          sentinel.innerHTML = (cursor === null && !hasCustom)
+            ? '<p class="empty-msg">No exercises found.</p>'
+            : '';
+        }
         isLoading = false;
         return;
       }
@@ -139,11 +174,19 @@ const Exercises = (() => {
 
   async function openDetail(id) {
     let ex;
-    try { ex = await API.getExercise(id); }
-    catch (e) { App.toast(e.message); return; }
+    const isCustom = String(id).startsWith('custom_');
 
-    // Community metadata: better instructions, timed flag
-    const community = await API.getCommunityMeta(ex.displayName);
+    if (isCustom) {
+      const found = Storage.getCustomExercises().find(e => e.id === id);
+      if (!found) { App.toast('Exercise not found'); return; }
+      ex = { primaryMuscle: [], secondaryMuscle: [], instructions: [], ...found };
+    } else {
+      try { ex = await API.getExercise(id); }
+      catch (e) { App.toast(e.message); return; }
+    }
+
+    // Community metadata only for non-custom exercises
+    const community = isCustom ? null : await API.getCommunityMeta(ex.displayName);
     const activeInstructions = community?.instructions?.length
       ? community.instructions
       : (ex.instructions || []);
@@ -161,6 +204,12 @@ const Exercises = (() => {
     const addBtn = onPick
       ? `<button class="btn btn-primary full-w" id="modal-add-ex">+ Add to Routine</button>`
       : `<button class="btn btn-primary full-w" id="modal-add-ex">+ Add to Workout</button>`;
+
+    const customActions = isCustom ? `
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-ghost full-w" id="modal-edit-custom">✏️ Edit</button>
+        <button class="btn btn-danger full-w" id="modal-del-custom">🗑 Delete</button>
+      </div>` : '';
 
     // Media section — YouTube video (loading spinner while fetching)
     const mediaHtml = `
@@ -190,6 +239,7 @@ const Exercises = (() => {
               ? `<h4 class="section-label">Instructions${isCommunityInstructions ? ' <span class="badge-community">Community</span>' : ''}</h4><ol class="steps">${instructions}</ol>`
               : ''}
             ${addBtn}
+            ${customActions}
             <button class="btn btn-ghost full-w" id="modal-back-btn" style="margin-top:8px">← Back</button>
           </div>
         </div>
@@ -201,8 +251,8 @@ const Exercises = (() => {
     modal.addEventListener('click', e => { if (e.target === modal) closeDetail(); });
     document.addEventListener('keydown', _escDetail);
 
-    // Try to load YouTube video — replaces animation if found
-    loadVideo(ex.displayName);
+    // Try to load video — for custom exercises use embedded videoId/thumb as fallback
+    loadVideo(ex.displayName, isCustom ? { videoId: ex.videoId, thumb: ex.thumb } : null);
 
     modal.querySelector('#modal-media-edit')?.addEventListener('click', e => {
       e.stopPropagation();
@@ -226,6 +276,24 @@ const Exercises = (() => {
         closeDetail();
       }
     });
+
+    modal.querySelector('#modal-edit-custom')?.addEventListener('click', e => {
+      e.stopPropagation();
+      closeDetail();
+      promptCreateCustom(ex);
+    });
+
+    modal.querySelector('#modal-del-custom')?.addEventListener('click', e => {
+      e.stopPropagation();
+      if (!confirm(`Delete "${ex.displayName}"?`)) return;
+      Storage.deleteCustomExercise(ex.id);
+      closeDetail();
+      cursor = null; hasMore = true;
+      const grid = document.getElementById('ex-grid');
+      if (grid) { grid.innerHTML = ''; loadMore(); }
+      App.toast('Exercise deleted');
+      GithubSync.pushAll().catch(() => {});
+    });
   }
 
   function renderMedia(wrap, videoId, thumbUrl, exerciseName) {
@@ -246,13 +314,19 @@ const Exercises = (() => {
     }
   }
 
-  async function loadVideo(exerciseName) {
+  async function loadVideo(exerciseName, fallback = null) {
     const wrap = document.getElementById('modal-media-wrap');
     if (!wrap) return;
 
     // User-set custom media takes priority
     const custom = Storage.getCustomMediaFor(exerciseName);
     if (custom) { renderMedia(wrap, custom.videoId, custom.thumb, exerciseName); return; }
+
+    // Embedded media on custom exercise object
+    if (fallback?.videoId || fallback?.thumb) {
+      renderMedia(wrap, fallback.videoId || null, fallback.thumb || null, exerciseName);
+      return;
+    }
 
     // Step 1: community data (curated, cached after first fetch)
     const community = await API.getCommunityMeta(exerciseName);
@@ -395,10 +469,15 @@ const Exercises = (() => {
     activeFilters = {};
     searchQuery = '';
 
-    document.getElementById('ex-search')?.addEventListener('input', e => onSearch(e.target.value));
+    // Wire up static DOM elements only once — avoid accumulating listeners
+    if (!_viewInited) {
+      document.getElementById('ex-search')?.addEventListener('input', e => onSearch(e.target.value));
+      setupGridDelegation('ex-grid');
+      setupSentinel('ex-sentinel');
+      _viewInited = true;
+    }
+
     buildFilterBar('ex-filter-bar');
-    setupGridDelegation('ex-grid');
-    setupSentinel('ex-sentinel');
     reset();
   }
 
@@ -436,7 +515,14 @@ const Exercises = (() => {
   async function handlePick(exId) {
     if (!onPick) return;
     try {
-      const ex = await API.getExercise(exId);
+      let ex;
+      if (String(exId).startsWith('custom_')) {
+        ex = Storage.getCustomExercises().find(e => e.id === exId);
+        if (!ex) throw new Error('Exercise not found');
+        ex = { primaryMuscle: [], secondaryMuscle: [], instructions: [], ...ex };
+      } else {
+        ex = await API.getExercise(exId);
+      }
       onPick(ex);
       App.toast(`${ex.displayName} added`);
     } catch (e) { App.toast(e.message); }
@@ -453,5 +539,141 @@ const Exercises = (() => {
     _sentinelObs.observe(sentinel);
   }
 
-  return { initView, openPicker, closePicker, openDetail };
+  // ── Create / edit custom exercise ────────────────────────────────────────
+
+  function promptCreateCustom(existing = null) {
+    const isEdit = !!existing;
+    const catOptions = API.CATEGORIES.map(c =>
+      `<option value="${c}" ${existing?.category === c ? 'selected' : ''}>${API.fmt(c)}</option>`
+    ).join('');
+    const muscleOptions = API.MUSCLES.map(m =>
+      `<option value="${m}" ${existing?.primaryMuscle?.[0] === m ? 'selected' : ''}>${API.fmt(m)}</option>`
+    ).join('');
+    const equipOptions = API.EQUIPMENT.map(e =>
+      `<option value="${e}" ${existing?.equipment === e ? 'selected' : ''}>${API.fmt(e)}</option>`
+    ).join('');
+
+    const existingVideoUrl = existing?.videoId ? `https://youtu.be/${existing.videoId}` : '';
+    const existingThumb    = existing?.thumb || '';
+    const existingInstr    = (existing?.instructions || []).join('\n');
+
+    const html = `
+      <div class="modal-overlay" id="custom-ex-modal">
+        <div class="modal modal-sheet">
+          <button class="modal-close" aria-label="Close">✕</button>
+          <div class="modal-body">
+            <h2 class="modal-title">${isEdit ? 'Edit Exercise' : 'New Exercise'}</h2>
+            <label class="media-edit-label">Name *</label>
+            <input class="input" id="cex-name" type="text" placeholder="e.g. Banded Squat"
+              value="${escHtml(existing?.displayName || '')}">
+
+            <label class="media-edit-label" style="margin-top:10px">Category</label>
+            <select class="input" id="cex-category">
+              <option value="">— none —</option>${catOptions}
+            </select>
+
+            <label class="media-edit-label" style="margin-top:10px">Primary Muscle</label>
+            <select class="input" id="cex-muscle">
+              <option value="">— none —</option>${muscleOptions}
+            </select>
+
+            <label class="media-edit-label" style="margin-top:10px">Equipment</label>
+            <select class="input" id="cex-equipment">
+              <option value="">— none —</option>${equipOptions}
+            </select>
+
+            <label class="media-edit-label" style="margin-top:10px">YouTube URL
+              <span style="font-weight:400;color:var(--text-muted)">(optional)</span>
+            </label>
+            <input class="input" id="cex-video" type="url"
+              placeholder="https://youtube.com/watch?v=…" value="${escHtml(existingVideoUrl)}">
+
+            <label class="media-edit-label" style="margin-top:10px">Thumbnail URL
+              <span style="font-weight:400;color:var(--text-muted)">(optional)</span>
+            </label>
+            <input class="input" id="cex-thumb" type="url"
+              placeholder="https://…" value="${escHtml(existingThumb)}">
+
+            <label class="media-edit-label" style="margin-top:10px">Instructions
+              <span style="font-weight:400;color:var(--text-muted)">(one step per line)</span>
+            </label>
+            <textarea class="input" id="cex-instructions" rows="4"
+              placeholder="Stand with feet shoulder-width apart&#10;…"
+              style="resize:vertical">${escHtml(existingInstr)}</textarea>
+
+            <label class="media-edit-label" style="margin-top:10px;display:flex;align-items:center;gap:8px">
+              <input type="checkbox" id="cex-timed" ${existing?.timed ? 'checked' : ''}>
+              Timed exercise (no rep count)
+            </label>
+
+            <div class="media-edit-actions" style="margin-top:16px">
+              <button class="btn btn-ghost btn-sm" id="cex-cancel">Cancel</button>
+              <button class="btn btn-primary btn-sm" id="cex-save">
+                ${isEdit ? 'Save Changes' : 'Save Exercise'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+
+    document.body.insertAdjacentHTML('beforeend', html);
+    const modal = document.getElementById('custom-ex-modal');
+    const close = () => {
+      modal.remove();
+      document.removeEventListener('keydown', _escCustomEx);
+      _escCustomEx = null;
+    };
+
+    modal.querySelector('.modal-close').addEventListener('click', close);
+    modal.querySelector('#cex-cancel').addEventListener('click', close);
+    modal.addEventListener('click', e => { if (e.target === modal) close(); });
+    _escCustomEx = e => { if (e.key === 'Escape') close(); };
+    document.addEventListener('keydown', _escCustomEx);
+
+    modal.querySelector('#cex-save').addEventListener('click', async () => {
+      const name = document.getElementById('cex-name').value.trim();
+      if (!name) { App.toast('Name is required'); return; }
+
+      const rawVideo = document.getElementById('cex-video').value.trim();
+      const videoId  = rawVideo ? parseYouTubeId(rawVideo) : null;
+      if (rawVideo && !videoId) { App.toast('Invalid YouTube URL'); return; }
+
+      const instructions = document.getElementById('cex-instructions').value
+        .split('\n').map(s => s.trim()).filter(Boolean);
+
+      const ex = {
+        id:             isEdit ? existing.id : ('custom_' + Storage.uid()),
+        displayName:    name,
+        category:       document.getElementById('cex-category').value || '',
+        primaryMuscle:  document.getElementById('cex-muscle').value
+                          ? [document.getElementById('cex-muscle').value] : [],
+        secondaryMuscle: [],
+        equipment:      document.getElementById('cex-equipment').value || '',
+        level: '', mechanic: '', force: '',
+        videoId:        videoId || null,
+        thumb:          document.getElementById('cex-thumb').value.trim() || null,
+        instructions,
+        timed:          document.getElementById('cex-timed').checked,
+        custom:         true,
+        createdAt:      isEdit ? (existing.createdAt || Date.now()) : Date.now(),
+      };
+
+      Storage.saveCustomExercise(ex);
+      close();
+
+      // Refresh exercise grid
+      cursor = null; hasMore = true;
+      const grid = document.getElementById('ex-grid');
+      if (grid) { grid.innerHTML = ''; loadMore(); }
+
+      try {
+        await GithubSync.pushAll();
+        App.toast(isEdit ? 'Exercise updated & synced' : 'Exercise saved & synced');
+      } catch {
+        App.toast(isEdit ? 'Exercise updated locally' : 'Exercise saved locally');
+      }
+    });
+  }
+
+  return { initView, openPicker, closePicker, openDetail, promptCreateCustom };
 })();

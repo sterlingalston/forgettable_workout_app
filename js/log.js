@@ -1,6 +1,7 @@
 // Workout history log view
 
 const Log = (() => {
+  let _escManualLog = null;
   function render() {
     const el = document.getElementById('log-list');
     if (!el) return;
@@ -174,5 +175,142 @@ const Log = (() => {
     modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
   }
 
-  return { render };
+  // ── Manual log entry ──────────────────────────────────────────────────────
+
+  function _addManualExRow(container) {
+    const unit = Storage.getSettings().weightUnit || 'lbs';
+    const div = document.createElement('div');
+    div.className = 'mlog-ex-block';
+    div.innerHTML = `
+      <div class="mlog-ex-header">
+        <input class="input mlog-ex-name" type="text" placeholder="Exercise name" style="flex:1;min-width:0">
+        <button class="icon-btn mlog-ex-del" title="Remove" style="flex-shrink:0">✕</button>
+      </div>
+      <div class="mlog-sets"></div>
+      <button class="btn btn-ghost btn-sm mlog-add-set" style="margin-top:4px">+ Set</button>`;
+
+    const addSet = () => {
+      const row = document.createElement('div');
+      row.className = 'mlog-set-row';
+      row.style.cssText = 'display:flex;align-items:center;gap:6px;margin-top:6px';
+      row.innerHTML = `
+        <input class="input input-sm mlog-weight" type="number" min="0" step="0.5"
+          placeholder="0 ${unit}" style="width:90px">
+        <span style="color:var(--text-muted)">×</span>
+        <input class="input input-sm mlog-reps" type="number" min="0"
+          placeholder="reps" style="width:70px">`;
+      div.querySelector('.mlog-sets').appendChild(row);
+    };
+
+    div.querySelector('.mlog-ex-del').addEventListener('click', () => div.remove());
+    div.querySelector('.mlog-add-set').addEventListener('click', addSet);
+    addSet(); // start with one set
+    container.appendChild(div);
+  }
+
+  function promptAddManual() {
+    const today = new Date().toISOString().split('T')[0];
+
+    const html = `
+      <div class="modal-overlay" id="manual-log-modal">
+        <div class="modal modal-sheet">
+          <button class="modal-close" aria-label="Close">✕</button>
+          <div class="modal-body">
+            <h2 class="modal-title">Log Workout</h2>
+
+            <label class="media-edit-label">Date *</label>
+            <input class="input" id="mlog-date" type="date" value="${today}">
+
+            <label class="media-edit-label" style="margin-top:10px">Workout Name *</label>
+            <input class="input" id="mlog-name" type="text" placeholder="e.g. Morning Workout">
+
+            <label class="media-edit-label" style="margin-top:10px">Duration (minutes)</label>
+            <input class="input input-sm" id="mlog-duration" type="number" min="1" placeholder="60" style="width:90px">
+
+            <h4 class="section-label" style="margin-top:16px">Exercises</h4>
+            <div id="mlog-exercises"></div>
+            <button class="btn btn-ghost btn-sm" id="mlog-add-ex" style="margin-top:8px">+ Add Exercise</button>
+
+            <label class="media-edit-label" style="margin-top:12px">Notes</label>
+            <textarea class="input" id="mlog-notes" rows="2"
+              placeholder="How did it feel?" style="resize:vertical"></textarea>
+
+            <div class="media-edit-actions" style="margin-top:16px">
+              <button class="btn btn-ghost btn-sm" id="mlog-cancel">Cancel</button>
+              <button class="btn btn-primary btn-sm" id="mlog-save">Save Log</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+
+    document.body.insertAdjacentHTML('beforeend', html);
+    const modal = document.getElementById('manual-log-modal');
+    const close = () => {
+      modal.remove();
+      document.removeEventListener('keydown', _escManualLog);
+      _escManualLog = null;
+    };
+
+    modal.querySelector('.modal-close').addEventListener('click', close);
+    modal.querySelector('#mlog-cancel').addEventListener('click', close);
+    modal.addEventListener('click', e => { if (e.target === modal) close(); });
+    _escManualLog = e => { if (e.key === 'Escape') close(); };
+    document.addEventListener('keydown', _escManualLog);
+
+    modal.querySelector('#mlog-add-ex').addEventListener('click', () => {
+      _addManualExRow(modal.querySelector('#mlog-exercises'));
+    });
+
+    // Start with one exercise row
+    _addManualExRow(modal.querySelector('#mlog-exercises'));
+
+    modal.querySelector('#mlog-save').addEventListener('click', async () => {
+      const name    = document.getElementById('mlog-name').value.trim();
+      const dateStr = document.getElementById('mlog-date').value;
+      if (!name)    { App.toast('Workout name is required'); return; }
+      if (!dateStr) { App.toast('Date is required'); return; }
+
+      // noon local time so no timezone shift
+      const dateMs     = new Date(dateStr + 'T12:00:00').getTime();
+      const durationMs = (parseInt(document.getElementById('mlog-duration').value) || 60) * 60000;
+      const notes      = document.getElementById('mlog-notes').value.trim();
+
+      const exercises = [];
+      modal.querySelectorAll('.mlog-ex-block').forEach(block => {
+        const exName = block.querySelector('.mlog-ex-name').value.trim();
+        if (!exName) return;
+        const sets = [];
+        block.querySelectorAll('.mlog-set-row').forEach(row => {
+          const weight = parseFloat(row.querySelector('.mlog-weight').value) || 0;
+          const reps   = parseInt(row.querySelector('.mlog-reps').value)   || 0;
+          sets.push({ weight, reps, done: true, seconds: 0 });
+        });
+        if (sets.length) exercises.push({ exId: null, name: exName, sets });
+      });
+
+      const log = {
+        id:          Storage.uid(),
+        routineId:   null,
+        routineName: name,
+        startedAt:   dateMs,
+        finishedAt:  dateMs + durationMs,
+        exercises,
+        notes,
+        manual:      true,
+      };
+
+      Storage.saveLog(log);
+      close();
+      render();
+
+      try {
+        await GithubSync.pushAll();
+        App.toast('Log saved & synced');
+      } catch {
+        App.toast('Log saved locally');
+      }
+    });
+  }
+
+  return { render, promptAddManual };
 })();
