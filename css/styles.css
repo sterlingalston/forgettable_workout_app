@@ -359,6 +359,8 @@ body {
 
 /* ── Exercise browser ── */
 .ex-search-wrap { padding: 12px 12px 0; }
+.ex-equip-wrap { padding: 8px 12px 0; }
+.ex-equip-select { width: 100%; }
 
 .filter-scroller {
   display: flex;

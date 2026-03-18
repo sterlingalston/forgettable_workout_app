@@ -5,6 +5,7 @@ const Exercises = (() => {
   let hasMore = true;
   let isLoading = false;
   let activeFilters = {};
+  let activeEquipment = '';
   let searchQuery = '';
   let onPick = null; // callback when in picker mode
   let pickerRoutineId = null;
@@ -64,13 +65,12 @@ const Exercises = (() => {
         (ex.equipment || '').toLowerCase().includes(q) ||
         (ex.category || '').toLowerCase().includes(q)
       );
-    } else if (activeFilters.category) {
-      exs = exs.filter(ex => ex.category === activeFilters.category);
-    } else if (activeFilters.primaryMuscle) {
-      exs = exs.filter(ex => (ex.primaryMuscle || []).includes(activeFilters.primaryMuscle));
-    } else if (activeFilters.equipment) {
-      exs = exs.filter(ex => ex.equipment === activeFilters.equipment);
+    } else {
+      if (activeFilters.category)      exs = exs.filter(ex => ex.category === activeFilters.category);
+      if (activeFilters.primaryMuscle) exs = exs.filter(ex => (ex.primaryMuscle || []).includes(activeFilters.primaryMuscle));
+      if (activeFilters.level)         exs = exs.filter(ex => ex.level === activeFilters.level);
     }
+    if (activeEquipment) exs = exs.filter(ex => ex.equipment === activeEquipment);
     return exs;
   }
 
@@ -91,10 +91,17 @@ const Exercises = (() => {
       }
 
       let result;
+      const combinedFilters = activeEquipment
+        ? { ...activeFilters, equipment: activeEquipment }
+        : activeFilters;
       if (searchQuery) {
         result = await API.searchExercises(searchQuery, cursor);
+        // Apply equipment filter client-side on search results
+        if (activeEquipment && result.exercises) {
+          result.exercises = result.exercises.filter(ex => ex.equipment === activeEquipment);
+        }
       } else {
-        result = await API.queryExercises(activeFilters, cursor);
+        result = await API.queryExercises(combinedFilters, cursor);
       }
 
       const exercises = result.exercises || result;
@@ -134,6 +141,26 @@ const Exercises = (() => {
     loadMore();
   }
 
+  // ── Equipment filter bar ──────────────────────────────────────────────────
+
+  function buildEquipmentBar(containerId) {
+    const bar = document.getElementById(containerId);
+    if (!bar) return;
+    bar.innerHTML = `
+      <div class="ex-equip-wrap">
+        <select class="input ex-equip-select">
+          <option value="">All Equipment</option>
+          ${API.EQUIPMENT.map(e =>
+            `<option value="${e}" ${activeEquipment === e ? 'selected' : ''}>${API.fmt(e)}</option>`
+          ).join('')}
+        </select>
+      </div>`;
+    bar.querySelector('select').addEventListener('change', e => {
+      activeEquipment = e.target.value;
+      reset();
+    });
+  }
+
   // ── Filter bar ────────────────────────────────────────────────────────────
 
   function buildFilterBar(containerId) {
@@ -148,9 +175,6 @@ const Exercises = (() => {
         ).join('')}
         ${API.MUSCLES.map(m =>
           `<button class="filter-pill" data-type="primaryMuscle" data-val="${m}">${API.fmt(m)}</button>`
-        ).join('')}
-        ${API.EQUIPMENT.map(e =>
-          `<button class="filter-pill" data-type="equipment" data-val="${e}">${API.fmt(e)}</button>`
         ).join('')}
         ${API.LEVELS.map(l =>
           `<button class="filter-pill" data-type="level" data-val="${l}">${API.fmt(l)}</button>`
@@ -201,6 +225,10 @@ const Exercises = (() => {
       ...(ex.secondaryMuscle || []).map(m => `<span class="chip chip-muscle2">${API.fmt(m)}</span>`),
     ].join('');
 
+    // Custom media equipment override
+    const customMedia = isCustom ? null : Storage.getCustomMediaFor(ex.displayName);
+    const displayEquipment = customMedia?.equipment || ex.equipment;
+
     const addBtn = onPick
       ? `<button class="btn btn-primary full-w" id="modal-add-ex">+ Add to Routine</button>`
       : `<button class="btn btn-primary full-w" id="modal-add-ex">+ Add to Workout</button>`;
@@ -229,7 +257,7 @@ const Exercises = (() => {
             <h2 class="modal-title">${ex.displayName}</h2>
             <div class="chip-row">
               ${chipHtml(ex.category, 'chip-cat')}
-              ${chipHtml(ex.equipment, 'chip-equip')}
+              ${chipHtml(displayEquipment, 'chip-equip')}
               ${chipHtml(ex.level, 'chip-level chip-level-' + (ex.level||'').toLowerCase())}
               ${chipHtml(ex.mechanic, 'chip-mech')}
               ${chipHtml(ex.force, 'chip-force')}
@@ -373,6 +401,10 @@ const Exercises = (() => {
     const existing = Storage.getCustomMediaFor(exerciseName) || {};
     const wrap = modal.querySelector('#modal-media-wrap');
 
+    const equipOptions = API.EQUIPMENT.map(e =>
+      `<option value="${e}" ${existing.equipment === e ? 'selected' : ''}>${API.fmt(e)}</option>`
+    ).join('');
+
     // Replace media with edit form
     wrap.innerHTML = `
       <div class="media-edit-form">
@@ -380,6 +412,11 @@ const Exercises = (() => {
         <input class="input" id="media-edit-video" type="url" placeholder="https://youtube.com/watch?v=…" value="${existing.videoId ? 'https://youtu.be/' + existing.videoId : ''}">
         <label class="media-edit-label" style="margin-top:10px">Backup thumbnail URL <span style="font-weight:400;color:var(--text-muted)">(optional)</span></label>
         <input class="input" id="media-edit-thumb" type="url" placeholder="https://…" value="${existing.thumb || ''}">
+        <label class="media-edit-label" style="margin-top:10px">Equipment</label>
+        <select class="input" id="media-edit-equip">
+          <option value="">— unchanged —</option>
+          ${equipOptions}
+        </select>
         <div class="media-edit-actions">
           <button class="btn btn-ghost btn-sm" id="media-edit-cancel">Cancel</button>
           <button class="btn btn-primary btn-sm" id="media-edit-save">Save</button>
@@ -393,20 +430,32 @@ const Exercises = (() => {
 
     wrap.querySelector('#media-edit-save').addEventListener('click', async e => {
       e.stopPropagation();
-      const rawVideo = document.getElementById('media-edit-video').value.trim();
-      const thumb    = document.getElementById('media-edit-thumb').value.trim();
-      const videoId  = rawVideo ? parseYouTubeId(rawVideo) : null;
+      const rawVideo  = document.getElementById('media-edit-video').value.trim();
+      const thumb     = document.getElementById('media-edit-thumb').value.trim();
+      const equipment = document.getElementById('media-edit-equip').value;
+      const videoId   = rawVideo ? parseYouTubeId(rawVideo) : null;
 
       if (rawVideo && !videoId) { App.toast('Invalid YouTube URL'); return; }
 
-      const data = { videoId: videoId || null, thumb: thumb || null };
+      const data = {
+        videoId:   videoId   || null,
+        thumb:     thumb     || null,
+        equipment: equipment || null,
+      };
       Storage.saveCustomMedia(exerciseName, data);
       renderMedia(wrap, data.videoId, data.thumb, exerciseName);
+
+      // Update equipment chip in detail modal if it changed
+      if (equipment) {
+        const chipEl = modal.querySelector('.chip-equip');
+        if (chipEl) chipEl.textContent = API.fmt(equipment);
+      }
+
       try {
         await GithubSync.pushAll();
-        App.toast('Video saved & synced');
+        App.toast('Saved & synced');
       } catch (err) {
-        App.toast('Video saved locally (sync failed)');
+        App.toast('Saved locally (sync failed)');
       }
     });
   }
@@ -433,6 +482,7 @@ const Exercises = (() => {
           <div class="picker-search-wrap">
             <input id="ex-search" class="input" type="search" placeholder="Search exercises…" autocomplete="off">
           </div>
+          <div id="ex-equip-bar"></div>
           <div id="ex-filter-bar"></div>
           <div id="ex-grid" class="ex-list"></div>
           <div id="ex-sentinel"></div>
@@ -445,6 +495,7 @@ const Exercises = (() => {
 
     document.getElementById('ex-search')?.addEventListener('input', e => onSearch(e.target.value));
 
+    buildEquipmentBar('ex-equip-bar');
     buildFilterBar('ex-filter-bar');
     setupGridDelegation('ex-grid');
     setupSentinel('ex-sentinel');
@@ -458,6 +509,7 @@ const Exercises = (() => {
     pickerRoutineId = null;
     cursor = null;
     hasMore = true;
+    activeEquipment = '';
   }
 
   // ── Standalone view init ──────────────────────────────────────────────────
@@ -467,6 +519,7 @@ const Exercises = (() => {
     cursor = null;
     hasMore = true;
     activeFilters = {};
+    activeEquipment = '';
     searchQuery = '';
 
     // Wire up static DOM elements only once — avoid accumulating listeners
@@ -477,6 +530,7 @@ const Exercises = (() => {
       _viewInited = true;
     }
 
+    buildEquipmentBar('ex-equip-bar');
     buildFilterBar('ex-filter-bar');
     reset();
   }
