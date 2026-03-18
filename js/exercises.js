@@ -156,8 +156,11 @@ const Exercises = (() => {
 
     // Media section — YouTube video (loading spinner while fetching)
     const mediaHtml = `
-      <div class="modal-media" id="modal-media-wrap">
-        <div class="modal-video-loading"><div class="spinner"></div></div>
+      <div class="modal-media-wrap-outer">
+        <div class="modal-media" id="modal-media-wrap">
+          <div class="modal-video-loading"><div class="spinner"></div></div>
+        </div>
+        <button class="btn-media-edit" id="modal-media-edit" title="Change video">✏️</button>
       </div>`;
 
     const html = `
@@ -193,6 +196,11 @@ const Exercises = (() => {
     // Try to load YouTube video — replaces animation if found
     loadVideo(ex.displayName);
 
+    modal.querySelector('#modal-media-edit')?.addEventListener('click', e => {
+      e.stopPropagation();
+      openMediaEditor(modal, ex.displayName);
+    });
+
     modal.querySelector('#modal-back-btn')?.addEventListener('click', e => {
       e.stopPropagation();
       closeDetail();
@@ -212,14 +220,7 @@ const Exercises = (() => {
     });
   }
 
-  async function loadVideo(exerciseName) {
-    const [videoId, gifUrl] = await Promise.all([
-      API.getYouTubeVideoId(exerciseName),
-      API.getFitnessProgramerGif(exerciseName),
-    ]);
-    const wrap = document.getElementById('modal-media-wrap');
-    if (!wrap) return;
-
+  function renderMedia(wrap, videoId, thumbUrl, exerciseName) {
     if (videoId) {
       wrap.innerHTML = `
         <iframe
@@ -230,11 +231,75 @@ const Exercises = (() => {
           loading="lazy"
           title="${exerciseName}">
         </iframe>`;
-    } else if (gifUrl) {
-      wrap.innerHTML = `<img class="modal-media-gif" src="${gifUrl}" alt="${exerciseName}" loading="lazy">`;
+    } else if (thumbUrl) {
+      wrap.innerHTML = `<img class="modal-media-gif" src="${thumbUrl}" alt="${exerciseName}" loading="lazy">`;
     } else {
       wrap.innerHTML = `<div class="modal-media-ph">🎬<br><small>No video found</small></div>`;
     }
+  }
+
+  async function loadVideo(exerciseName) {
+    const wrap = document.getElementById('modal-media-wrap');
+    if (!wrap) return;
+
+    // User-set custom media takes priority
+    const custom = Storage.getCustomMediaFor(exerciseName);
+    if (custom) { renderMedia(wrap, custom.videoId, custom.thumb, exerciseName); return; }
+
+    const [videoId, gifUrl] = await Promise.all([
+      API.getYouTubeVideoId(exerciseName),
+      API.getFitnessProgramerGif(exerciseName),
+    ]);
+    if (!wrap.isConnected) return;
+    renderMedia(wrap, videoId, gifUrl, exerciseName);
+  }
+
+  function parseYouTubeId(url) {
+    try {
+      const u = new URL(url.trim());
+      if (u.hostname === 'youtu.be') return u.pathname.slice(1).split('?')[0];
+      if (u.pathname.includes('/shorts/')) return u.pathname.split('/shorts/')[1].split('?')[0];
+      if (u.pathname.includes('/embed/'))  return u.pathname.split('/embed/')[1].split('?')[0];
+      return u.searchParams.get('v') || null;
+    } catch { return null; }
+  }
+
+  function openMediaEditor(modal, exerciseName) {
+    const existing = Storage.getCustomMediaFor(exerciseName) || {};
+    const wrap = modal.querySelector('#modal-media-wrap');
+
+    // Replace media with edit form
+    wrap.innerHTML = `
+      <div class="media-edit-form">
+        <label class="media-edit-label">YouTube URL</label>
+        <input class="input" id="media-edit-video" type="url" placeholder="https://youtube.com/watch?v=…" value="${existing.videoId ? 'https://youtu.be/' + existing.videoId : ''}">
+        <label class="media-edit-label" style="margin-top:10px">Backup thumbnail URL <span style="font-weight:400;color:var(--text-muted)">(optional)</span></label>
+        <input class="input" id="media-edit-thumb" type="url" placeholder="https://…" value="${existing.thumb || ''}">
+        <div class="media-edit-actions">
+          <button class="btn btn-ghost btn-sm" id="media-edit-cancel">Cancel</button>
+          <button class="btn btn-primary btn-sm" id="media-edit-save">Save</button>
+        </div>
+      </div>`;
+
+    wrap.querySelector('#media-edit-cancel').addEventListener('click', e => {
+      e.stopPropagation();
+      loadVideo(exerciseName);
+    });
+
+    wrap.querySelector('#media-edit-save').addEventListener('click', e => {
+      e.stopPropagation();
+      const rawVideo = document.getElementById('media-edit-video').value.trim();
+      const thumb    = document.getElementById('media-edit-thumb').value.trim();
+      const videoId  = rawVideo ? parseYouTubeId(rawVideo) : null;
+
+      if (rawVideo && !videoId) { App.toast('Invalid YouTube URL'); return; }
+
+      const data = { videoId: videoId || null, thumb: thumb || null };
+      Storage.saveCustomMedia(exerciseName, data);
+      GithubSync.pushAll();
+      App.toast('Video saved');
+      renderMedia(wrap, data.videoId, data.thumb, exerciseName);
+    });
   }
 
   function closeDetail() {

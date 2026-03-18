@@ -796,6 +796,32 @@ body {
 }
 .modal-media-ph { font-size: 64px; }
 
+.modal-media-wrap-outer { position: relative; }
+.btn-media-edit {
+  position: absolute;
+  bottom: 8px; right: 8px;
+  background: rgba(0,0,0,.55);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-size: 13px;
+  padding: 5px 9px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  z-index: 2;
+}
+.btn-media-edit:active { opacity: .75; }
+.media-edit-form {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 180px;
+  justify-content: center;
+}
+.media-edit-label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.media-edit-actions { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; }
+
 .modal-body { padding: 20px 16px 32px; }
 .modal-title {
   font-size: 20px;

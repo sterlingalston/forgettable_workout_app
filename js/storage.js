@@ -2,13 +2,14 @@
 
 const Storage = (() => {
   const KEYS = {
-    routines:   'wk_routines',
-    logs:       'wk_logs',
-    settings:   'wk_settings',
-    exCache:    'wk_ex_cache',
-    exCacheIdx: 'wk_ex_cache_idx',
-    freeDbMap:  'wk_freedb_map',
-    videoCache: 'wk_video_cache',
+    routines:    'wk_routines',
+    logs:        'wk_logs',
+    settings:    'wk_settings',
+    exCache:     'wk_ex_cache',
+    exCacheIdx:  'wk_ex_cache_idx',
+    freeDbMap:   'wk_freedb_map',
+    videoCache:  'wk_video_cache',
+    customMedia: 'wk_custom_media',
   };
 
   function read(key, fallback) {
@@ -62,6 +63,13 @@ const Storage = (() => {
   function getVideoId(name)         { return getVideoCache()[name.toLowerCase()] ?? null; }
   // Remote wins so discoveries from any device propagate everywhere
   function mergeVideoCache(remote)  { setVideoCache({ ...getVideoCache(), ...remote }); }
+
+  // ── Custom media overrides (user-set video/thumbnail per exercise) ─────────
+  // { "exercise name": { videoId: "...", thumb: "..." } }
+  function getCustomMedia()            { return read(KEYS.customMedia, {}); }
+  function saveCustomMedia(name, data) { const m = getCustomMedia(); m[name.toLowerCase()] = data; write(KEYS.customMedia, m); }
+  function getCustomMediaFor(name)     { return getCustomMedia()[name.toLowerCase()] || null; }
+  function mergeCustomMedia(remote)    { write(KEYS.customMedia, { ...getCustomMedia(), ...remote }); } // remote wins
 
   // ── free-exercise-db name→images map ─────────────────────────────────────
   function getFreeDbMap() { return read(KEYS.freeDbMap, null); }
@@ -177,6 +185,7 @@ const Storage = (() => {
     getSettings, saveSettings,
     getCached, setCached, clearExCache,
     getVideoCache, setVideoCache, saveVideoId, getVideoId, mergeVideoCache,
+    getCustomMedia, saveCustomMedia, getCustomMediaFor, mergeCustomMedia,
     getFreeDbMap, setFreeDbMap,
     getRoutines, saveRoutines, getRoutine, createRoutine, updateRoutine, deleteRoutine,
     addExerciseToRoutine, removeExFromRoutine, updateExInRoutine,
