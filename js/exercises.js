@@ -240,7 +240,7 @@ const Exercises = (() => {
           title="${exerciseName}">
         </iframe>`;
       const iframe = wrap.querySelector('iframe');
-      const timer = setTimeout(showFallback, 15000);
+      const timer = setTimeout(showFallback, 25000);
       iframe.addEventListener('load', () => clearTimeout(timer), { once: true });
     } else {
       showFallback();
