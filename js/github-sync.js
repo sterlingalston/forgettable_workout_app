@@ -114,15 +114,17 @@ const GithubSync = (() => {
       return;
     }
     try {
-      await fetch(`${GH}/gists/${_gistId}`, {
+      const res = await fetch(`${GH}/gists/${_gistId}`, {
         method: 'PATCH',
         headers: _headers(),
         body: JSON.stringify({ files: { [GIST_FILE]: { content: JSON.stringify(_buildPayload(), null, 2) } } }),
       });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       localStorage.removeItem(PENDING_KEY);
     } catch (e) {
       localStorage.setItem(PENDING_KEY, '1');
       console.warn('Gist push failed:', e.message);
+      throw e;
     }
   }
 
@@ -152,10 +154,10 @@ const GithubSync = (() => {
   }
 
   // Individual helpers called by workout/routine/log — all delegate to pushAll
-  async function pushLog(log)      { await pushAll(); }
-  async function removeLog(id)     { await pushAll(); }
-  async function pushRoutine(r)    { await pushAll(); }
-  async function removeRoutine(id) { await pushAll(); }
+  async function pushLog(log)      { try { await pushAll(); } catch {} }
+  async function removeLog(id)     { try { await pushAll(); } catch {} }
+  async function pushRoutine(r)    { try { await pushAll(); } catch {} }
+  async function removeRoutine(id) { try { await pushAll(); } catch {} }
 
   // ── Auth UI ───────────────────────────────────────────────────────────────
 
@@ -174,11 +176,15 @@ const GithubSync = (() => {
         </div>`;
       document.getElementById('btn-signout')?.addEventListener('click', signOut);
       document.getElementById('btn-sync')?.addEventListener('click', async () => {
-        await pushAll();
-        await pullAll();
-        Routine.renderList();
-        Log.render();
-        App.toast('Synced');
+        try {
+          await pushAll();
+          await pullAll();
+          Routine.renderList();
+          Log.render();
+          App.toast('Synced');
+        } catch (e) {
+          App.toast('Sync failed: ' + e.message);
+        }
       });
     } else {
       container.innerHTML = `
@@ -217,7 +223,7 @@ const GithubSync = (() => {
     window.addEventListener('online', async () => {
       if (localStorage.getItem(PENDING_KEY) && _token && _gistId) {
         console.log('Back online — flushing queued sync');
-        await pushAll();
+        try { await pushAll(); } catch (e) { console.warn('Queued sync failed:', e.message); }
       }
     });
 

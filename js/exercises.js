@@ -286,7 +286,7 @@ const Exercises = (() => {
       loadVideo(exerciseName);
     });
 
-    wrap.querySelector('#media-edit-save').addEventListener('click', e => {
+    wrap.querySelector('#media-edit-save').addEventListener('click', async e => {
       e.stopPropagation();
       const rawVideo = document.getElementById('media-edit-video').value.trim();
       const thumb    = document.getElementById('media-edit-thumb').value.trim();
@@ -296,9 +296,13 @@ const Exercises = (() => {
 
       const data = { videoId: videoId || null, thumb: thumb || null };
       Storage.saveCustomMedia(exerciseName, data);
-      GithubSync.pushAll();
-      App.toast('Video saved');
       renderMedia(wrap, data.videoId, data.thumb, exerciseName);
+      try {
+        await GithubSync.pushAll();
+        App.toast('Video saved & synced');
+      } catch (err) {
+        App.toast('Video saved locally (sync failed)');
+      }
     });
   }
 

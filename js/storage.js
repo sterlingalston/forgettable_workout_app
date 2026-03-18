@@ -11,6 +11,10 @@ const Storage = (() => {
     videoCache:  'wk_video_cache',
     customMedia: 'wk_custom_media',
   };
+  // Auth lives in its own key — saveSettings() NEVER touches this key.
+  // The only way to clear it is clearAuth() (explicit sign-out).
+  const AUTH_KEY = 'wk_auth';
+  const AUTH_FIELDS = ['githubToken', 'githubUsername', 'githubGistId'];
 
   function read(key, fallback) {
     try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
@@ -20,33 +24,58 @@ const Storage = (() => {
     try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
   }
 
+  // ── One-time migration: move auth out of wk_settings → wk_auth ───────────
+  (function _migrateAuth() {
+    if (localStorage.getItem(AUTH_KEY) !== null) return; // already migrated
+    const old = read(KEYS.settings, {});
+    const auth = {};
+    for (const k of AUTH_FIELDS) { if (old[k]) auth[k] = old[k]; }
+    write(AUTH_KEY, auth);
+    // Strip auth fields from the settings blob
+    const { githubToken, githubUsername, githubGistId, ...rest } = old;
+    write(KEYS.settings, rest);
+  })();
+
   // ── Settings ──────────────────────────────────────────────────────────────
   const defaultSettings = {
     youtubeApiKey:   '',
-    githubToken:     '',
-    githubUsername:  '',
-    githubGistId:    '',
     language:        'en',
     defaultSets:     3,
     defaultReps:     10,
     restSeconds:     90,
     weightUnit:      'lbs',
   };
-  function getSettings() { return { ...defaultSettings, ...read(KEYS.settings, {}) }; }
-  function saveSettings(s) {
-    const current = getSettings();
-    // Never allow auth credentials to be silently blanked by a partial update.
-    // Use clearAuth() for intentional sign-out.
-    const AUTH = ['githubToken', 'githubUsername', 'githubGistId'];
-    const patch = { ...s };
-    for (const k of AUTH) {
-      if (patch[k] === '' || patch[k] === undefined || patch[k] === null) delete patch[k];
-    }
-    write(KEYS.settings, { ...current, ...patch });
+
+  // Returns merged view: non-auth settings + auth credentials
+  function getSettings() {
+    return {
+      ...defaultSettings,
+      ...read(KEYS.settings, {}),
+      ...read(AUTH_KEY, {}),         // auth always wins
+    };
   }
+
+  // saveSettings() NEVER writes auth fields — they go through saveAuth() only.
+  function saveSettings(s) {
+    const authPatch = {};
+    const settingsPatch = {};
+    for (const [k, v] of Object.entries(s)) {
+      if (AUTH_FIELDS.includes(k)) {
+        if (v) authPatch[k] = v;      // non-blank auth → dedicated key
+      } else {
+        settingsPatch[k] = v;
+      }
+    }
+    // Non-auth settings: merge into wk_settings
+    write(KEYS.settings, { ...read(KEYS.settings, {}), ...settingsPatch });
+    // Auth: merge into wk_auth (only when caller provides real values)
+    if (Object.keys(authPatch).length) {
+      write(AUTH_KEY, { ...read(AUTH_KEY, {}), ...authPatch });
+    }
+  }
+
   function clearAuth() {
-    const current = getSettings();
-    write(KEYS.settings, { ...current, githubToken: '', githubUsername: '', githubGistId: '' });
+    write(AUTH_KEY, { githubToken: '', githubUsername: '', githubGistId: '' });
   }
 
   // ── Exercise cache ────────────────────────────────────────────────────────
@@ -100,20 +129,16 @@ const Storage = (() => {
     const list = getRoutines();
     list.push(r);
     saveRoutines(list);
-    window.Firebase?.pushRoutine(r);
     return r;
   }
 
   function updateRoutine(id, patch) {
     const list = getRoutines().map(r => r.id === id ? { ...r, ...patch } : r);
     saveRoutines(list);
-    const updated = list.find(r => r.id === id);
-    if (updated) window.Firebase?.pushRoutine(updated);
   }
 
   function deleteRoutine(id) {
     saveRoutines(getRoutines().filter(r => r.id !== id));
-    window.Firebase?.removeRoutine(id);
   }
 
   // exercises inside routine: { exId, name, sets, reps, restSeconds, timed }
@@ -155,15 +180,12 @@ const Storage = (() => {
     if (idx >= 0) logs[idx] = log;
     else logs.unshift(log);
     saveLogs(logs);
-    // Only push to Firestore when finished
-    if (log.finishedAt) window.Firebase?.pushLog(log);
     return log;
   }
 
   function getLog(id) { return getLogs().find(l => l.id === id) || null; }
   function deleteLog(id) {
     saveLogs(getLogs().filter(l => l.id !== id));
-    window.Firebase?.removeLog(id);
   }
 
   function createWorkoutLog(routineId, routineName) {
