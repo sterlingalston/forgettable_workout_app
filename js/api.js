@@ -299,6 +299,46 @@ const API = (() => {
     }
   }
 
+  // ── Community exercise metadata ───────────────────────────────────────────
+  // data/community/<slug>.json — contributor-provided video, thumb, instructions, timed flag
+
+  const COMMUNITY_BASE = 'data/community';
+  let _communityIndex = null; // Set of slugs that have a community file
+
+  function _slugify(name) {
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  async function _loadCommunityIndex() {
+    if (_communityIndex !== null) return _communityIndex;
+    const cached = Storage.getCached('community_index');
+    if (cached) { _communityIndex = new Set(cached); return _communityIndex; }
+    try {
+      const res = await fetch(`${COMMUNITY_BASE}/index.json`);
+      if (!res.ok) { _communityIndex = new Set(); return _communityIndex; }
+      const data = await res.json();
+      _communityIndex = new Set(data.slugs || []);
+      Storage.setCached('community_index', [..._communityIndex]);
+    } catch { _communityIndex = new Set(); }
+    return _communityIndex;
+  }
+
+  async function getCommunityMeta(exerciseName) {
+    const slug = _slugify(exerciseName);
+    const index = await _loadCommunityIndex();
+    if (!index.has(slug)) return null;
+    const cacheKey = 'community_ex_' + slug;
+    const cached = Storage.getCached(cacheKey);
+    if (cached) return cached;
+    try {
+      const res = await fetch(`${COMMUNITY_BASE}/${slug}.json`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      Storage.setCached(cacheKey, data);
+      return data;
+    } catch { return null; }
+  }
+
   // ── Static filter lists ───────────────────────────────────────────────────
 
   const MUSCLES = [
@@ -329,6 +369,7 @@ const API = (() => {
     getImageUrl,
     getYouTubeVideoId,
     getFitnessProgramerGif,
+    getCommunityMeta,
     MUSCLES, EQUIPMENT, CATEGORIES, LEVELS,
     fmt,
   };

@@ -190,6 +190,25 @@ const Routine = (() => {
       wrap.innerHTML = `<img class="wk-video-frame" src="${custom.thumb}" alt="${exerciseName}" loading="lazy">`;
       return;
     }
+    // Community data (curated, cached after first fetch)
+    const community = await API.getCommunityMeta(exerciseName);
+    if (!wrap.isConnected) return;
+    if (community?.videoId) {
+      wrap.innerHTML = `
+        <iframe
+          class="wk-video-frame"
+          src="https://www.youtube-nocookie.com/embed/${community.videoId}?autoplay=1&mute=1&loop=1&playlist=${community.videoId}&controls=1&rel=0&modestbranding=1"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          title="${exerciseName}">
+        </iframe>`;
+      return;
+    }
+    if (community?.thumbnailUrl) {
+      wrap.innerHTML = `<img class="wk-video-frame" src="${community.thumbnailUrl}" alt="${exerciseName}" loading="lazy">`;
+      return;
+    }
+
     const videoId = await API.getYouTubeVideoId(exerciseName);
     if (!wrap.isConnected) return;
     if (!videoId) { wrap.innerHTML = ''; return; }

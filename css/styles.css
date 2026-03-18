@@ -831,6 +831,19 @@ body {
 .media-edit-actions { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; }
 
 .modal-body { padding: 20px 16px 32px; }
+.badge-community {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
 .modal-title {
   font-size: 20px;
   font-weight: 700;

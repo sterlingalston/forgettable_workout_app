@@ -142,7 +142,14 @@ const Exercises = (() => {
     try { ex = await API.getExercise(id); }
     catch (e) { App.toast(e.message); return; }
 
-    const instructions = (ex.instructions || [])
+    // Community metadata: better instructions, timed flag
+    const community = await API.getCommunityMeta(ex.displayName);
+    const activeInstructions = community?.instructions?.length
+      ? community.instructions
+      : (ex.instructions || []);
+    const isCommunityInstructions = !!(community?.instructions?.length);
+
+    const instructions = activeInstructions
       .map((s, i) => `<li><span class="step-n">${i+1}</span>${s}</li>`)
       .join('');
 
@@ -180,7 +187,7 @@ const Exercises = (() => {
             </div>
             ${muscles ? `<div class="chip-row muscles-row">${muscles}</div>` : ''}
             ${instructions
-              ? `<h4 class="section-label">Instructions</h4><ol class="steps">${instructions}</ol>`
+              ? `<h4 class="section-label">Instructions${isCommunityInstructions ? ' <span class="badge-community">Community</span>' : ''}</h4><ol class="steps">${instructions}</ol>`
               : ''}
             ${addBtn}
             <button class="btn btn-ghost full-w" id="modal-back-btn" style="margin-top:8px">← Back</button>
@@ -210,11 +217,12 @@ const Exercises = (() => {
 
     modal.querySelector('#modal-add-ex')?.addEventListener('click', e => {
       e.stopPropagation();
+      const exWithMeta = community?.timed ? { ...ex, timed: true } : ex;
       if (onPick) {
-        onPick(ex);
+        onPick(exWithMeta);
         closeDetail();
       } else {
-        App.addExToActiveWorkout(ex);
+        App.addExToActiveWorkout(exWithMeta);
         closeDetail();
       }
     });
@@ -246,7 +254,17 @@ const Exercises = (() => {
     const custom = Storage.getCustomMediaFor(exerciseName);
     if (custom) { renderMedia(wrap, custom.videoId, custom.thumb, exerciseName); return; }
 
-    // Step 1: GIF lookup is fast (local JSON, usually cached) — clears spinner right away
+    // Step 1: community data (curated, cached after first fetch)
+    const community = await API.getCommunityMeta(exerciseName);
+    if (!wrap.isConnected) return;
+    if (community?.videoId || community?.thumbnailUrl) {
+      if (!wrap.querySelector('.media-edit-form') && !Storage.getCustomMediaFor(exerciseName)) {
+        renderMedia(wrap, community.videoId || null, community.thumbnailUrl || null, exerciseName);
+      }
+      return;
+    }
+
+    // Step 2: GIF lookup is fast (local JSON, usually cached) — clears spinner right away
     const gifUrl = await API.getFitnessProgramerGif(exerciseName);
     if (!wrap.isConnected) return;
     if (!wrap.querySelector('.media-edit-form') && !Storage.getCustomMediaFor(exerciseName)) {
