@@ -138,11 +138,19 @@ const API = (() => {
       }
     }
     const key = exerciseName.toLowerCase();
-    // Exact match first
+    const norm = s => s.replace(/[\s\-_]/g, '');
+    const normKey = norm(key);
+
+    // Exact match
     if (_gifMap[key]) return _gifMap[key];
-    // Partial match: gif name contains or is contained by the exercise name
+    // Normalized exact match (handles "air bike" → "airbike")
     for (const [k, v] of Object.entries(_gifMap)) {
-      if (k.includes(key) || key.includes(k)) return v;
+      if (norm(k) === normKey) return v;
+    }
+    // Normalized partial match
+    for (const [k, v] of Object.entries(_gifMap)) {
+      const normK = norm(k);
+      if (normK.includes(normKey) || normKey.includes(normK)) return v;
     }
     return null;
   }

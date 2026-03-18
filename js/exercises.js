@@ -220,6 +220,15 @@ const Exercises = (() => {
     const wrap = document.getElementById('modal-media-wrap');
     if (!wrap) return;
 
+    const showFallback = () => {
+      if (!wrap.isConnected) return;
+      if (gifUrl) {
+        wrap.innerHTML = `<img class="modal-media-gif" src="${gifUrl}" alt="${exerciseName}" loading="lazy">`;
+      } else {
+        wrap.innerHTML = `<div class="modal-media-ph">🎬<br><small>No video found</small></div>`;
+      }
+    };
+
     if (videoId) {
       wrap.innerHTML = `
         <iframe
@@ -230,10 +239,11 @@ const Exercises = (() => {
           loading="lazy"
           title="${exerciseName}">
         </iframe>`;
-    } else if (gifUrl) {
-      wrap.innerHTML = `<img class="modal-media-gif" src="${gifUrl}" alt="${exerciseName}" loading="lazy">`;
+      const iframe = wrap.querySelector('iframe');
+      const timer = setTimeout(showFallback, 15000);
+      iframe.addEventListener('load', () => clearTimeout(timer), { once: true });
     } else {
-      wrap.innerHTML = `<div class="modal-media-ph">🎬<br><small>No video found</small></div>`;
+      showFallback();
     }
   }
 
