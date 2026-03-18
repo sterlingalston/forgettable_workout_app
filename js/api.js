@@ -162,11 +162,7 @@ const API = (() => {
     { handle: 'NasmOrgPersonalTrainer', id: 'UCjWgUFeyDbeQ3Q_eVCup_7Q' },
     { handle: 'OnnitAcademy' },
     { handle: 'MyPTHub' },
-    { handle: 'gymvisual8018' },
     { handle: 'BSNTraining' },
-    { handle: 'leveltencoaching2296' },
-    { handle: 'ElliotGrahamCoaching' },
-    { handle: 'strengthtools2494' },
   ];
 
   // Hardcoded video overrides — preferred videos for specific exercises
