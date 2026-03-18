@@ -80,11 +80,11 @@ const Routine = (() => {
     document.getElementById('rd-title').textContent = r.name;
     renderExerciseList(r);
 
-    document.getElementById('btn-start-workout')?.addEventListener('click', () => {
-      Workout.start(currentRoutineId);
-    }, { once: true });
+    const startBtn = document.getElementById('btn-start-workout');
+    if (startBtn) startBtn.onclick = () => Workout.start(currentRoutineId);
 
-    document.getElementById('btn-add-ex-to-routine')?.addEventListener('click', () => {
+    const addBtn = document.getElementById('btn-add-ex-to-routine');
+    if (addBtn) addBtn.onclick = () => {
       Exercises.openPicker(currentRoutineId, ex => {
         Storage.addExerciseToRoutine(currentRoutineId, {
           id: ex.id,
@@ -96,7 +96,7 @@ const Routine = (() => {
         renderExerciseList(Storage.getRoutine(currentRoutineId));
         App.toast(`${ex.displayName} added`);
       });
-    }, { once: true });
+    };
   }
 
   function renderExerciseList(r) {
@@ -140,10 +140,6 @@ const Routine = (() => {
         const idx = +header.dataset.index;
         expandedExIndex = expandedExIndex === idx ? null : idx;
         renderExerciseList(Storage.getRoutine(currentRoutineId));
-        if (expandedExIndex !== null) {
-          const ex = r.exercises[expandedExIndex];
-          loadRoutineVideo(ex.name, expandedExIndex);
-        }
       });
     });
 
@@ -175,6 +171,25 @@ const Routine = (() => {
   async function loadRoutineVideo(exerciseName, index) {
     const wrap = document.getElementById(`rd-video-wrap-${index}`);
     if (!wrap) return;
+    // Custom media takes priority (same as exercise detail modal)
+    const custom = Storage.getCustomMediaFor(exerciseName);
+    if (custom?.videoId) {
+      if (!wrap.isConnected) return;
+      wrap.innerHTML = `
+        <iframe
+          class="wk-video-frame"
+          src="https://www.youtube-nocookie.com/embed/${custom.videoId}?autoplay=1&mute=1&loop=1&playlist=${custom.videoId}&controls=1&rel=0&modestbranding=1"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          title="${exerciseName}">
+        </iframe>`;
+      return;
+    }
+    if (custom?.thumb) {
+      if (!wrap.isConnected) return;
+      wrap.innerHTML = `<img class="wk-video-frame" src="${custom.thumb}" alt="${exerciseName}" loading="lazy">`;
+      return;
+    }
     const videoId = await API.getYouTubeVideoId(exerciseName);
     if (!wrap.isConnected) return;
     if (!videoId) { wrap.innerHTML = ''; return; }

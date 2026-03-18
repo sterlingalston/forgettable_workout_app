@@ -205,8 +205,7 @@ const Exercises = (() => {
     modal.querySelector('#modal-back-btn')?.addEventListener('click', e => {
       e.stopPropagation();
       closeDetail();
-      App.showView('routines');
-      Routine.renderList();
+      // Underlying view is still visible — no navigation needed
     });
 
     modal.querySelector('#modal-add-ex')?.addEventListener('click', e => {
@@ -253,6 +252,9 @@ const Exercises = (() => {
     ]);
     if (!wrap.isConnected) return;
     if (wrap.querySelector('.media-edit-form')) return; // editor opened while loading — don't overwrite
+    // Re-check: user may have saved custom media while the API call was in flight
+    const customNow = Storage.getCustomMediaFor(exerciseName);
+    if (customNow) return;
     renderMedia(wrap, videoId, gifUrl, exerciseName);
   }
 
