@@ -228,18 +228,45 @@ const Routine = (() => {
     const ex = r?.exercises[index];
     if (!ex) return;
 
-    const actions = ['Remove', 'Toggle Timed', 'View Exercise'];
-    const choice = prompt(`"${ex.name}"\n\n1. Remove\n2. Toggle Timed (${ex.timed ? 'ON' : 'OFF'})\n3. View Exercise\n\nEnter number:`);
+    const html = `
+      <div class="modal-overlay" id="ex-menu-overlay">
+        <div class="action-sheet">
+          <div class="action-sheet-title">${escHtml(ex.name)}</div>
+          <button class="action-sheet-btn" id="exm-view">View / Edit Exercise</button>
+          <button class="action-sheet-btn" id="exm-timed">
+            Toggle Timed — currently <strong>${ex.timed ? 'ON' : 'OFF'}</strong>
+          </button>
+          <button class="action-sheet-btn action-sheet-danger" id="exm-remove">Remove from Routine</button>
+          <button class="action-sheet-btn action-sheet-cancel" id="exm-cancel">Cancel</button>
+        </div>
+      </div>`;
 
-    if (choice === '1') {
+    document.body.insertAdjacentHTML('beforeend', html);
+    const overlay = document.getElementById('ex-menu-overlay');
+    const close = () => overlay.remove();
+
+    overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+
+    overlay.querySelector('#exm-cancel').addEventListener('click', close);
+
+    overlay.querySelector('#exm-remove').addEventListener('click', () => {
+      close();
+      if (!confirm(`Remove "${ex.name}" from this routine?`)) return;
       Storage.removeExFromRoutine(currentRoutineId, index);
       renderExerciseList(Storage.getRoutine(currentRoutineId));
-    } else if (choice === '2') {
+    });
+
+    overlay.querySelector('#exm-timed').addEventListener('click', () => {
+      close();
       Storage.updateExInRoutine(currentRoutineId, index, { timed: !ex.timed });
       renderExerciseList(Storage.getRoutine(currentRoutineId));
-    } else if (choice === '3') {
-      Exercises.openDetail(ex.exId);
-    }
+      App.toast(`${ex.name} timed: ${!ex.timed ? 'ON' : 'OFF'}`);
+    });
+
+    overlay.querySelector('#exm-view').addEventListener('click', () => {
+      close();
+      Exercises.openDetail(ex.exId || ex.id);
+    });
   }
 
   return { renderList, openRoutine, promptCreate };

@@ -214,6 +214,7 @@ const Exercises = (() => {
     } else {
       try { ex = await API.getExercise(id); }
       catch (e) { App.toast(e.message); return; }
+      if (!ex) { App.toast('Exercise not found'); return; }
     }
 
     // Community metadata only for non-custom exercises

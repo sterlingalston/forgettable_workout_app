@@ -730,6 +730,45 @@ body {
 .danger-zone { margin-top: 8px; }
 
 /* ── Modals ── */
+/* ── Action sheet (bottom menu) ── */
+.action-sheet {
+  background: var(--surface);
+  border-radius: var(--radius) var(--radius) 0 0;
+  width: 100%;
+  padding: 8px 0 max(16px, env(safe-area-inset-bottom));
+  animation: slideUp .2s ease;
+}
+.action-sheet-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.action-sheet-btn {
+  display: block;
+  width: 100%;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 16px;
+  font-family: var(--font);
+  color: var(--text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.action-sheet-btn:active { background: var(--surface2); }
+.action-sheet-danger { color: var(--red); }
+.action-sheet-cancel {
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
 .modal-overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,.7);
