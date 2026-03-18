@@ -53,6 +53,14 @@ const Storage = (() => {
     localStorage.removeItem(KEYS.freeDbMap);
   }
 
+  // ── Video cache (exercise name → YouTube videoId) ─────────────────────────
+  // Persisted in the gist so discoveries sync across devices
+  function getVideoCache()          { return read('wk_video_cache', {}); }
+  function setVideoCache(map)       { write('wk_video_cache', map); }
+  function saveVideoId(name, id)    { const m = getVideoCache(); m[name.toLowerCase()] = id; setVideoCache(m); }
+  function getVideoId(name)         { return getVideoCache()[name.toLowerCase()] ?? null; }
+  function mergeVideoCache(remote)  { setVideoCache({ ...remote, ...getVideoCache() }); } // local wins
+
   // ── free-exercise-db name→images map ─────────────────────────────────────
   function getFreeDbMap() { return read(KEYS.freeDbMap, null); }
   function setFreeDbMap(map) { write(KEYS.freeDbMap, map); }
@@ -166,6 +174,7 @@ const Storage = (() => {
   return {
     getSettings, saveSettings,
     getCached, setCached, clearExCache,
+    getVideoCache, setVideoCache, saveVideoId, getVideoId, mergeVideoCache,
     getFreeDbMap, setFreeDbMap,
     getRoutines, saveRoutines, getRoutine, createRoutine, updateRoutine, deleteRoutine,
     addExerciseToRoutine, removeExFromRoutine, updateExInRoutine,

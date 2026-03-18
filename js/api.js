@@ -278,6 +278,10 @@ const API = (() => {
     const ytKey = Storage.getSettings().youtubeApiKey || _dyk();
     if (!ytKey) return null;
 
+    // Check gist-backed video cache first (synced across devices)
+    const gistCached = Storage.getVideoId(exerciseName);
+    if (gistCached !== null) return gistCached || null;
+
     const cacheKey = 'yt5_' + exerciseName.toLowerCase().replace(/\s+/g, '_');
     const cached = Storage.getCached(cacheKey);
     if (cached !== null) return cached || null; // '' = confirmed no result
@@ -315,6 +319,8 @@ const API = (() => {
 
         if (videoId) {
           Storage.setCached(cacheKey, videoId);
+          Storage.saveVideoId(exerciseName, videoId);
+          GithubSync.pushAll();
           return videoId;
         }
       }
