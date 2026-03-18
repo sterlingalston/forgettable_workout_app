@@ -437,5 +437,7 @@ const Workout = (() => {
     render();
   }
 
-  return { start, resume, addExercise };
+  function isActive() { return !!log && !log.finishedAt; }
+
+  return { start, resume, addExercise, isActive };
 })();

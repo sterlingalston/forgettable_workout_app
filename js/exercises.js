@@ -13,6 +13,12 @@ const Exercises = (() => {
   let _escCustomEx = null;
   let _viewInited = false;
 
+  // IDs of the currently active grid/sentinel/search — switch between
+  // static exercises view and picker modal to avoid getElementById collisions
+  let _gridId     = 'ex-grid';
+  let _sentinelId = 'ex-sentinel';
+  let _searchId   = 'ex-search';
+
   // ── Render ────────────────────────────────────────────────────────────────
 
   function chipHtml(label, cls) {
@@ -78,8 +84,8 @@ const Exercises = (() => {
     if (isLoading || !hasMore) return;
     isLoading = true;
 
-    const grid = document.getElementById('ex-grid');
-    const sentinel = document.getElementById('ex-sentinel');
+    const grid = document.getElementById(_gridId);
+    const sentinel = document.getElementById(_sentinelId);
     if (sentinel) sentinel.innerHTML = '<div class="spinner"></div>';
 
     try {
@@ -136,7 +142,7 @@ const Exercises = (() => {
   function reset() {
     cursor = null;
     hasMore = true;
-    const grid = document.getElementById('ex-grid');
+    const grid = document.getElementById(_gridId);
     if (grid) grid.innerHTML = '';
     loadMore();
   }
@@ -188,7 +194,8 @@ const Exercises = (() => {
         const { type, val } = pill.dataset;
         activeFilters = type ? { [type]: val } : {};
         searchQuery = '';
-        document.getElementById('ex-search').value = '';
+        const searchEl = document.getElementById(_searchId);
+        if (searchEl) searchEl.value = '';
         reset();
       });
     });
@@ -480,12 +487,12 @@ const Exercises = (() => {
             <h3>Add Exercise</h3>
           </div>
           <div class="picker-search-wrap">
-            <input id="ex-search" class="input" type="search" placeholder="Search exercises…" autocomplete="off">
+            <input id="picker-search" class="input" type="search" placeholder="Search exercises…" autocomplete="off">
           </div>
-          <div id="ex-equip-bar"></div>
-          <div id="ex-filter-bar"></div>
-          <div id="ex-grid" class="ex-list"></div>
-          <div id="ex-sentinel"></div>
+          <div id="picker-equip-bar"></div>
+          <div id="picker-filter-bar"></div>
+          <div id="picker-grid" class="ex-list"></div>
+          <div id="picker-sentinel"></div>
         </div>
       </div>`;
 
@@ -493,12 +500,13 @@ const Exercises = (() => {
     const modal = document.getElementById('ex-picker-modal');
     modal.querySelector('.modal-close').addEventListener('click', closePicker);
 
-    document.getElementById('ex-search')?.addEventListener('input', e => onSearch(e.target.value));
+    _searchId = 'picker-search';
+    modal.querySelector('#picker-search').addEventListener('input', e => onSearch(e.target.value));
 
-    buildEquipmentBar('ex-equip-bar');
-    buildFilterBar('ex-filter-bar');
-    setupGridDelegation('ex-grid');
-    setupSentinel('ex-sentinel');
+    buildEquipmentBar('picker-equip-bar');
+    buildFilterBar('picker-filter-bar');
+    setupGridDelegation('picker-grid');
+    setupSentinel('picker-sentinel');
     reset();
   }
 
@@ -510,6 +518,8 @@ const Exercises = (() => {
     cursor = null;
     hasMore = true;
     activeEquipment = '';
+    // Restore static view IDs
+    _gridId = 'ex-grid'; _sentinelId = 'ex-sentinel'; _searchId = 'ex-search';
   }
 
   // ── Standalone view init ──────────────────────────────────────────────────
@@ -521,6 +531,7 @@ const Exercises = (() => {
     activeFilters = {};
     activeEquipment = '';
     searchQuery = '';
+    _gridId = 'ex-grid'; _sentinelId = 'ex-sentinel'; _searchId = 'ex-search';
 
     // Wire up static DOM elements only once — avoid accumulating listeners
     if (!_viewInited) {
@@ -543,13 +554,19 @@ const Exercises = (() => {
     _searchTimer = setTimeout(() => {
       searchQuery = q.trim();
       activeFilters = {};
-      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-      document.querySelector('.filter-pill[data-val=""]')?.classList.add('active');
+      // Only clear pills within the active container (bar sibling of active grid)
+      const grid = document.getElementById(_gridId);
+      const bar  = grid?.parentElement?.querySelector('[id$="-filter-bar"], #ex-filter-bar');
+      if (bar) {
+        bar.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+        bar.querySelector('.filter-pill[data-val=""]')?.classList.add('active');
+      }
       reset();
     }, 350);
   }
 
   function setupGridDelegation(gridId) {
+    _gridId = gridId;
     const grid = document.getElementById(gridId);
     if (!grid) return;
     grid.addEventListener('click', e => {
@@ -583,6 +600,7 @@ const Exercises = (() => {
   }
 
   function setupSentinel(sentinelId) {
+    _sentinelId = sentinelId;
     if (_sentinelObs) { _sentinelObs.disconnect(); _sentinelObs = null; }
     const sentinel = document.getElementById(sentinelId);
     if (!sentinel) return;

@@ -46,6 +46,10 @@ const App = (() => {
   }
 
   function addExToActiveWorkout(ex) {
+    if (!Workout.isActive()) {
+      toast('No active workout — start one from a routine first');
+      return;
+    }
     Workout.addExercise(ex);
     toast(`${ex.displayName} added to workout`);
   }
