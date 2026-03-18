@@ -8,6 +8,7 @@ const Storage = (() => {
     exCache:    'wk_ex_cache',
     exCacheIdx: 'wk_ex_cache_idx',
     freeDbMap:  'wk_freedb_map',
+    videoCache: 'wk_video_cache',
   };
 
   function read(key, fallback) {
@@ -55,11 +56,12 @@ const Storage = (() => {
 
   // ── Video cache (exercise name → YouTube videoId) ─────────────────────────
   // Persisted in the gist so discoveries sync across devices
-  function getVideoCache()          { return read('wk_video_cache', {}); }
-  function setVideoCache(map)       { write('wk_video_cache', map); }
+  function getVideoCache()          { return read(KEYS.videoCache, {}); }
+  function setVideoCache(map)       { write(KEYS.videoCache, map); }
   function saveVideoId(name, id)    { const m = getVideoCache(); m[name.toLowerCase()] = id; setVideoCache(m); }
   function getVideoId(name)         { return getVideoCache()[name.toLowerCase()] ?? null; }
-  function mergeVideoCache(remote)  { setVideoCache({ ...remote, ...getVideoCache() }); } // local wins
+  // Remote wins so discoveries from any device propagate everywhere
+  function mergeVideoCache(remote)  { setVideoCache({ ...getVideoCache(), ...remote }); }
 
   // ── free-exercise-db name→images map ─────────────────────────────────────
   function getFreeDbMap() { return read(KEYS.freeDbMap, null); }

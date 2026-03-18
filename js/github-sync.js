@@ -30,9 +30,9 @@ const GithubSync = (() => {
     if (!res.ok) throw new Error('Invalid credentials');
     _token    = token;
     _username = username;
-    Storage.saveSettings({ githubToken: token, githubUsername: username });
     await _findOrCreateGist();
-    Storage.saveSettings({ githubGistId: _gistId });
+    // Save credentials only after gist is confirmed to exist
+    Storage.saveSettings({ githubToken: token, githubUsername: username, githubGistId: _gistId });
     await pullAll();
     Routine.renderList();
     Log.render();
@@ -76,7 +76,9 @@ const GithubSync = (() => {
         files: { [GIST_FILE]: { content: JSON.stringify(payload, null, 2) } },
       }),
     });
+    if (!res.ok) throw new Error('Failed to create gist');
     const gist = await res.json();
+    if (!gist.id) throw new Error('Gist creation returned no ID');
     _gistId = gist.id;
   }
 
