@@ -2,6 +2,7 @@
 
 const Log = (() => {
   let _escManualLog = null;
+  const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   function render() {
     const el = document.getElementById('log-list');
     if (!el) return;
@@ -25,7 +26,7 @@ const Log = (() => {
       return `
         <div class="log-card" data-id="${l.id}">
           <div class="log-card-main">
-            <div class="log-card-name">${l.routineName}</div>
+            <div class="log-card-name">${escHtml(l.routineName)}</div>
             <div class="log-card-meta">${date} · ${duration} · ${totalSets} sets</div>
           </div>
           <button class="icon-btn log-del-btn" data-id="${l.id}" aria-label="Delete">🗑</button>
@@ -151,7 +152,7 @@ const Log = (() => {
         : '<div class="log-set-row muted">No sets logged</div>';
       return `
         <div class="log-ex-block">
-          <div class="log-ex-name">${ex.name}</div>
+          <div class="log-ex-name">${escHtml(ex.name)}</div>
           ${setsHtml}
         </div>`;
     }).join('');
@@ -161,9 +162,9 @@ const Log = (() => {
         <div class="modal modal-sheet">
           <button class="modal-close">✕</button>
           <div class="modal-body">
-            <h2 class="modal-title">${l.routineName}</h2>
+            <h2 class="modal-title">${escHtml(l.routineName)}</h2>
             <p class="log-detail-meta">${date} · ${duration}</p>
-            ${l.notes ? `<p class="log-detail-notes">${l.notes}</p>` : ''}
+            ${l.notes ? `<p class="log-detail-notes">${escHtml(l.notes)}</p>` : ''}
             ${exerciseRows}
           </div>
         </div>

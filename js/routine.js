@@ -1,6 +1,7 @@
 // Routine management — list view + detail view
 
 const Routine = (() => {
+  const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
   // ── Routines list ─────────────────────────────────────────────────────────
 
@@ -24,7 +25,7 @@ const Routine = (() => {
     el.innerHTML = routines.map(r => `
       <div class="routine-card" data-id="${r.id}">
         <div class="routine-card-body">
-          <div class="routine-card-name">${r.name}</div>
+          <div class="routine-card-name">${escHtml(r.name)}</div>
           <div class="routine-card-meta">${r.exercises.length} exercise${r.exercises.length !== 1 ? 's' : ''}</div>
         </div>
         <button class="icon-btn routine-menu-btn" data-id="${r.id}" aria-label="Menu">⋯</button>
@@ -115,7 +116,7 @@ const Routine = (() => {
           <div class="rd-ex-header" data-index="${i}">
             <div class="rd-ex-num">${i + 1}</div>
             <div class="rd-ex-info">
-              <div class="rd-ex-name">${ex.name}</div>
+              <div class="rd-ex-name">${escHtml(ex.name)}</div>
               <div class="rd-ex-target">
                 ${ex.timed
                   ? `<span class="ex-target-edit" data-field="sets" data-index="${i}">${ex.sets}</span> sets × timed`

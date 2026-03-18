@@ -261,7 +261,7 @@ const Exercises = (() => {
           <button class="modal-close" aria-label="Close">✕</button>
           ${mediaHtml}
           <div class="modal-body">
-            <h2 class="modal-title">${ex.displayName}</h2>
+            <h2 class="modal-title">${escHtml(ex.displayName)}</h2>
             <div class="chip-row">
               ${chipHtml(ex.category, 'chip-cat')}
               ${chipHtml(displayEquipment, 'chip-equip')}
@@ -324,7 +324,7 @@ const Exercises = (() => {
       Storage.deleteCustomExercise(ex.id);
       closeDetail();
       cursor = null; hasMore = true;
-      const grid = document.getElementById('ex-grid');
+      const grid = document.getElementById(_gridId);
       if (grid) { grid.innerHTML = ''; loadMore(); }
       App.toast('Exercise deleted');
       GithubSync.pushAll().catch(() => {});
@@ -735,7 +735,7 @@ const Exercises = (() => {
 
       // Refresh exercise grid
       cursor = null; hasMore = true;
-      const grid = document.getElementById('ex-grid');
+      const grid = document.getElementById(_gridId);
       if (grid) { grid.innerHTML = ''; loadMore(); }
 
       try {

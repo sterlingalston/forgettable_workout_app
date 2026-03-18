@@ -3,6 +3,7 @@
 const Workout = (() => {
   let log = null; // current workout log object
   let expanded = null; // index of expanded exercise
+  const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
   // ── Start ─────────────────────────────────────────────────────────────────
 
@@ -66,7 +67,7 @@ const Workout = (() => {
               ${progressRing(done, ex.targetSets)}
             </div>
             <div class="wk-ex-meta">
-              <div class="wk-ex-name">${ex.name}</div>
+              <div class="wk-ex-name">${escHtml(ex.name)}</div>
               <div class="wk-ex-sub">${done}/${ex.targetSets} sets${ex.timed ? ' · timed' : ` · ${ex.targetReps} reps`}</div>
             </div>
             <button class="icon-btn wk-ex-info" data-index="${i}" title="Exercise info">ℹ</button>
