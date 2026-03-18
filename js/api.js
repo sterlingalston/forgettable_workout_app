@@ -156,7 +156,8 @@ const API = (() => {
   }
 
   // ── YouTube video search ──────────────────────────────────────────────────
-  // Requires YouTube Data API v3 key in Settings.
+  // Primary: Invidious channel search (no quota, no API key needed).
+  // Fallback: YouTube Data API v3 (requires key in Settings).
 
   const YT_CHANNELS = [
     { handle: 'NasmOrgPersonalTrainer', id: 'UCjWgUFeyDbeQ3Q_eVCup_7Q' },
@@ -167,23 +168,59 @@ const API = (() => {
     { handle: 'strengthtools2494' },
   ];
 
-  async function resolveChannelId(ch, key) {
+  const INVIDIOUS = [
+    'https://inv.nadeko.net',
+    'https://invidious.nerdvpn.de',
+    'https://yt.artemislena.eu',
+  ];
+
+  // Resolve a channel handle → ID via Invidious, then YouTube API as fallback
+  async function resolveChannelId(ch, ytKey) {
     if (ch.id) return ch.id;
     const cacheKey = 'ch_' + ch.handle;
     const cached = Storage.getCached(cacheKey);
     if (cached) return cached;
+
+    for (const base of INVIDIOUS) {
+      try {
+        const res = await fetch(`${base}/api/v1/channels/@${ch.handle}`);
+        if (!res.ok) continue;
+        const data = await res.json();
+        const id = data.authorId || '';
+        if (id) { Storage.setCached(cacheKey, id); return id; }
+      } catch {}
+    }
+
+    if (!ytKey) return null;
     try {
-      const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${ch.handle}&key=${key}`;
-      const res  = await fetch(url);
+      const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${ch.handle}&key=${ytKey}`);
       if (!res.ok) return null;
       const data = await res.json();
-      const id   = data.items?.[0]?.id || '';
+      const id = data.items?.[0]?.id || '';
       if (id) Storage.setCached(cacheKey, id);
       return id || null;
     } catch { return null; }
   }
 
-  async function searchChannel(channelId, query, key) {
+  // Search a channel via Invidious — returns first videoId ≤90s, or null
+  async function searchChannelInvidious(channelId, query) {
+    for (const base of INVIDIOUS) {
+      try {
+        const url = `${base}/api/v1/channels/${channelId}/search?q=${encodeURIComponent(query)}`;
+        const res = await fetch(url);
+        if (!res.ok) continue;
+        const videos = await res.json();
+        for (const v of (Array.isArray(videos) ? videos : [])) {
+          if (v.type === 'video' && (v.lengthSeconds || Infinity) <= 90) return v.videoId;
+        }
+        return null; // instance responded — no match in this channel
+      } catch {}
+    }
+    return null; // all instances unreachable
+  }
+
+  // YouTube API channel search fallback (uses quota)
+  async function searchChannelYT(channelId, query, key) {
     const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&channelId=${channelId}&maxResults=5&videoDuration=short&key=${key}`;
     const res  = await fetch(url);
     if (!res.ok) throw new Error(`YT API ${res.status}`);
@@ -267,7 +304,15 @@ const API = (() => {
       for (const ch of YT_CHANNELS) {
         const channelId = await resolveChannelId(ch, ytKey);
         if (!channelId) continue;
-        const videoId = await searchChannel(channelId, query, ytKey);
+
+        // Try Invidious first (no quota)
+        let videoId = await searchChannelInvidious(channelId, query);
+
+        // Fall back to YouTube API if Invidious came up empty
+        if (!videoId && ytKey) {
+          videoId = await searchChannelYT(channelId, query, ytKey);
+        }
+
         if (videoId) {
           Storage.setCached(cacheKey, videoId);
           return videoId;
@@ -277,7 +322,7 @@ const API = (() => {
       return null;
     } catch (e) {
       console.warn('YouTube search failed:', e.message);
-      return null; // don't cache — quota errors are transient
+      return null; // don't cache — transient errors should retry
     }
   }
 
