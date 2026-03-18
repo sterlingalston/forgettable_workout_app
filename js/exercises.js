@@ -8,6 +8,7 @@ const Exercises = (() => {
   let searchQuery = '';
   let onPick = null; // callback when in picker mode
   let pickerRoutineId = null;
+  let _sentinelObs = null;
 
   // ── Render ────────────────────────────────────────────────────────────────
 
@@ -349,6 +350,7 @@ const Exercises = (() => {
 
   function closePicker() {
     document.getElementById('ex-picker-modal')?.remove();
+    if (_sentinelObs) { _sentinelObs.disconnect(); _sentinelObs = null; }
     onPick = null;
     pickerRoutineId = null;
     cursor = null;
@@ -412,13 +414,14 @@ const Exercises = (() => {
   }
 
   function setupSentinel(sentinelId) {
+    if (_sentinelObs) { _sentinelObs.disconnect(); _sentinelObs = null; }
     const sentinel = document.getElementById(sentinelId);
     if (!sentinel) return;
-    const obs = new IntersectionObserver(
+    _sentinelObs = new IntersectionObserver(
       entries => { if (entries[0].isIntersecting) loadMore(); },
       { rootMargin: '300px' }
     );
-    obs.observe(sentinel);
+    _sentinelObs.observe(sentinel);
   }
 
   return { initView, openPicker, closePicker, openDetail };

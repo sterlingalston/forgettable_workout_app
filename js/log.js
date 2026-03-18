@@ -67,6 +67,8 @@ const Log = (() => {
       dayMap[key].push({ name: l.routineName, notes: l.notes || '' });
     });
 
+    const escAttr = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/\n/g, '&#10;');
+
     const now = new Date();
     const year = now.getFullYear();
     const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -101,9 +103,13 @@ const Log = (() => {
           : '';
 
         const cls = ['cal-day', hasLog && 'cal-has-log', isToday && 'cal-today'].filter(Boolean).join(' ');
+        const style = [
+          hasLog   ? `background:${color}` : '',
+          isToday  ? `outline:2px solid ${color};outline-offset:-2px` : '',
+        ].filter(Boolean).join(';');
         html += `<span class="${cls}"
-          ${hasLog ? `style="background:${color}" title="${tooltip.replace(/"/g, '&quot;')}"` : ''}
-          ${isToday ? `style="${hasLog ? `background:${color};` : ''}outline:2px solid ${color};outline-offset:-2px"` : ''}
+          ${style ? `style="${style}"` : ''}
+          ${hasLog ? `title="${escAttr(tooltip)}"` : ''}
           data-key="${key}">${d}</span>`;
       }
 

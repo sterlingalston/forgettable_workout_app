@@ -68,7 +68,7 @@ const API = (() => {
     const slice  = data.slice(offset, offset + PAGE);
     const next   = offset + PAGE < data.length ? String(offset + PAGE) : null;
     return {
-      exercises: slice.map(ex => ({ ...ex, cursor: String(offset + slice.indexOf(ex) + 1) })),
+      exercises: slice.map((ex, i) => ({ ...ex, cursor: String(offset + i + 1) })),
       pagination: { total: data.length },
       _nextCursor: next,
     };
@@ -100,7 +100,7 @@ const API = (() => {
     const slice  = data.slice(offset, offset + PAGE);
     const next   = offset + PAGE < data.length ? String(offset + PAGE) : null;
     return {
-      exercises:    slice.map(ex => ({ ...ex, cursor: String(offset + slice.indexOf(ex) + 1) })),
+      exercises:    slice.map((ex, i) => ({ ...ex, cursor: String(offset + i + 1) })),
       _nextCursor:  next,
       pagination:   { total: data.length },
     };

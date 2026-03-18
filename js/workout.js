@@ -121,6 +121,7 @@ const Workout = (() => {
     container.querySelectorAll('.set-input').forEach(input => {
       input.addEventListener('change', e => {
         const { exIndex, setIndex, field } = e.target.dataset;
+        if (!log || !log.exercises[exIndex]) return;
         if (!log.exercises[exIndex].sets[setIndex]) {
           log.exercises[exIndex].sets[setIndex] = {};
         }
