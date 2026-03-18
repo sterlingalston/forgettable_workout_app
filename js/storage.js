@@ -33,7 +33,21 @@ const Storage = (() => {
     weightUnit:      'lbs',
   };
   function getSettings() { return { ...defaultSettings, ...read(KEYS.settings, {}) }; }
-  function saveSettings(s) { write(KEYS.settings, { ...getSettings(), ...s }); }
+  function saveSettings(s) {
+    const current = getSettings();
+    // Never allow auth credentials to be silently blanked by a partial update.
+    // Use clearAuth() for intentional sign-out.
+    const AUTH = ['githubToken', 'githubUsername', 'githubGistId'];
+    const patch = { ...s };
+    for (const k of AUTH) {
+      if (patch[k] === '' || patch[k] === undefined || patch[k] === null) delete patch[k];
+    }
+    write(KEYS.settings, { ...current, ...patch });
+  }
+  function clearAuth() {
+    const current = getSettings();
+    write(KEYS.settings, { ...current, githubToken: '', githubUsername: '', githubGistId: '' });
+  }
 
   // ── Exercise cache ────────────────────────────────────────────────────────
   // Index: { [cacheKey]: true }  — lets us know what's cached without loading all data
@@ -185,6 +199,7 @@ const Storage = (() => {
     getSettings, saveSettings,
     getCached, setCached, clearExCache,
     getVideoCache, setVideoCache, saveVideoId, getVideoId, mergeVideoCache,
+    clearAuth,
     getCustomMedia, saveCustomMedia, getCustomMediaFor, mergeCustomMedia,
     getFreeDbMap, setFreeDbMap,
     getRoutines, saveRoutines, getRoutine, createRoutine, updateRoutine, deleteRoutine,

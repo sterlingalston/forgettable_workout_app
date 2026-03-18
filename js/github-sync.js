@@ -44,7 +44,7 @@ const GithubSync = (() => {
 
   async function signOut() {
     if (!confirm('Sign out? Your local data will be cleared.')) return;
-    Storage.saveSettings({ githubToken: '', githubUsername: '', githubGistId: '' });
+    Storage.clearAuth();
     Storage.clearLocalUserData();
     _token = _username = _gistId = null;
     renderAuthUI(false);
@@ -138,8 +138,13 @@ const GithubSync = (() => {
       if (data.routines?.length) Storage.saveRoutines(_mergeById(Storage.getRoutines(), data.routines));
       if (data.logs?.length)     Storage.saveLogs(_mergeById(Storage.getLogs(), data.logs));
       if (data.settings) {
-        const { githubToken, githubUsername, githubGistId, ...remote } = data.settings;
-        Storage.saveSettings(remote);
+        // Whitelist only safe, non-auth fields — never touch credentials
+        const SYNC_FIELDS = ['youtubeApiKey', 'language', 'defaultSets', 'defaultReps', 'restSeconds', 'weightUnit'];
+        const safe = {};
+        for (const k of SYNC_FIELDS) {
+          if (data.settings[k] !== undefined) safe[k] = data.settings[k];
+        }
+        if (Object.keys(safe).length) Storage.saveSettings(safe);
       }
       if (data.videoCache)  Storage.mergeVideoCache(data.videoCache);
       if (data.customMedia) Storage.mergeCustomMedia(data.customMedia);
