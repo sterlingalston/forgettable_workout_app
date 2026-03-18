@@ -1000,6 +1000,39 @@ body {
   border-radius: 8px;
 }
 
+/* ── Video iframe + thumbnail offline fallback ── */
+/* Thumbnail loads eagerly from browser cache; iframe overlays it when online */
+.video-with-thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  background: var(--surface2);
+  border-radius: 8px;
+}
+.video-with-thumb .video-thumb-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  display: block;
+}
+.video-with-thumb iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  z-index: 1;
+}
+/* In the detail modal, let the wrapper size by 16:9 instead of the square modal-media aspect */
+.modal-media .video-with-thumb {
+  width: 100%;
+  align-self: stretch;
+}
+
 /* ── Workout completion modal ── */
 .completion-overlay {
   position: fixed; inset: 0;

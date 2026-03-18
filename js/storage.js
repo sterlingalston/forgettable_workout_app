@@ -104,10 +104,20 @@ const Storage = (() => {
   // Persisted in the gist so discoveries sync across devices
   function getVideoCache()          { return read(KEYS.videoCache, {}); }
   function setVideoCache(map)       { write(KEYS.videoCache, map); }
-  function saveVideoId(name, id)    { const m = getVideoCache(); m[name.toLowerCase()] = id; setVideoCache(m); }
-  function getVideoId(name)         { return getVideoCache()[name.toLowerCase()] ?? null; }
-  // Remote wins so discoveries from any device propagate everywhere
-  function mergeVideoCache(remote)  { setVideoCache({ ...getVideoCache(), ...remote }); }
+  function saveVideoId(name, id)    { const m = getVideoCache(); m[name.toLowerCase()] = { id, t: Date.now() }; setVideoCache(m); }
+  function getVideoId(name)         { const e = getVideoCache()[name.toLowerCase()] ?? null; if (e === null) return null; return typeof e === 'object' ? (e.id || null) : e; }
+  // Prefer the more recent entry — handles both old string format (t=0) and new { id, t } format
+  function mergeVideoCache(remote) {
+    const local = getVideoCache();
+    const merged = { ...local };
+    for (const [k, rv] of Object.entries(remote || {})) {
+      const lv = local[k];
+      const lt = typeof lv === 'object' ? (lv?.t || 0) : 0;
+      const rt = typeof rv === 'object' ? (rv?.t || 0) : 0;
+      if (!lv || rt >= lt) merged[k] = rv;
+    }
+    setVideoCache(merged);
+  }
 
   // ── Custom media overrides (user-set video/thumbnail per exercise) ─────────
   // { "exercise name": { videoId: "...", thumb: "..." } }

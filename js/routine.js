@@ -169,58 +169,39 @@ const Routine = (() => {
     }
   }
 
+  function _ytWrap(videoId, exerciseName) {
+    const thumb = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    return `
+      <div class="video-with-thumb">
+        <img class="video-thumb-bg" src="${thumb}" alt="${escHtml(exerciseName)}" loading="lazy">
+        <iframe
+          class="wk-video-frame"
+          src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&rel=0&modestbranding=1"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          title="${escHtml(exerciseName)}">
+        </iframe>
+      </div>`;
+  }
+
   async function loadRoutineVideo(exerciseName, index) {
     const wrap = document.getElementById(`rd-video-wrap-${index}`);
     if (!wrap) return;
     // Custom media takes priority (same as exercise detail modal)
     const custom = Storage.getCustomMediaFor(exerciseName);
-    if (custom?.videoId) {
-      if (!wrap.isConnected) return;
-      wrap.innerHTML = `
-        <iframe
-          class="wk-video-frame"
-          src="https://www.youtube-nocookie.com/embed/${custom.videoId}?autoplay=1&mute=1&loop=1&playlist=${custom.videoId}&controls=1&rel=0&modestbranding=1"
-          allow="autoplay; encrypted-media"
-          allowfullscreen
-          title="${exerciseName}">
-        </iframe>`;
-      return;
-    }
-    if (custom?.thumb) {
-      if (!wrap.isConnected) return;
-      wrap.innerHTML = `<img class="wk-video-frame" src="${custom.thumb}" alt="${exerciseName}" loading="lazy">`;
-      return;
-    }
+    if (custom?.videoId) { if (!wrap.isConnected) return; wrap.innerHTML = _ytWrap(custom.videoId, exerciseName); return; }
+    if (custom?.thumb)   { if (!wrap.isConnected) return; wrap.innerHTML = `<img class="wk-video-frame" src="${custom.thumb}" alt="${escHtml(exerciseName)}" loading="lazy">`; return; }
+
     // Community data (curated, cached after first fetch)
     const community = await API.getCommunityMeta(exerciseName);
     if (!wrap.isConnected) return;
-    if (community?.videoId) {
-      wrap.innerHTML = `
-        <iframe
-          class="wk-video-frame"
-          src="https://www.youtube-nocookie.com/embed/${community.videoId}?autoplay=1&mute=1&loop=1&playlist=${community.videoId}&controls=1&rel=0&modestbranding=1"
-          allow="autoplay; encrypted-media"
-          allowfullscreen
-          title="${exerciseName}">
-        </iframe>`;
-      return;
-    }
-    if (community?.thumbnailUrl) {
-      wrap.innerHTML = `<img class="wk-video-frame" src="${community.thumbnailUrl}" alt="${exerciseName}" loading="lazy">`;
-      return;
-    }
+    if (community?.videoId)      { wrap.innerHTML = _ytWrap(community.videoId, exerciseName); return; }
+    if (community?.thumbnailUrl) { wrap.innerHTML = `<img class="wk-video-frame" src="${community.thumbnailUrl}" alt="${escHtml(exerciseName)}" loading="lazy">`; return; }
 
     const videoId = await API.getYouTubeVideoId(exerciseName);
     if (!wrap.isConnected) return;
     if (!videoId) { wrap.innerHTML = ''; return; }
-    wrap.innerHTML = `
-      <iframe
-        class="wk-video-frame"
-        src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&rel=0&modestbranding=1"
-        allow="autoplay; encrypted-media"
-        allowfullscreen
-        title="${exerciseName}">
-      </iframe>`;
+    wrap.innerHTML = _ytWrap(videoId, exerciseName);
   }
 
   function showExMenu(index) {

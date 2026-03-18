@@ -334,17 +334,21 @@ const Exercises = (() => {
 
   function renderMedia(wrap, videoId, thumbUrl, exerciseName) {
     if (videoId) {
+      const ytThumb = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
       wrap.innerHTML = `
-        <iframe
-          class="ex-video-frame"
-          src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&rel=0&modestbranding=1"
-          allow="autoplay; encrypted-media"
-          allowfullscreen
-          loading="lazy"
-          title="${exerciseName}">
-        </iframe>`;
+        <div class="video-with-thumb">
+          <img class="video-thumb-bg" src="${ytThumb}" alt="${escHtml(exerciseName)}" loading="lazy">
+          <iframe
+            class="ex-video-frame"
+            src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&rel=0&modestbranding=1"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            loading="lazy"
+            title="${escHtml(exerciseName)}">
+          </iframe>
+        </div>`;
     } else if (thumbUrl) {
-      wrap.innerHTML = `<img class="modal-media-gif" src="${thumbUrl}" alt="${exerciseName}" loading="lazy">`;
+      wrap.innerHTML = `<img class="modal-media-gif" src="${thumbUrl}" alt="${escHtml(exerciseName)}" loading="lazy">`;
     } else {
       wrap.innerHTML = `<div class="modal-media-ph">🎬<br><small>No video found</small></div>`;
     }
