@@ -30,14 +30,20 @@ const GithubSync = (() => {
     if (!res.ok) throw new Error('Invalid credentials');
     _token    = token;
     _username = username;
-    await _findOrCreateGist();
+    const existingGist = await _findOrCreateGist();
     // Save credentials only after gist is confirmed to exist
     Storage.saveSettings({ githubToken: token, githubUsername: username, githubGistId: _gistId });
+    // Always pull — if existing gist found this restores data from remote
     await pullAll();
     Routine.renderList();
     Log.render();
     renderAuthUI(true);
-    App.toast(`Signed in as ${username}`);
+    if (existingGist) {
+      const rc = Storage.getRoutines().length;
+      App.toast(`Signed in — synced ${rc} routine${rc !== 1 ? 's' : ''} from gist`);
+    } else {
+      App.toast(`Signed in as ${username}`);
+    }
   }
 
   // ── Sign out ──────────────────────────────────────────────────────────────
@@ -55,6 +61,7 @@ const GithubSync = (() => {
 
   // ── Gist helpers ──────────────────────────────────────────────────────────
 
+  // Returns true if an existing gist was found, false if a new one was created
   async function _findOrCreateGist() {
     // Walk pages of gists to find one with our filename
     for (let page = 1; page <= 5; page++) {
@@ -62,7 +69,7 @@ const GithubSync = (() => {
       if (!res.ok) break;
       const list = await res.json();
       const found = list.find(g => g.files[GIST_FILE]);
-      if (found) { _gistId = found.id; return; }
+      if (found) { _gistId = found.id; return true; }
       if (list.length < 100) break;
     }
     // Not found — create a new private gist
@@ -80,6 +87,7 @@ const GithubSync = (() => {
     const gist = await res.json();
     if (!gist.id) throw new Error('Gist creation returned no ID');
     _gistId = gist.id;
+    return false;
   }
 
   function _buildPayload() {

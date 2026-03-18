@@ -778,6 +778,14 @@ body {
   font-family: var(--font);
 }
 
+/* Keep close button visible while scrolling sheet modals (detail, log) */
+.modal-sheet .modal-close {
+  position: sticky;
+  top: 12px;
+  margin: 12px 12px 0 auto;
+  z-index: 1;
+}
+
 .picker-search-wrap { padding: 12px; flex-shrink: 0; }
 
 .modal-media {

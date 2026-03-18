@@ -246,16 +246,25 @@ const Exercises = (() => {
     const custom = Storage.getCustomMediaFor(exerciseName);
     if (custom) { renderMedia(wrap, custom.videoId, custom.thumb, exerciseName); return; }
 
-    const [videoId, gifUrl] = await Promise.all([
-      API.getYouTubeVideoId(exerciseName),
-      API.getFitnessProgramerGif(exerciseName),
-    ]);
+    // Step 1: GIF lookup is fast (local JSON, usually cached) — clears spinner right away
+    const gifUrl = await API.getFitnessProgramerGif(exerciseName);
     if (!wrap.isConnected) return;
-    if (wrap.querySelector('.media-edit-form')) return; // editor opened while loading — don't overwrite
-    // Re-check: user may have saved custom media while the API call was in flight
-    const customNow = Storage.getCustomMediaFor(exerciseName);
-    if (customNow) return;
-    renderMedia(wrap, videoId, gifUrl, exerciseName);
+    if (!wrap.querySelector('.media-edit-form') && !Storage.getCustomMediaFor(exerciseName)) {
+      renderMedia(wrap, null, gifUrl, exerciseName); // show GIF or "No video" placeholder immediately
+    }
+
+    // Step 2: race YouTube search vs 5 s timeout — never blocks the UI indefinitely
+    const _timedOut = Symbol();
+    const videoId = await Promise.race([
+      API.getYouTubeVideoId(exerciseName),
+      new Promise(res => setTimeout(() => res(_timedOut), 5000)),
+    ]);
+
+    if (!videoId || videoId === _timedOut) return; // no upgrade needed — keep GIF/placeholder
+    if (!wrap.isConnected) return;
+    if (wrap.querySelector('.media-edit-form')) return;
+    if (Storage.getCustomMediaFor(exerciseName)) return;
+    renderMedia(wrap, videoId, gifUrl, exerciseName); // upgrade to video
   }
 
   function parseYouTubeId(url) {
