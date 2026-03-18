@@ -160,12 +160,18 @@ const API = (() => {
 
   const YT_CHANNELS = [
     { handle: 'NasmOrgPersonalTrainer', id: 'UCjWgUFeyDbeQ3Q_eVCup_7Q' },
+    { handle: 'OnnitAcademy' },
     { handle: 'gymvisual8018' },
     { handle: 'BSNTraining' },
     { handle: 'leveltencoaching2296' },
     { handle: 'ElliotGrahamCoaching' },
     { handle: 'strengthtools2494' },
   ];
+
+  // Hardcoded video overrides — preferred videos for specific exercises
+  const HARDCODED_VIDEOS = {
+    'bodyweight walking lunge': 'tQNktxPkSeE',
+  };
 
   async function resolveChannelId(ch, ytKey) {
     if (ch.id) return ch.id;
@@ -238,6 +244,10 @@ const API = (() => {
   }
 
   async function getYouTubeVideoId(exerciseName) {
+    // Hardcoded overrides always win
+    const hardcoded = HARDCODED_VIDEOS[exerciseName.toLowerCase()];
+    if (hardcoded) return hardcoded;
+
     const ytKey = Storage.getSettings().youtubeApiKey || _dyk();
     if (!ytKey) return null;
 

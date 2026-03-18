@@ -251,6 +251,7 @@ const Exercises = (() => {
       API.getFitnessProgramerGif(exerciseName),
     ]);
     if (!wrap.isConnected) return;
+    if (wrap.querySelector('.media-edit-form')) return; // editor opened while loading — don't overwrite
     renderMedia(wrap, videoId, gifUrl, exerciseName);
   }
 
