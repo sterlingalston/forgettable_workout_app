@@ -100,13 +100,17 @@ const GithubSync = (() => {
       videoCache:      Storage.getVideoCache(),
       customMedia:     Storage.getCustomMedia(),
       customExercises: Storage.getCustomExercises(),
+      deletedIds:      [...Storage.getDeletedIds()],
       updatedAt:       Date.now(),
     };
   }
 
   function _mergeById(local, remote) {
-    const map = new Map(local.map(x => [x.id, x]));
-    remote.forEach(x => map.set(x.id, x));
+    const deleted = Storage.getDeletedIds();
+    const map = new Map(
+      local.filter(x => !deleted.has(x.id)).map(x => [x.id, x])
+    );
+    remote.forEach(x => { if (!deleted.has(x.id)) map.set(x.id, x); });
     return [...map.values()];
   }
 
@@ -146,6 +150,8 @@ const GithubSync = (() => {
       const raw   = gist.files[GIST_FILE]?.content;
       if (!raw) return;
       const data  = JSON.parse(raw);
+      // Merge remote deletions first so _mergeById respects them
+      if (data.deletedIds?.length) Storage.mergeDeletedIds(data.deletedIds);
       if (data.routines?.length) Storage.saveRoutines(_mergeById(Storage.getRoutines(), data.routines));
       if (data.logs?.length)     Storage.saveLogs(_mergeById(Storage.getLogs(), data.logs));
       if (data.settings) {

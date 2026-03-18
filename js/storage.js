@@ -11,6 +11,7 @@ const Storage = (() => {
     videoCache:      'wk_video_cache',
     customMedia:     'wk_custom_media',
     customExercises: 'wk_custom_exercises',
+    deletedIds:      'wk_deleted_ids',
   };
   // Auth lives in its own key — saveSettings() NEVER touches this key.
   // The only way to clear it is clearAuth() (explicit sign-out).
@@ -155,6 +156,7 @@ const Storage = (() => {
   }
 
   function deleteRoutine(id) {
+    addDeletedId(id);
     saveRoutines(getRoutines().filter(r => r.id !== id));
   }
 
@@ -202,6 +204,7 @@ const Storage = (() => {
 
   function getLog(id) { return getLogs().find(l => l.id === id) || null; }
   function deleteLog(id) {
+    addDeletedId(id);
     saveLogs(getLogs().filter(l => l.id !== id));
   }
 
@@ -215,6 +218,12 @@ const Storage = (() => {
       exercises: [], // [{exId, name, sets:[{weight,reps,done,seconds}]}]
     };
   }
+
+  // ── Deletion tombstones ───────────────────────────────────────────────────
+  // Persist IDs of deleted items so sync never resurrects them
+  function getDeletedIds()         { return new Set(read(KEYS.deletedIds, [])); }
+  function addDeletedId(id)        { const s = getDeletedIds(); s.add(id); write(KEYS.deletedIds, [...s]); }
+  function mergeDeletedIds(remote) { const s = getDeletedIds(); (remote||[]).forEach(id => s.add(id)); write(KEYS.deletedIds, [...s]); }
 
   // ── Utils ─────────────────────────────────────────────────────────────────
   function uid() {
@@ -245,6 +254,7 @@ const Storage = (() => {
     addExerciseToRoutine, removeExFromRoutine, updateExInRoutine,
     getLogs, saveLogs, saveLog, getLog, deleteLog, createWorkoutLog,
     getCustomExercises, saveCustomExercises, saveCustomExercise, deleteCustomExercise, mergeCustomExercises,
+    getDeletedIds, addDeletedId, mergeDeletedIds,
     clearLocalUserData, clearAll, uid,
   };
 })();
