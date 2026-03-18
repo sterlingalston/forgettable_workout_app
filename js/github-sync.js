@@ -15,7 +15,7 @@ const GithubSync = (() => {
 
   function _headers() {
     return {
-      Authorization: `token ${_token}`,
+      Authorization: `Bearer ${_token}`,
       Accept: 'application/vnd.github+json',
       'Content-Type': 'application/json',
     };
@@ -25,7 +25,7 @@ const GithubSync = (() => {
 
   async function signIn(username, token) {
     const res = await fetch(`${GH}/user`, {
-      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github+json' },
+      headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' },
     });
     if (!res.ok) throw new Error('Invalid credentials');
     _token    = token;
