@@ -69,21 +69,26 @@ const Log = (() => {
 
     const now = new Date();
     const year = now.getFullYear();
-    const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const DOW   = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const DOW    = ['S','M','T','W','T','F','S'];
+    const COLORS = [
+      '#5b5ef4','#e05fa0','#34c77b','#d4a017',
+      '#3fb3d4','#e07a5b','#e05252','#2e9e63',
+      '#9b6cdf','#e8802a','#6b7280','#3b7dd8',
+    ];
 
     let html = `<div class="cal-year-label">${year}</div><div class="cal-grid">`;
 
     for (let m = 0; m < 12; m++) {
-      const firstDay = new Date(year, m, 1).getDay(); // 0=Sun
+      const firstDay = new Date(year, m, 1).getDay();
       const daysInMonth = new Date(year, m + 1, 0).getDate();
+      const color = COLORS[m];
 
       html += `<div class="cal-month">
-        <div class="cal-month-name">${MONTHS[m]}</div>
+        <div class="cal-month-name" style="background:${color}">${MONTHS[m]}</div>
         <div class="cal-dow-row">${DOW.map(d => `<span>${d}</span>`).join('')}</div>
         <div class="cal-days">`;
 
-      // Empty cells before first day
       for (let i = 0; i < firstDay; i++) html += `<span class="cal-day cal-empty"></span>`;
 
       for (let d = 1; d <= daysInMonth; d++) {
@@ -91,15 +96,15 @@ const Log = (() => {
         const entries = dayMap[key];
         const isToday = (d === now.getDate() && m === now.getMonth());
         const hasLog  = !!entries;
+        const tooltip = hasLog
+          ? entries.map(e => e.name + (e.notes ? `: ${e.notes}` : '')).join('\n')
+          : '';
 
-        let tooltip = '';
-        if (hasLog) {
-          tooltip = entries.map(e => e.name + (e.notes ? `: ${e.notes}` : '')).join('\n');
-        }
-
-        html += `<span class="cal-day${hasLog ? ' cal-has-log' : ''}${isToday ? ' cal-today' : ''}"
-                       ${hasLog ? `title="${tooltip.replace(/"/g, '&quot;')}"` : ''}
-                       data-key="${key}">${d}</span>`;
+        const cls = ['cal-day', hasLog && 'cal-has-log', isToday && 'cal-today'].filter(Boolean).join(' ');
+        html += `<span class="${cls}"
+          ${hasLog ? `style="background:${color}" title="${tooltip.replace(/"/g, '&quot;')}"` : ''}
+          ${isToday ? `style="${hasLog ? `background:${color};` : ''}outline:2px solid ${color};outline-offset:-2px"` : ''}
+          data-key="${key}">${d}</span>`;
       }
 
       html += `</div></div>`;
@@ -108,7 +113,6 @@ const Log = (() => {
     html += `</div>`;
     wrap.innerHTML = html;
 
-    // Tap on a day with logs → show detail tooltip on mobile
     wrap.querySelectorAll('.cal-day.cal-has-log').forEach(span => {
       span.addEventListener('click', () => {
         const entries = dayMap[span.dataset.key];
