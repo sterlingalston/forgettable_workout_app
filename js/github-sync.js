@@ -180,11 +180,12 @@ const GithubSync = (() => {
   function renderAuthUI(signedIn) {
     const container = document.getElementById('auth-section');
     if (!container) return;
+    const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
     if (signedIn) {
       container.innerHTML = `
         <div class="auth-user">
-          <div class="auth-name">${_username}</div>
+          <div class="auth-name">${esc(_username)}</div>
         </div>
         <div class="auth-actions">
           <button class="btn btn-ghost btn-sm" id="btn-sync">↻ Sync</button>

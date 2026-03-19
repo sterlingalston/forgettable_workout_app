@@ -279,10 +279,13 @@ const Workout = (() => {
 
     if (weightInput) ex.sets[setIdx].weight = +weightInput.value || +weightInput.placeholder || 0;
     if (repsInput)   ex.sets[setIdx].reps   = +repsInput.value   || +repsInput.placeholder   || ex.targetReps;
+    if (ex.timed)    ex.sets[setIdx].seconds = Math.round(Timer.getSwElapsed() / 1000);
 
     ex.sets[setIdx].done = true;
     ex.sets[setIdx].timestamp = Date.now();
     Storage.saveLog(log);
+
+    if (ex.timed) Timer.swReset();
 
     render();
   }

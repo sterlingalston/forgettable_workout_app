@@ -17,24 +17,24 @@ const Timer = (() => {
     swRunning = true;
     swStart = Date.now() - swElapsed;
     swInterval = setInterval(swTick, 100);
-    document.getElementById('sw-btn-start')?.classList.add('hidden');
-    document.getElementById('sw-btn-pause')?.classList.remove('hidden');
+    document.querySelector('.sw-btn-start')?.classList.add('hidden');
+    document.querySelector('.sw-btn-pause')?.classList.remove('hidden');
   }
 
   function swPause() {
     if (!swRunning) return;
     swRunning = false;
     clearInterval(swInterval);
-    document.getElementById('sw-btn-start')?.classList.remove('hidden');
-    document.getElementById('sw-btn-pause')?.classList.add('hidden');
+    document.querySelector('.sw-btn-start')?.classList.remove('hidden');
+    document.querySelector('.sw-btn-pause')?.classList.add('hidden');
   }
 
   function swReset() {
     swPause();
     swElapsed = 0;
     renderStopwatch();
-    document.getElementById('sw-btn-start')?.classList.remove('hidden');
-    document.getElementById('sw-btn-pause')?.classList.add('hidden');
+    document.querySelector('.sw-btn-start')?.classList.remove('hidden');
+    document.querySelector('.sw-btn-pause')?.classList.add('hidden');
   }
 
   function renderStopwatch() {
@@ -112,6 +112,7 @@ const Timer = (() => {
     swStart: swStart_,
     swPause,
     swReset,
+    getSwElapsed: () => swElapsed,
     startRest,
     skipRest,
     addRestTime,
