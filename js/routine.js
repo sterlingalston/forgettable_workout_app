@@ -80,6 +80,7 @@ const Routine = (() => {
 
     document.getElementById('rd-title').textContent = r.name;
     renderExerciseList(r);
+    markStaleExercises(r);
 
     const startBtn = document.getElementById('btn-start-workout');
     if (startBtn) startBtn.onclick = () => Workout.start(currentRoutineId);
@@ -90,11 +91,15 @@ const Routine = (() => {
         Storage.addExerciseToRoutine(currentRoutineId, {
           id: ex.id,
           displayName: ex.displayName,
+          equipment: ex.equipment || '',
+          primaryMuscle: ex.primaryMuscle || [],
           sets: Storage.getSettings().defaultSets,
           reps: Storage.getSettings().defaultReps,
           restSeconds: Storage.getSettings().restSeconds,
         });
-        renderExerciseList(Storage.getRoutine(currentRoutineId));
+        const updated = Storage.getRoutine(currentRoutineId);
+        renderExerciseList(updated);
+        markStaleExercises(updated);
         App.toast(`${ex.displayName} added`);
       });
     };
@@ -169,6 +174,25 @@ const Routine = (() => {
     }
   }
 
+  async function markStaleExercises(r) {
+    for (let i = 0; i < r.exercises.length; i++) {
+      const ex = r.exercises[i];
+      const exId = ex.exId || ex.id || '';
+      if (!exId || String(exId).startsWith('custom_')) continue;
+      const found = await API.getExercise(exId);
+      if (!found) {
+        const row = document.querySelector(`#rd-exercises .rd-ex-row[data-index="${i}"]`);
+        if (row) {
+          row.classList.add('rd-ex-stale');
+          const nameEl = row.querySelector('.rd-ex-name');
+          if (nameEl && !nameEl.querySelector('.rd-stale-badge')) {
+            nameEl.insertAdjacentHTML('beforeend', ' <span class="rd-stale-badge">⚠ Not Found</span>');
+          }
+        }
+      }
+    }
+  }
+
   function _ytWrap(videoId, exerciseName) {
     const thumb = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
     return `
@@ -209,11 +233,18 @@ const Routine = (() => {
     const ex = r?.exercises[index];
     if (!ex) return;
 
+    const isStale = document.querySelector(`#rd-exercises .rd-ex-row[data-index="${index}"]`)?.classList.contains('rd-ex-stale');
+
     const html = `
       <div class="modal-overlay" id="ex-menu-overlay">
         <div class="action-sheet">
           <div class="action-sheet-title">${escHtml(ex.name)}</div>
-          <button class="action-sheet-btn" id="exm-view">View / Edit Exercise</button>
+          ${isStale ? `<div class="action-sheet-notice">⚠ This exercise is no longer in the database</div>` : ''}
+          ${isStale
+            ? `<button class="action-sheet-btn action-sheet-btn-accent" id="exm-replace">Replace with Equivalent</button>`
+            : `<button class="action-sheet-btn" id="exm-view">View / Edit Exercise</button>
+               <button class="action-sheet-btn" id="exm-replace">Replace Exercise</button>`
+          }
           <button class="action-sheet-btn" id="exm-timed">
             Toggle Timed — currently <strong>${ex.timed ? 'ON' : 'OFF'}</strong>
           </button>
@@ -227,26 +258,46 @@ const Routine = (() => {
     const close = () => overlay.remove();
 
     overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
-
     overlay.querySelector('#exm-cancel').addEventListener('click', close);
 
     overlay.querySelector('#exm-remove').addEventListener('click', () => {
       close();
       if (!confirm(`Remove "${ex.name}" from this routine?`)) return;
       Storage.removeExFromRoutine(currentRoutineId, index);
-      renderExerciseList(Storage.getRoutine(currentRoutineId));
+      const updated = Storage.getRoutine(currentRoutineId);
+      renderExerciseList(updated);
+      markStaleExercises(updated);
     });
 
     overlay.querySelector('#exm-timed').addEventListener('click', () => {
       close();
       Storage.updateExInRoutine(currentRoutineId, index, { timed: !ex.timed });
-      renderExerciseList(Storage.getRoutine(currentRoutineId));
+      const updated = Storage.getRoutine(currentRoutineId);
+      renderExerciseList(updated);
+      markStaleExercises(updated);
       App.toast(`${ex.name} timed: ${!ex.timed ? 'ON' : 'OFF'}`);
     });
 
-    overlay.querySelector('#exm-view').addEventListener('click', () => {
+    overlay.querySelector('#exm-view')?.addEventListener('click', () => {
       close();
       Exercises.openDetail(ex.exId || ex.id);
+    });
+
+    overlay.querySelector('#exm-replace').addEventListener('click', () => {
+      close();
+      Exercises.openPicker(currentRoutineId, newEx => {
+        Exercises.closePicker();
+        Storage.updateExInRoutine(currentRoutineId, index, {
+          exId: newEx.id,
+          name: newEx.displayName,
+          equipment: newEx.equipment || '',
+          primaryMuscle: newEx.primaryMuscle?.[0] || '',
+        });
+        const updated = Storage.getRoutine(currentRoutineId);
+        renderExerciseList(updated);
+        markStaleExercises(updated);
+        App.toast(`Replaced with ${newEx.displayName}`);
+      });
     });
   }
 

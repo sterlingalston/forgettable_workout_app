@@ -312,6 +312,23 @@ body {
   overflow: hidden;
 }
 .rd-ex-expanded { border-color: var(--accent); }
+.rd-ex-stale { border-color: var(--red, #e55); opacity: 0.9; }
+.rd-stale-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--red, #e55);
+  background: color-mix(in srgb, var(--red, #e55) 15%, transparent);
+  border-radius: 4px;
+  padding: 1px 5px;
+  vertical-align: middle;
+}
+.action-sheet-notice {
+  font-size: 13px;
+  color: var(--red, #e55);
+  padding: 8px 16px 4px;
+  font-weight: 500;
+}
+.action-sheet-btn-accent { color: var(--accent-hi); font-weight: 600; }
 .rd-ex-header {
   padding: 14px;
   display: flex;

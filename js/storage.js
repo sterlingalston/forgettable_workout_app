@@ -170,7 +170,7 @@ const Storage = (() => {
     saveRoutines(getRoutines().filter(r => r.id !== id));
   }
 
-  // exercises inside routine: { exId, name, sets, reps, restSeconds, timed }
+  // exercises inside routine: { exId, name, sets, reps, restSeconds, timed, equipment, primaryMuscle }
   function addExerciseToRoutine(routineId, exObj) {
     const r = getRoutine(routineId);
     if (!r) return;
@@ -181,6 +181,8 @@ const Storage = (() => {
       reps: exObj.reps || getSettings().defaultReps,
       restSeconds: exObj.restSeconds || getSettings().restSeconds,
       timed: exObj.timed || false,
+      equipment: exObj.equipment || '',
+      primaryMuscle: exObj.primaryMuscle?.[0] || '',
     });
     updateRoutine(routineId, { exercises: r.exercises });
   }
