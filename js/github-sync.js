@@ -156,7 +156,7 @@ const GithubSync = (() => {
       if (data.logs?.length)     Storage.saveLogs(_mergeById(Storage.getLogs(), data.logs));
       if (data.settings) {
         // Whitelist only safe, non-auth fields — never touch credentials
-        const SYNC_FIELDS = ['youtubeApiKey', 'language', 'defaultSets', 'defaultReps', 'restSeconds', 'weightUnit'];
+        const SYNC_FIELDS = ['youtubeApiKey', 'language', 'defaultSets', 'defaultReps', 'restSeconds', 'weightUnit', 'autoRest'];
         const safe = {};
         for (const k of SYNC_FIELDS) {
           if (data.settings[k] !== undefined) safe[k] = data.settings[k];

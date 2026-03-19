@@ -312,5 +312,11 @@ const Routine = (() => {
     });
   }
 
-  return { renderList, openRoutine, promptCreate };
+  function refreshDetail() {
+    if (!currentRoutineId) return;
+    const r = Storage.getRoutine(currentRoutineId);
+    if (r) renderExerciseList(r);
+  }
+
+  return { renderList, openRoutine, promptCreate, refreshDetail };
 })();

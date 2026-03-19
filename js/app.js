@@ -224,8 +224,8 @@ const App = (() => {
 
     if (repaired > 0) {
       console.info(`[repair] Fixed ${repaired} exercise reference(s) in routines`);
-      // Re-render if currently on a visible view that shows routines/exercises
       Routine.renderList();
+      Routine.refreshDetail(); // re-render open routine detail with repaired IDs
       GithubSync.pushAll();
       toast(`Synced ${repaired} exercise${repaired > 1 ? 's' : ''} in your routines`);
     }
