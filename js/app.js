@@ -214,7 +214,7 @@ const App = (() => {
         console.info(`[repair] "${ex.name}" → "${match.displayName}" (${match.id})`);
         changed = true;
         repaired++;
-        return { ...ex, exId: match.id, name: match.displayName };
+        return { ...ex, exId: match.id }; // preserve name — it's the custom media key
       });
 
       if (changed) {

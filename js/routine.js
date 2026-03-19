@@ -193,15 +193,9 @@ const Routine = (() => {
             primaryMuscle: byName.primaryMuscle?.[0] || ex.primaryMuscle || '',
           });
         } else {
-          // Truly not found — show stale badge
+          // Not in DB — mark row so menu shows "Replace" instead of "View", but no visual badge
           const row = document.querySelector(`#rd-exercises .rd-ex-row[data-index="${i}"]`);
-          if (row) {
-            row.classList.add('rd-ex-stale');
-            const nameEl = row.querySelector('.rd-ex-name');
-            if (nameEl && !nameEl.querySelector('.rd-stale-badge')) {
-              nameEl.insertAdjacentHTML('beforeend', ' <span class="rd-stale-badge">⚠ Not Found</span>');
-            }
-          }
+          if (row) row.classList.add('rd-ex-stale');
         }
       }
     }

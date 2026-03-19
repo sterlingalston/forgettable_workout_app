@@ -312,7 +312,7 @@ body {
   overflow: hidden;
 }
 .rd-ex-expanded { border-color: var(--accent); }
-.rd-ex-stale { border-color: var(--red, #e55); opacity: 0.9; }
+.rd-ex-stale { /* no-DB-entry marker — used by menu logic only, no visual */ }
 .rd-stale-badge {
   font-size: 11px;
   font-weight: 600;
