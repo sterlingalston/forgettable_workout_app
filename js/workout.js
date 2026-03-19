@@ -79,7 +79,8 @@ const Workout = (() => {
 
     // Load video for expanded exercise
     if (expanded !== null && log.exercises[expanded]) {
-      loadWorkoutVideo(log.exercises[expanded].name);
+      const _ex = log.exercises[expanded];
+      loadWorkoutVideo(_ex.name, _ex.exId);
     }
 
     // Delegation
@@ -226,23 +227,30 @@ const Workout = (() => {
       </div>`;
   }
 
-  async function loadWorkoutVideo(exerciseName) {
+  async function loadWorkoutVideo(exerciseName, exId = null) {
     const wrap = document.getElementById('wk-video-wrap');
     if (!wrap) return;
 
-    // Custom media override takes priority (same logic as exercise detail modal)
+    // Custom media (user edit) — keyed by displayed name, always takes priority
     const custom = Storage.getCustomMediaFor(exerciseName);
     if (custom?.videoId) { wrap.innerHTML = _ytWrap(custom.videoId, exerciseName); return; }
     if (custom?.thumb)   { wrap.innerHTML = `<img class="wk-video-frame" src="${custom.thumb}" alt="${escHtml(exerciseName)}" loading="lazy">`; return; }
 
+    // Resolve canonical DB name from exId so community/YouTube lookup matches the right exercise
+    let lookupName = exerciseName;
+    if (exId && !String(exId).startsWith('custom_')) {
+      const dbEx = await API.getExercise(exId);
+      if (dbEx) lookupName = dbEx.displayName;
+    }
+
     // Community data (curated, cached after first fetch)
-    const community = await API.getCommunityMeta(exerciseName);
+    const community = await API.getCommunityMeta(lookupName);
     if (!wrap.isConnected) return;
     if (community?.videoId)      { wrap.innerHTML = _ytWrap(community.videoId, exerciseName); return; }
     if (community?.thumbnailUrl) { wrap.innerHTML = `<img class="wk-video-frame" src="${community.thumbnailUrl}" alt="${escHtml(exerciseName)}" loading="lazy">`; return; }
 
-    const videoId = await API.getYouTubeVideoId(exerciseName);
-    if (!wrap.isConnected) return; // user may have collapsed before it resolved
+    const videoId = await API.getYouTubeVideoId(lookupName);
+    if (!wrap.isConnected) return;
     if (!videoId) { wrap.innerHTML = ''; return; }
     wrap.innerHTML = _ytWrap(videoId, exerciseName);
   }

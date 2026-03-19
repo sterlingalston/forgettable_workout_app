@@ -169,7 +169,8 @@ const Routine = (() => {
 
     // Restore video if a row was already open
     if (expandedExIndex !== null && r.exercises[expandedExIndex]) {
-      loadRoutineVideo(r.exercises[expandedExIndex].name, expandedExIndex);
+      const _ex = r.exercises[expandedExIndex];
+      loadRoutineVideo(_ex.name, expandedExIndex, _ex.exId);
     }
 
     markStaleExercises(r);
@@ -216,21 +217,28 @@ const Routine = (() => {
       </div>`;
   }
 
-  async function loadRoutineVideo(exerciseName, index) {
+  async function loadRoutineVideo(exerciseName, index, exId = null) {
     const wrap = document.getElementById(`rd-video-wrap-${index}`);
     if (!wrap) return;
-    // Custom media takes priority (same as exercise detail modal)
+    // Custom media (user edit) — keyed by displayed name, always takes priority
     const custom = Storage.getCustomMediaFor(exerciseName);
     if (custom?.videoId) { if (!wrap.isConnected) return; wrap.innerHTML = _ytWrap(custom.videoId, exerciseName); return; }
     if (custom?.thumb)   { if (!wrap.isConnected) return; wrap.innerHTML = `<img class="wk-video-frame" src="${custom.thumb}" alt="${escHtml(exerciseName)}" loading="lazy">`; return; }
 
+    // Resolve canonical DB name so community/YouTube lookup matches the right exercise
+    let lookupName = exerciseName;
+    if (exId && !String(exId).startsWith('custom_')) {
+      const dbEx = await API.getExercise(exId);
+      if (dbEx) lookupName = dbEx.displayName;
+    }
+
     // Community data (curated, cached after first fetch)
-    const community = await API.getCommunityMeta(exerciseName);
+    const community = await API.getCommunityMeta(lookupName);
     if (!wrap.isConnected) return;
     if (community?.videoId)      { wrap.innerHTML = _ytWrap(community.videoId, exerciseName); return; }
     if (community?.thumbnailUrl) { wrap.innerHTML = `<img class="wk-video-frame" src="${community.thumbnailUrl}" alt="${escHtml(exerciseName)}" loading="lazy">`; return; }
 
-    const videoId = await API.getYouTubeVideoId(exerciseName);
+    const videoId = await API.getYouTubeVideoId(lookupName);
     if (!wrap.isConnected) return;
     if (!videoId) { wrap.innerHTML = ''; return; }
     wrap.innerHTML = _ytWrap(videoId, exerciseName);
