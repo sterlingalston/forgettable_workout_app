@@ -249,9 +249,21 @@ const Workout = (() => {
     if (community?.videoId)      { wrap.innerHTML = _ytWrap(community.videoId, exerciseName); return; }
     if (community?.thumbnailUrl) { wrap.innerHTML = `<img class="wk-video-frame" src="${community.thumbnailUrl}" alt="${escHtml(exerciseName)}" loading="lazy">`; return; }
 
-    const videoId = await API.getYouTubeVideoId(lookupName);
+    // GIF fallback — shows immediately while YouTube search runs
+    const gifUrl = await API.getFitnessProgramerGif(lookupName);
     if (!wrap.isConnected) return;
-    if (!videoId) { wrap.innerHTML = ''; return; }
+    wrap.innerHTML = gifUrl
+      ? `<img class="wk-video-frame" src="${gifUrl}" alt="${escHtml(exerciseName)}" loading="lazy">`
+      : '<div class="wk-no-video">No video available</div>';
+
+    // Race YouTube search vs 5 s timeout
+    const _timedOut = Symbol();
+    const videoId = await Promise.race([
+      API.getYouTubeVideoId(lookupName),
+      new Promise(res => setTimeout(() => res(_timedOut), 5000)),
+    ]);
+    if (!videoId || videoId === _timedOut) return;
+    if (!wrap.isConnected) return;
     wrap.innerHTML = _ytWrap(videoId, exerciseName);
   }
 

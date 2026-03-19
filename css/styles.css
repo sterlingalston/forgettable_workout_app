@@ -1063,6 +1063,12 @@ body {
   display: block;
   border-radius: 8px;
 }
+.wk-no-video {
+  padding: 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
 
 /* ── Video iframe + thumbnail offline fallback ── */
 /* Thumbnail loads eagerly from browser cache; iframe overlays it when online */
