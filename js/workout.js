@@ -130,6 +130,16 @@ const Workout = (() => {
         Storage.saveLog(log);
       });
     });
+
+    container.querySelectorAll('.add-set-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const exIdx = +btn.dataset.exIndex;
+        if (!log?.exercises[exIdx]) return;
+        log.exercises[exIdx].targetSets++;
+        Storage.saveLog(log);
+        render();
+      });
+    });
   }
 
   function expandedHtml(ex, exIdx) {
@@ -299,7 +309,11 @@ const Workout = (() => {
   // ── Finish + submit ───────────────────────────────────────────────────────
 
   function setupActions() {
-    document.getElementById('btn-finish-workout')?.addEventListener('click', finishWorkout);
+    const btn = document.getElementById('btn-finish-workout');
+    if (btn) {
+      btn.replaceWith(btn.cloneNode(true)); // remove any prior listeners
+      document.getElementById('btn-finish-workout').addEventListener('click', finishWorkout);
+    }
   }
 
   async function finishWorkout() {

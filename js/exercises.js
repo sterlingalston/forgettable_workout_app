@@ -536,6 +536,8 @@ const Exercises = (() => {
     cursor = null;
     hasMore = true;
     activeEquipment = '';
+    activeFilters = {};
+    searchQuery = '';
     // Restore static view IDs
     _gridId = 'ex-grid'; _sentinelId = 'ex-sentinel'; _searchId = 'ex-search';
   }
