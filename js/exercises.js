@@ -203,7 +203,7 @@ const Exercises = (() => {
 
   // ── Exercise detail modal ─────────────────────────────────────────────────
 
-  async function openDetail(id) {
+  async function openDetail(id, fallbackName = null) {
     let ex;
     const isCustom = String(id).startsWith('custom_');
 
@@ -214,6 +214,10 @@ const Exercises = (() => {
     } else {
       try { ex = await API.getExercise(id); }
       catch (e) { App.toast(e.message); return; }
+      // Fallback: look up by display name (handles stale slugified IDs from program import)
+      if (!ex && fallbackName) {
+        try { ex = await API.findByName(fallbackName); } catch {}
+      }
       if (!ex) { App.toast('Exercise not found'); return; }
     }
 

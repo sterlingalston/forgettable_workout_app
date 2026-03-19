@@ -2038,7 +2038,9 @@ const Programs = (() => {
 
   // ── Add program to user's routines ────────────────────────────────────────
 
-  function addProgramAsRoutine(program) {
+  async function addProgramAsRoutine(program) {
+    const allExercises = await API.loadAll();
+
     // Create one routine per day in the program
     program.days.forEach(day => {
       const routineName = `${program.name} — ${day.name}`;
@@ -2047,13 +2049,16 @@ const Programs = (() => {
 
       const r = Storage.createRoutine(routineName);
       day.exercises.forEach(ex => {
+        const dbEx = allExercises.find(e => e.displayName.toLowerCase() === ex.name.toLowerCase());
         Storage.addExerciseToRoutine(r.id, {
-          id:          ex.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-          displayName: ex.name,
-          sets:        ex.sets,
-          reps:        ex.reps,
-          restSeconds: ex.restSeconds,
-          timed:       ex.timed || false,
+          id:           dbEx?.id || ex.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          displayName:  ex.name,
+          equipment:    dbEx?.equipment || '',
+          primaryMuscle: dbEx?.primaryMuscle || [],
+          sets:         ex.sets,
+          reps:         ex.reps,
+          restSeconds:  ex.restSeconds,
+          timed:        ex.timed || false,
         });
       });
     });

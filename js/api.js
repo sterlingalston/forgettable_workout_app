@@ -111,6 +111,12 @@ const API = (() => {
     return all.find(ex => ex.id === id) || null;
   }
 
+  async function findByName(name) {
+    const all = await loadAll();
+    const lower = name.toLowerCase();
+    return all.find(ex => ex.displayName.toLowerCase() === lower) || null;
+  }
+
   // Kept for backward compat — images are already on each exercise object
   async function getImageUrl(displayName) {
     const all = await loadAll();
@@ -362,6 +368,8 @@ const API = (() => {
     queryExercises,
     searchExercises,
     getExercise,
+    findByName,
+    loadAll,
     getImageUrl,
     getYouTubeVideoId,
     getFitnessProgramerGif,

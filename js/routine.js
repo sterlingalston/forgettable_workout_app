@@ -181,12 +181,24 @@ const Routine = (() => {
       if (!exId || String(exId).startsWith('custom_')) continue;
       const found = await API.getExercise(exId);
       if (!found) {
-        const row = document.querySelector(`#rd-exercises .rd-ex-row[data-index="${i}"]`);
-        if (row) {
-          row.classList.add('rd-ex-stale');
-          const nameEl = row.querySelector('.rd-ex-name');
-          if (nameEl && !nameEl.querySelector('.rd-stale-badge')) {
-            nameEl.insertAdjacentHTML('beforeend', ' <span class="rd-stale-badge">⚠ Not Found</span>');
+        // Try to auto-repair: find DB exercise by display name
+        const byName = ex.name ? await API.findByName(ex.name) : null;
+        if (byName) {
+          // Silently repair the stored exId — no badge needed
+          Storage.updateExInRoutine(r.id, i, {
+            exId: byName.id,
+            equipment: byName.equipment || ex.equipment || '',
+            primaryMuscle: byName.primaryMuscle?.[0] || ex.primaryMuscle || '',
+          });
+        } else {
+          // Truly not found — show stale badge
+          const row = document.querySelector(`#rd-exercises .rd-ex-row[data-index="${i}"]`);
+          if (row) {
+            row.classList.add('rd-ex-stale');
+            const nameEl = row.querySelector('.rd-ex-name');
+            if (nameEl && !nameEl.querySelector('.rd-stale-badge')) {
+              nameEl.insertAdjacentHTML('beforeend', ' <span class="rd-stale-badge">⚠ Not Found</span>');
+            }
           }
         }
       }
@@ -280,7 +292,7 @@ const Routine = (() => {
 
     overlay.querySelector('#exm-view')?.addEventListener('click', () => {
       close();
-      Exercises.openDetail(ex.exId || ex.id);
+      Exercises.openDetail(ex.exId || ex.id, ex.name);
     });
 
     overlay.querySelector('#exm-replace').addEventListener('click', () => {

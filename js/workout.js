@@ -96,7 +96,7 @@ const Workout = (() => {
       btn.addEventListener('click', e => {
         e.stopPropagation();
         const ex = log.exercises[+btn.dataset.index];
-        Exercises.openDetail(ex.exId);
+        Exercises.openDetail(ex.exId, ex.name);
       });
     });
 
