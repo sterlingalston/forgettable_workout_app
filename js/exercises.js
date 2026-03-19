@@ -613,7 +613,9 @@ const Exercises = (() => {
         ex = await API.getExercise(exId);
       }
       onPick(ex);
-      App.toast(`${ex.displayName} added`);
+      // Only show "added" toast if picker wasn't closed inside the callback
+      // (e.g. Replace flow calls closePicker() which nulls onPick)
+      if (onPick) App.toast(`${ex.displayName} added`);
     } catch (e) { App.toast(e.message); }
   }
 

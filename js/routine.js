@@ -80,7 +80,6 @@ const Routine = (() => {
 
     document.getElementById('rd-title').textContent = r.name;
     renderExerciseList(r);
-    markStaleExercises(r);
 
     const startBtn = document.getElementById('btn-start-workout');
     if (startBtn) startBtn.onclick = () => Workout.start(currentRoutineId);
@@ -97,9 +96,7 @@ const Routine = (() => {
           reps: Storage.getSettings().defaultReps,
           restSeconds: Storage.getSettings().restSeconds,
         });
-        const updated = Storage.getRoutine(currentRoutineId);
-        renderExerciseList(updated);
-        markStaleExercises(updated);
+        renderExerciseList(Storage.getRoutine(currentRoutineId));
         App.toast(`${ex.displayName} added`);
       });
     };
@@ -172,10 +169,13 @@ const Routine = (() => {
     if (expandedExIndex !== null && r.exercises[expandedExIndex]) {
       loadRoutineVideo(r.exercises[expandedExIndex].name, expandedExIndex);
     }
+
+    markStaleExercises(r);
   }
 
   async function markStaleExercises(r) {
     for (let i = 0; i < r.exercises.length; i++) {
+      if (r.id !== currentRoutineId) return; // user navigated away
       const ex = r.exercises[i];
       const exId = ex.exId || ex.id || '';
       if (!exId || String(exId).startsWith('custom_')) continue;
@@ -276,17 +276,13 @@ const Routine = (() => {
       close();
       if (!confirm(`Remove "${ex.name}" from this routine?`)) return;
       Storage.removeExFromRoutine(currentRoutineId, index);
-      const updated = Storage.getRoutine(currentRoutineId);
-      renderExerciseList(updated);
-      markStaleExercises(updated);
+      renderExerciseList(Storage.getRoutine(currentRoutineId));
     });
 
     overlay.querySelector('#exm-timed').addEventListener('click', () => {
       close();
       Storage.updateExInRoutine(currentRoutineId, index, { timed: !ex.timed });
-      const updated = Storage.getRoutine(currentRoutineId);
-      renderExerciseList(updated);
-      markStaleExercises(updated);
+      renderExerciseList(Storage.getRoutine(currentRoutineId));
       App.toast(`${ex.name} timed: ${!ex.timed ? 'ON' : 'OFF'}`);
     });
 
@@ -305,9 +301,7 @@ const Routine = (() => {
           equipment: newEx.equipment || '',
           primaryMuscle: newEx.primaryMuscle?.[0] || '',
         });
-        const updated = Storage.getRoutine(currentRoutineId);
-        renderExerciseList(updated);
-        markStaleExercises(updated);
+        renderExerciseList(Storage.getRoutine(currentRoutineId));
         App.toast(`Replaced with ${newEx.displayName}`);
       });
     });
