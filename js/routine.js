@@ -97,6 +97,7 @@ const Routine = (() => {
           restSeconds: Storage.getSettings().restSeconds,
         });
         renderExerciseList(Storage.getRoutine(currentRoutineId));
+        GithubSync.pushAll().catch(() => {});
         App.toast(`${ex.displayName} added`);
       });
     };
@@ -155,6 +156,7 @@ const Routine = (() => {
         if (val === null || isNaN(+val)) return;
         Storage.updateExInRoutine(currentRoutineId, +index, { [field]: +val });
         renderExerciseList(Storage.getRoutine(currentRoutineId));
+        GithubSync.pushAll().catch(() => {});
       });
     });
 
@@ -277,12 +279,14 @@ const Routine = (() => {
       if (!confirm(`Remove "${ex.name}" from this routine?`)) return;
       Storage.removeExFromRoutine(currentRoutineId, index);
       renderExerciseList(Storage.getRoutine(currentRoutineId));
+      GithubSync.pushAll().catch(() => {});
     });
 
     overlay.querySelector('#exm-timed').addEventListener('click', () => {
       close();
       Storage.updateExInRoutine(currentRoutineId, index, { timed: !ex.timed });
       renderExerciseList(Storage.getRoutine(currentRoutineId));
+      GithubSync.pushAll().catch(() => {});
       App.toast(`${ex.name} timed: ${!ex.timed ? 'ON' : 'OFF'}`);
     });
 
@@ -302,6 +306,7 @@ const Routine = (() => {
           primaryMuscle: newEx.primaryMuscle?.[0] || '',
         });
         renderExerciseList(Storage.getRoutine(currentRoutineId));
+        GithubSync.pushAll().catch(() => {});
         App.toast(`Replaced with ${newEx.displayName}`);
       });
     });

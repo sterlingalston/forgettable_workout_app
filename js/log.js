@@ -148,7 +148,14 @@ const Log = (() => {
       const doneSets = ex.sets.filter(s => s.done);
       const unit = Storage.getSettings().weightUnit || 'lbs';
       const setsHtml = doneSets.length
-        ? doneSets.map((s, i) => `<div class="log-set-row">Set ${i+1}: ${s.weight ?? 0} ${unit} × ${s.reps ?? 0} reps</div>`).join('')
+        ? doneSets.map((s, i) => {
+            if (s.seconds != null && s.reps == null) {
+              const m = Math.floor(s.seconds / 60), sec = s.seconds % 60;
+              const t = m > 0 ? `${m}m ${sec}s` : `${sec}s`;
+              return `<div class="log-set-row">Set ${i+1}: ${t}</div>`;
+            }
+            return `<div class="log-set-row">Set ${i+1}: ${s.weight ?? 0} ${unit} × ${s.reps ?? 0} reps</div>`;
+          }).join('')
         : '<div class="log-set-row muted">No sets logged</div>';
       return `
         <div class="log-ex-block">

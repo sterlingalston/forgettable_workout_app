@@ -66,6 +66,8 @@ const App = (() => {
     document.getElementById('set-def-sets').value  = s.defaultSets;
     document.getElementById('set-def-reps').value  = s.defaultReps;
     document.getElementById('set-rest').value      = s.restSeconds;
+    const autoRestEl = document.getElementById('set-auto-rest');
+    if (autoRestEl) autoRestEl.checked = !!s.autoRest; // default OFF
 
     // Unit toggle
     const unit = s.weightUnit || 'lbs';
@@ -91,6 +93,7 @@ const App = (() => {
         defaultSets: +document.getElementById('set-def-sets').value,
         defaultReps: +document.getElementById('set-def-reps').value,
         restSeconds: +document.getElementById('set-rest').value,
+        autoRest:    document.getElementById('set-auto-rest')?.checked || false,
       });
       GithubSync.pushAll();
       toast('Settings saved');

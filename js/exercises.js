@@ -229,7 +229,7 @@ const Exercises = (() => {
     const isCommunityInstructions = !!(community?.instructions?.length);
 
     const instructions = activeInstructions
-      .map((s, i) => `<li><span class="step-n">${i+1}</span>${s}</li>`)
+      .map((s, i) => `<li><span class="step-n">${i+1}</span>${escHtml(s)}</li>`)
       .join('');
 
     const muscles = [
@@ -244,9 +244,10 @@ const Exercises = (() => {
       : '';
     const displayEquipment = customMedia?.equipment || ex.equipment;
 
-    const addBtn = onPick
-      ? `<button class="btn btn-primary full-w" id="modal-add-ex">+ Add to Routine</button>`
-      : `<button class="btn btn-primary full-w" id="modal-add-ex">+ Add to Workout</button>`;
+    const addBtnLabel = onPick
+      ? (pickerRoutineId ? '+ Add to Routine' : '+ Add to Workout')
+      : '+ Add to Workout';
+    const addBtn = `<button class="btn btn-primary full-w" id="modal-add-ex">${addBtnLabel}</button>`;
 
     const customActions = isCustom ? `
       <div style="display:flex;gap:8px;margin-top:8px">

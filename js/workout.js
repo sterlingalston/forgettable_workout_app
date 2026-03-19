@@ -153,7 +153,7 @@ const Workout = (() => {
         rows.push(`
           <div class="set-row ${done ? 'set-done' : ''}" data-set="${s}">
             <span class="set-label">Set ${s+1}</span>
-            <div id="sw-display" class="sw-display">00:00.0</div>
+            <div id="sw-display" class="sw-display">${Timer.formatMs(Timer.getSwElapsed())}</div>
             <div class="sw-controls">
               <button class="sw-btn-start btn-sm">▶</button>
               <button class="sw-btn-pause btn-sm hidden">⏸</button>
@@ -287,6 +287,12 @@ const Workout = (() => {
 
     if (ex.timed) Timer.swReset();
 
+    // Start rest countdown automatically (only if enabled in settings)
+    if (Storage.getSettings().autoRest && ex.restSeconds > 0) {
+      const done = ex.sets.filter(s => s.done).length;
+      if (done < ex.targetSets) Timer.startRest(ex.restSeconds);
+    }
+
     render();
   }
 
@@ -305,7 +311,10 @@ const Workout = (() => {
     const logs = Storage.getLogs().filter(l => l.id !== log.id && l.finishedAt);
     const prev = logs[0]; // most recent finished
     if (!prev) return null;
-    const exLog = prev.exercises?.find(e => e.exId === exId);
+    // Match by exId first; fall back to name match for logs with stale/repaired IDs
+    const curEx = log.exercises.find(e => e.exId === exId);
+    const exLog = prev.exercises?.find(e => e.exId === exId)
+               || (curEx ? prev.exercises?.find(e => e.name === curEx.name) : null);
     return exLog?.sets?.[setIdx] || null;
   }
 

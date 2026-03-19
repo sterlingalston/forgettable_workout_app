@@ -46,6 +46,7 @@ const Storage = (() => {
     defaultReps:     10,
     restSeconds:     90,
     weightUnit:      'lbs',
+    autoRest:        false,
   };
 
   // Returns merged view: non-auth settings + auth credentials
