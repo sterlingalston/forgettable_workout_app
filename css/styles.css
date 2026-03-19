@@ -329,6 +329,53 @@ body {
   font-weight: 500;
 }
 .action-sheet-btn-accent { color: var(--accent-hi); font-weight: 600; }
+
+/* ── Community export ── */
+.community-json-wrap {
+  position: relative;
+  margin: 8px 0;
+}
+.community-json-preview {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 10px 10px 10px;
+  font-size: 11px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 0;
+}
+.community-copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  opacity: 0.85;
+}
+.community-bulk-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.community-bulk-name {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+.community-bulk-file {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  word-break: break-all;
+}
+.community-bulk-actions {
+  display: flex;
+  gap: 8px;
+}
 .rd-ex-header {
   padding: 14px;
   display: flex;

@@ -239,6 +239,9 @@ const Exercises = (() => {
 
     // Custom media equipment override
     const customMedia = isCustom ? null : Storage.getCustomMediaFor(ex.displayName);
+    const contributeBtn = (!isCustom && (customMedia?.videoId || customMedia?.thumb))
+      ? `<button class="btn btn-ghost full-w" id="modal-contribute-btn" style="margin-top:8px">↑ Contribute this video to the community</button>`
+      : '';
     const displayEquipment = customMedia?.equipment || ex.equipment;
 
     const addBtn = onPick
@@ -280,6 +283,7 @@ const Exercises = (() => {
               : ''}
             ${addBtn}
             ${customActions}
+            ${contributeBtn}
             <button class="btn btn-ghost full-w" id="modal-back-btn" style="margin-top:8px">← Back</button>
           </div>
         </div>
@@ -303,6 +307,11 @@ const Exercises = (() => {
       e.stopPropagation();
       closeDetail();
       // Underlying view is still visible — no navigation needed
+    });
+
+    modal.querySelector('#modal-contribute-btn')?.addEventListener('click', e => {
+      e.stopPropagation();
+      openCommunityExport(ex.displayName, customMedia);
     });
 
     modal.querySelector('#modal-add-ex')?.addEventListener('click', e => {
@@ -756,5 +765,62 @@ const Exercises = (() => {
     });
   }
 
-  return { initView, openPicker, closePicker, openDetail, promptCreateCustom };
+  function openCommunityExport(exerciseName, customMedia) {
+    const slug = API.slugify(exerciseName);
+    const today = new Date().toISOString().slice(0, 10);
+    const json = JSON.stringify({
+      exerciseName,
+      slug,
+      videoId: customMedia.videoId || null,
+      thumbnailUrl: customMedia.thumb || null,
+      timed: false,
+      instructions: [],
+      meta: {
+        contributor: 'your-github-username',
+        source: customMedia.videoId ? `https://youtu.be/${customMedia.videoId}` : null,
+        addedAt: today,
+      },
+    }, null, 2);
+
+    const filename = `data/community/${slug}.json`;
+    const ghBase = 'https://github.com/sterlingalston/forgettable_workout_app/new/main';
+    const ghParams = `?filename=${encodeURIComponent(filename)}&value=${encodeURIComponent(json)}`;
+    // GitHub has a URL length limit — only provide the direct link if it's reasonable
+    const ghUrl = (ghBase + ghParams).length < 8000 ? ghBase + ghParams : ghBase;
+
+    const html = `
+      <div class="modal-overlay" id="community-export-modal">
+        <div class="modal modal-sheet">
+          <button class="modal-close" aria-label="Close">✕</button>
+          <div class="modal-body">
+            <h2 class="modal-title">Contribute to Community</h2>
+            <p class="settings-hint">Share your custom video for <strong>${escHtml(exerciseName)}</strong> with everyone.</p>
+            <div class="community-json-wrap">
+              <pre class="community-json-preview" id="community-json-text">${escHtml(json)}</pre>
+              <button class="btn btn-ghost btn-sm community-copy-btn" id="community-json-copy">Copy</button>
+            </div>
+            <p class="settings-hint" style="margin-top:8px">File: <code>${escHtml(filename)}</code></p>
+            <a href="${ghUrl}" target="_blank" rel="noopener" class="btn btn-primary full-w" style="margin-top:8px;display:block;text-align:center;text-decoration:none;line-height:44px">Open GitHub to submit PR →</a>
+            <p class="settings-hint" style="margin-top:8px">After creating the file, add <code>"${escHtml(slug)}"</code> to <code>data/community/index.json</code>.</p>
+          </div>
+        </div>
+      </div>`;
+
+    document.body.insertAdjacentHTML('beforeend', html);
+    const modal = document.getElementById('community-export-modal');
+    const close = () => modal.remove();
+    modal.querySelector('.modal-close').addEventListener('click', close);
+    modal.addEventListener('click', e => { if (e.target === modal) close(); });
+
+    document.getElementById('community-json-copy')?.addEventListener('click', () => {
+      navigator.clipboard?.writeText(json).then(() => App.toast('Copied!')).catch(() => {
+        const el = document.createElement('textarea');
+        el.value = json; document.body.appendChild(el); el.select();
+        try { document.execCommand('copy'); App.toast('Copied!'); } catch {}
+        el.remove();
+      });
+    });
+  }
+
+  return { initView, openPicker, closePicker, openDetail, promptCreateCustom, openCommunityExport };
 })();

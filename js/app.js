@@ -119,6 +119,10 @@ const App = (() => {
       Storage.clearAll();
       location.reload();
     });
+
+    document.getElementById('btn-export-csv')?.addEventListener('click', exportHistoryCSV);
+    document.getElementById('btn-export-json')?.addEventListener('click', exportHistoryJSON);
+    document.getElementById('btn-community-bulk')?.addEventListener('click', showCommunityBulkExport);
   }
 
   // ── Toast ─────────────────────────────────────────────────────────────────
@@ -273,7 +277,121 @@ const App = (() => {
     repairRoutineExercises();
   }
 
-  return { init, showView, toast, addExToActiveWorkout };
+  // ── Export functions ──────────────────────────────────────────────────────
+
+  function exportHistoryCSV() {
+    const logs = Storage.getLogs().filter(l => l.finishedAt);
+    if (!logs.length) { toast('No workout history to export'); return; }
+
+    const rows = ['"Date","Title","Exercise","Set #","Reps","Weight","Time"'];
+    for (const log of logs) {
+      const date = new Date(log.startedAt).toISOString().slice(0, 10);
+      for (const ex of log.exercises) {
+        (ex.sets || []).forEach((set, i) => {
+          if (!set.done) return;
+          const mins = set.seconds ? Math.floor(set.seconds / 60) : 0;
+          const secs = set.seconds ? String(set.seconds % 60).padStart(2, '0') : '00';
+          const time = set.seconds ? `${mins}:${secs}` : '';
+          const q = s => `"${String(s || '').replace(/"/g, '""')}"`;
+          rows.push([q(date), q(log.routineName), q(ex.name), q(i + 1), q(set.reps || ''), q(set.weight || ''), q(time)].join(','));
+        });
+      }
+    }
+
+    _downloadText(rows.join('\n'), `lift-history-${new Date().toISOString().slice(0, 10)}.csv`, 'text/csv');
+    toast(`Exported ${logs.length} workouts`);
+  }
+
+  function exportHistoryJSON() {
+    const logs = Storage.getLogs().filter(l => l.finishedAt);
+    if (!logs.length) { toast('No workout history to export'); return; }
+    _downloadText(JSON.stringify(logs, null, 2), `lift-history-${new Date().toISOString().slice(0, 10)}.json`, 'application/json');
+    toast(`Exported ${logs.length} workouts`);
+  }
+
+  async function showCommunityBulkExport() {
+    const customMedia = Storage.getCustomMedia();
+    const entries = Object.entries(customMedia).filter(([, m]) => m && (m.videoId || m.thumb));
+    if (!entries.length) {
+      toast('No custom media yet — add a video via ✏️ on any exercise');
+      return;
+    }
+
+    const today = new Date().toISOString().slice(0, 10);
+    const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+    const items = await Promise.all(entries.map(async ([nameLower, media]) => {
+      const dbEx = await API.findByName(nameLower).catch(() => null);
+      const displayName = dbEx?.displayName || nameLower.replace(/(?:^|\s)\S/g, c => c.toUpperCase());
+      const slug = API.slugify(displayName);
+      const json = JSON.stringify({
+        exerciseName: displayName, slug,
+        videoId: media.videoId || null,
+        thumbnailUrl: media.thumb || null,
+        timed: false, instructions: [],
+        meta: { contributor: 'your-github-username', source: media.videoId ? `https://youtu.be/${media.videoId}` : null, addedAt: today },
+      }, null, 2);
+      const filename = `data/community/${slug}.json`;
+      const ghBase = 'https://github.com/sterlingalston/forgettable_workout_app/new/main';
+      const ghParams = `?filename=${encodeURIComponent(filename)}&value=${encodeURIComponent(json)}`;
+      const ghUrl = (ghBase + ghParams).length < 8000 ? ghBase + ghParams : ghBase;
+      return { displayName, slug, filename, json, ghUrl };
+    }));
+
+    const slugList = items.map(it => `"${it.slug}"`).join(', ');
+    const itemsHtml = items.map((item, i) => `
+      <div class="community-bulk-item">
+        <div class="community-bulk-name">${escHtml(item.displayName)}</div>
+        <code class="community-bulk-file">${escHtml(item.filename)}</code>
+        <div class="community-bulk-actions">
+          <button class="btn btn-ghost btn-sm" data-bulk-copy="${i}">Copy JSON</button>
+          <a href="${item.ghUrl}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">GitHub →</a>
+        </div>
+      </div>`).join('');
+
+    const html = `
+      <div class="modal-overlay" id="community-bulk-modal">
+        <div class="modal modal-full">
+          <div class="modal-header">
+            <button class="modal-close" aria-label="Close">✕</button>
+            <h3>Community Contributions (${items.length})</h3>
+          </div>
+          <div style="padding:16px;overflow-y:auto;flex:1">
+            <p class="settings-hint">Click <strong>GitHub →</strong> on each exercise to open a pre-filled PR, or copy the JSON and create the file manually in your fork.</p>
+            <p class="settings-hint" style="margin-bottom:16px">Add these slugs to <code>data/community/index.json</code>: <code style="word-break:break-all">${escHtml(slugList)}</code></p>
+            ${itemsHtml}
+          </div>
+        </div>
+      </div>`;
+
+    document.body.insertAdjacentHTML('beforeend', html);
+    const modal = document.getElementById('community-bulk-modal');
+    const close = () => modal.remove();
+    modal.querySelector('.modal-close').addEventListener('click', close);
+    modal.addEventListener('click', e => { if (e.target === modal) close(); });
+
+    modal.querySelectorAll('[data-bulk-copy]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const json = items[+btn.dataset.bulkCopy].json;
+        navigator.clipboard?.writeText(json).then(() => toast('Copied!')).catch(() => {
+          const el = document.createElement('textarea');
+          el.value = json; document.body.appendChild(el); el.select();
+          try { document.execCommand('copy'); toast('Copied!'); } catch {}
+          el.remove();
+        });
+      });
+    });
+  }
+
+  function _downloadText(text, filename, type) {
+    const blob = new Blob([text], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  return { init, showView, toast, addExToActiveWorkout, exportHistoryCSV, exportHistoryJSON, showCommunityBulkExport };
 })();
 
 document.addEventListener('DOMContentLoaded', App.init);

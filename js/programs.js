@@ -2027,10 +2027,12 @@ const Programs = (() => {
       </div>`).join('');
 
     list.querySelectorAll('.program-add-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async () => {
         const prog = PROGRAMS.find(p => p.id === btn.dataset.id);
         if (!prog) return;
-        addProgramAsRoutine(prog);
+        btn.disabled = true;
+        btn.textContent = 'Adding…';
+        await addProgramAsRoutine(prog);
         document.getElementById('programs-modal')?.remove();
       });
     });

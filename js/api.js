@@ -374,6 +374,7 @@ const API = (() => {
     getYouTubeVideoId,
     getFitnessProgramerGif,
     getCommunityMeta,
+    slugify: _slugify,
     MUSCLES, EQUIPMENT, CATEGORIES, LEVELS,
     fmt,
   };
