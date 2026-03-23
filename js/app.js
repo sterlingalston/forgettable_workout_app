@@ -82,6 +82,7 @@ const App = (() => {
         document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         Storage.saveSettings({ weightUnit: btn.dataset.unit });
+        GithubSync.pushAll().catch(() => {});
       });
     });
 
@@ -290,7 +291,7 @@ const App = (() => {
       const date = new Date(log.startedAt).toISOString().slice(0, 10);
       for (const ex of log.exercises) {
         (ex.sets || []).forEach((set, i) => {
-          if (!set.done) return;
+          if (!set?.done) return;
           const mins = set.seconds ? Math.floor(set.seconds / 60) : 0;
           const secs = set.seconds ? String(set.seconds % 60).padStart(2, '0') : '00';
           const time = set.seconds ? `${mins}:${secs}` : '';

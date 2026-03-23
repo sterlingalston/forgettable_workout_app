@@ -21,7 +21,7 @@ const Log = (() => {
       const duration = l.finishedAt
         ? `${Math.round((l.finishedAt - l.startedAt) / 60000)} min`
         : '';
-      const totalSets = l.exercises.reduce((sum, ex) => sum + ex.sets.filter(s => s.done).length, 0);
+      const totalSets = l.exercises.reduce((sum, ex) => sum + ex.sets.filter(s => s?.done).length, 0);
 
       return `
         <div class="log-card" data-id="${l.id}">
@@ -145,7 +145,7 @@ const Log = (() => {
       : 'In progress';
 
     const exerciseRows = l.exercises.map(ex => {
-      const doneSets = ex.sets.filter(s => s.done);
+      const doneSets = ex.sets.filter(s => s?.done);
       const unit = Storage.getSettings().weightUnit || 'lbs';
       const setsHtml = doneSets.length
         ? doneSets.map((s, i) => {

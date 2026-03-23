@@ -95,7 +95,7 @@ const GithubSync = (() => {
     const { githubToken, githubUsername, githubGistId, ...settings } = Storage.getSettings();
     return {
       routines:        Storage.getRoutines(),
-      logs:            Storage.getLogs().filter(l => l.finishedAt),
+      logs:            Storage.getLogs(), // include in-progress so crashes don't lose data
       settings,
       videoCache:      Storage.getVideoCache(),
       customMedia:     Storage.getCustomMedia(),
@@ -110,7 +110,14 @@ const GithubSync = (() => {
     const map = new Map(
       local.filter(x => !deleted.has(x.id)).map(x => [x.id, x])
     );
-    remote.forEach(x => { if (!deleted.has(x.id)) map.set(x.id, x); });
+    remote.forEach(x => {
+      if (!deleted.has(x.id)) {
+        const existing = map.get(x.id);
+        // Never overwrite a locally-finished log with a stale in-progress remote copy
+        if (existing?.finishedAt && !x.finishedAt) return;
+        map.set(x.id, x);
+      }
+    });
     return [...map.values()];
   }
 

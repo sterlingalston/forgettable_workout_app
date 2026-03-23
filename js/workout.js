@@ -3,6 +3,8 @@
 const Workout = (() => {
   let log = null; // current workout log object
   let expanded = null; // index of expanded exercise
+  let _lastVideoExIdx = null; // track which exercise's video is currently loaded
+  let _lastVideoName  = null; // track name to detect mid-workout exercise changes
   const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
   // ── Start ─────────────────────────────────────────────────────────────────
@@ -22,6 +24,7 @@ const Workout = (() => {
       sets: [],
     }));
     Storage.saveLog(log);
+    GithubSync.pushAll().catch(() => {});
 
     App.showView('workout');
     document.getElementById('wk-title').textContent = r.name;
@@ -56,8 +59,13 @@ const Workout = (() => {
     const container = document.getElementById('wk-exercises');
     if (!container || !log) return;
 
+    // Save video content before re-render to avoid iframe reload when same exercise stays expanded
+    const _prevVideoWrap = document.getElementById('wk-video-wrap');
+    const _savedVideoHtml = (_prevVideoWrap && !_prevVideoWrap.querySelector('.wk-video-loading'))
+      ? _prevVideoWrap.innerHTML : null;
+
     container.innerHTML = log.exercises.map((ex, i) => {
-      const done = ex.sets.filter(s => s.done).length;
+      const done = ex.sets.filter(s => s?.done).length;
       const isExpanded = i === expanded;
 
       return `
@@ -77,10 +85,17 @@ const Workout = (() => {
         </div>`;
     }).join('');
 
-    // Load video for expanded exercise
+    // Load video for expanded exercise — preserve iframe if same exercise is still showing
     if (expanded !== null && log.exercises[expanded]) {
       const _ex = log.exercises[expanded];
-      loadWorkoutVideo(_ex.name, _ex.exId);
+      const _newWrap = document.getElementById('wk-video-wrap');
+      if (_savedVideoHtml && expanded === _lastVideoExIdx && _ex.name === _lastVideoName && _newWrap) {
+        _newWrap.innerHTML = _savedVideoHtml;
+      } else {
+        _lastVideoExIdx = expanded;
+        _lastVideoName  = _ex.name;
+        loadWorkoutVideo(_ex.name, _ex.exId);
+      }
     }
 
     // Delegation
@@ -129,6 +144,7 @@ const Workout = (() => {
         }
         log.exercises[exIndex].sets[setIndex][field] = e.target.value;
         Storage.saveLog(log);
+        GithubSync.pushAll().catch(() => {});
       });
     });
 
@@ -138,6 +154,7 @@ const Workout = (() => {
         if (!log?.exercises[exIdx]) return;
         log.exercises[exIdx].targetSets++;
         Storage.saveLog(log);
+        GithubSync.pushAll().catch(() => {});
         render();
       });
     });
@@ -287,6 +304,7 @@ const Workout = (() => {
   // ── Set logging ───────────────────────────────────────────────────────────
 
   function logSet(exIdx, setIdx) {
+    if (!log) return;
     const ex = log.exercises[exIdx];
     if (!ex) return;
     if (!ex.sets[setIdx]) ex.sets[setIdx] = {};
@@ -304,12 +322,13 @@ const Workout = (() => {
     ex.sets[setIdx].done = true;
     ex.sets[setIdx].timestamp = Date.now();
     Storage.saveLog(log);
+    GithubSync.pushAll().catch(() => {});
 
     if (ex.timed) Timer.swReset();
 
     // Start rest countdown automatically (only if enabled in settings)
     if (Storage.getSettings().autoRest && ex.restSeconds > 0) {
-      const done = ex.sets.filter(s => s.done).length;
+      const done = ex.sets.filter(s => s?.done).length;
       if (done < ex.targetSets) Timer.startRest(ex.restSeconds);
     }
 
@@ -317,10 +336,12 @@ const Workout = (() => {
   }
 
   function undoSet(exIdx, setIdx) {
+    if (!log) return;
     const ex = log.exercises[exIdx];
     if (ex?.sets[setIdx]) {
       ex.sets[setIdx].done = false;
       Storage.saveLog(log);
+      GithubSync.pushAll().catch(() => {});
       render();
     }
   }
@@ -354,13 +375,14 @@ const Workout = (() => {
 
     log.finishedAt = Date.now();
     Storage.saveLog(log);
+    GithubSync.pushAll().catch(() => {});
 
     showCompletionModal(log);
   }
 
   function showCompletionModal(finishedLog) {
     const durationMin = Math.round((finishedLog.finishedAt - finishedLog.startedAt) / 60000);
-    const totalSets = finishedLog.exercises.reduce((n, ex) => n + ex.sets.filter(s => s.done).length, 0);
+    const totalSets = finishedLog.exercises.reduce((n, ex) => n + ex.sets.filter(s => s?.done).length, 0);
 
     launchConfetti();
 
@@ -459,6 +481,7 @@ const Workout = (() => {
       sets: [],
     });
     Storage.saveLog(log);
+    GithubSync.pushAll().catch(() => {});
     expanded = log.exercises.length - 1;
     render();
   }

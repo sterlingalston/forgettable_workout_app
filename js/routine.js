@@ -50,6 +50,7 @@ const Routine = (() => {
     const name = prompt('Routine name:');
     if (!name?.trim()) return;
     Storage.createRoutine(name.trim());
+    GithubSync.pushAll().catch(() => {});
     renderList();
     App.toast('Routine created');
   }
@@ -60,6 +61,7 @@ const Routine = (() => {
     const choice = confirm(`Delete "${r.name}"?\n\nOK = Delete  |  Cancel = Keep`);
     if (choice) {
       Storage.deleteRoutine(id);
+      GithubSync.pushAll().catch(() => {});
       renderList();
       App.toast('Routine deleted');
     }
@@ -69,10 +71,12 @@ const Routine = (() => {
 
   let currentRoutineId = null;
   let expandedExIndex  = null;
+  let _lastVideoName   = null; // track loaded video to avoid unnecessary reloads
 
   function openRoutine(id) {
     currentRoutineId = id;
     expandedExIndex  = null;
+    _lastVideoName   = null;
     const r = Storage.getRoutine(id);
     if (!r) return;
 
@@ -106,6 +110,12 @@ const Routine = (() => {
   function renderExerciseList(r) {
     const el = document.getElementById('rd-exercises');
     if (!el) return;
+
+    // Save video content before re-render to avoid iframe reload when same exercise stays expanded
+    const _prevWrap = expandedExIndex !== null ? document.getElementById(`rd-video-wrap-${expandedExIndex}`) : null;
+    const _savedVideoHtml = (_prevWrap && !_prevWrap.querySelector('.wk-video-loading'))
+      ? _prevWrap.innerHTML : null;
+    const _savedVideoExIdx = expandedExIndex;
 
     if (!r.exercises.length) {
       el.innerHTML = `<p class="empty-msg">No exercises. Tap "+ Add Exercise" to get started.</p>`;
@@ -167,10 +177,18 @@ const Routine = (() => {
       });
     });
 
-    // Restore video if a row was already open
+    // Restore or reload video for the expanded row
     if (expandedExIndex !== null && r.exercises[expandedExIndex]) {
       const _ex = r.exercises[expandedExIndex];
-      loadRoutineVideo(_ex.name, expandedExIndex, _ex.exId);
+      const _wrap = document.getElementById(`rd-video-wrap-${expandedExIndex}`);
+      if (_savedVideoHtml && expandedExIndex === _savedVideoExIdx && _ex.name === _lastVideoName && _wrap) {
+        // Same exercise still expanded — restore iframe content without reloading
+        _wrap.innerHTML = _savedVideoHtml;
+      } else {
+        // Different exercise or first load — fetch fresh video
+        _lastVideoName = _ex.name;
+        loadRoutineVideo(_ex.name, expandedExIndex, _ex.exId);
+      }
     }
 
     markStaleExercises(r);
