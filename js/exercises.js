@@ -477,6 +477,9 @@ const Exercises = (() => {
         if (chipEl) chipEl.textContent = API.fmt(equipment);
       }
 
+      // Refresh routine pane video immediately if this exercise is currently expanded
+      Routine.refreshDetail();
+
       try {
         await GithubSync.pushAll();
         App.toast('Saved & synced');

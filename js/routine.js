@@ -347,7 +347,9 @@ const Routine = (() => {
   function refreshDetail() {
     if (!currentRoutineId) return;
     const r = Storage.getRoutine(currentRoutineId);
-    if (r) renderExerciseList(r);
+    if (!r) return;
+    _lastVideoName = null; // force video reload — media or exercise may have changed
+    renderExerciseList(r);
   }
 
   return { renderList, openRoutine, promptCreate, refreshDetail };
