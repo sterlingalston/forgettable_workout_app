@@ -2242,6 +2242,7 @@ const Programs = (() => {
       if (Storage.getRoutines().some(r => r.name === routineName)) return;
 
       const r = Storage.createRoutine(routineName);
+      if (program.videoId) Storage.updateRoutine(r.id, { videoId: program.videoId });
       day.exercises.forEach(ex => {
         const dbEx = allExercises.find(e => e.displayName.toLowerCase() === ex.name.toLowerCase());
         Storage.addExerciseToRoutine(r.id, {

@@ -83,6 +83,7 @@ const Routine = (() => {
     App.showView('routine-detail');
 
     document.getElementById('rd-title').textContent = r.name;
+    _renderFollowAlong(r);
     renderExerciseList(r);
 
     const startBtn = document.getElementById('btn-start-workout');
@@ -105,6 +106,20 @@ const Routine = (() => {
         App.toast(`${ex.displayName} added`);
       });
     };
+  }
+
+  function _renderFollowAlong(r) {
+    const existing = document.getElementById('rd-follow-along');
+    if (existing) existing.remove();
+    if (!r.videoId) return;
+    const el = document.createElement('a');
+    el.id        = 'rd-follow-along';
+    el.className = 'rd-follow-along-link';
+    el.href      = `https://www.youtube.com/watch?v=${r.videoId}`;
+    el.target    = '_blank';
+    el.rel       = 'noopener';
+    el.textContent = '▶ Follow along video';
+    document.getElementById('rd-exercises')?.insertAdjacentElement('beforebegin', el);
   }
 
   function renderExerciseList(r) {
@@ -257,11 +272,17 @@ const Routine = (() => {
     if (community?.thumbnailUrl) { wrap.innerHTML = `<img class="wk-video-frame" src="${community.thumbnailUrl}" alt="${escHtml(exerciseName)}" loading="lazy">`; return; }
 
     // GIF fallback — shows immediately while YouTube search runs
+    const routineVideoId = Storage.getRoutine(currentRoutineId)?.videoId || null;
     const gifUrl = await API.getFitnessProgramerGif(lookupName);
     if (!wrap.isConnected) return;
-    wrap.innerHTML = gifUrl
-      ? `<img class="wk-video-frame" src="${gifUrl}" alt="${escHtml(exerciseName)}" loading="lazy">`
-      : '<div class="wk-no-video">No video available</div>';
+    if (gifUrl) {
+      wrap.innerHTML = `<img class="wk-video-frame" src="${gifUrl}" alt="${escHtml(exerciseName)}" loading="lazy">`;
+    } else if (routineVideoId) {
+      wrap.innerHTML = _ytWrap(routineVideoId, exerciseName);
+      return;
+    } else {
+      wrap.innerHTML = '<div class="wk-no-video">No video available</div>';
+    }
 
     // Race YouTube search vs 5 s timeout
     const _timedOut = Symbol();
@@ -269,7 +290,13 @@ const Routine = (() => {
       API.getYouTubeVideoId(lookupName),
       new Promise(res => setTimeout(() => res(_timedOut), 5000)),
     ]);
-    if (!videoId || videoId === _timedOut) return;
+    if (!videoId || videoId === _timedOut) {
+      // If search failed and we only have a GIF, swap in the routine follow-along video
+      if (!gifUrl && routineVideoId && wrap.isConnected) {
+        wrap.innerHTML = _ytWrap(routineVideoId, exerciseName);
+      }
+      return;
+    }
     if (!wrap.isConnected) return;
     wrap.innerHTML = _ytWrap(videoId, exerciseName);
   }

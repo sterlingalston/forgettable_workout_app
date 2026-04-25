@@ -1328,6 +1328,17 @@ body {
   color: var(--text-muted);
   line-height: 1.5;
 }
+.rd-follow-along-link {
+  display: block;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.rd-follow-along-link:hover { text-decoration: underline; }
 .program-video-link {
   display: inline-block;
   font-size: 12px;
