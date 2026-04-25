@@ -318,10 +318,16 @@ const API = (() => {
       if (!res.ok) { _communityIndex = new Set(); return _communityIndex; }
       const data = await res.json();
       const slugs = data.slugs || [];
-      // Bust stale exercise cache entries for any slug not yet cached
-      const cachedSlugs = Storage.getCached('community_index') || [];
-      const cachedSet = new Set(cachedSlugs);
-      slugs.forEach(s => { if (!cachedSet.has(s)) Storage.clearCacheEntry('community_ex_' + s); });
+      const version = data.version || 1;
+      // When version changes, clear all cached community exercise data
+      const cachedVersion = Storage.getCached('community_version');
+      if (cachedVersion !== version) {
+        const cachedSlugs = Storage.getCached('community_index') || [];
+        [...new Set([...cachedSlugs, ...slugs])].forEach(s =>
+          Storage.clearCacheEntry('community_ex_' + s)
+        );
+        Storage.setCached('community_version', version);
+      }
       Storage.setCached('community_index', slugs);
       _communityIndex = new Set(slugs);
     } catch {
