@@ -7,15 +7,17 @@ const Programs = (() => {
   // ── Equipment catalog ────────────────────────────────────────────────────
 
   const EQUIPMENT_OPTIONS = [
-    { id: 'bodyweight',    label: 'Bodyweight only', icon: '🙆' },
-    { id: 'dumbbell',      label: 'Dumbbells',        icon: '🏋️' },
-    { id: 'barbell',       label: 'Barbell',          icon: '🏋️' },
-    { id: 'bench',         label: 'Bench',            icon: '🪑' },
-    { id: 'pullup-bar',    label: 'Pull-up bar',      icon: '🔝' },
-    { id: 'cable',         label: 'Cable machine',    icon: '⚙️' },
-    { id: 'machine',       label: 'Gym machines',     icon: '🏭' },
-    { id: 'resistance-band', label: 'Resistance bands', icon: '〰️' },
-    { id: 'kettlebell',    label: 'Kettlebell',       icon: '⚫' },
+    { id: 'bodyweight',      label: 'Bodyweight only',   icon: '🙆' },
+    { id: 'dumbbell',        label: 'Dumbbells',          icon: '🏋️' },
+    { id: 'barbell',         label: 'Barbell',            icon: '🏋️' },
+    { id: 'bench',           label: 'Bench',              icon: '🪑' },
+    { id: 'pullup-bar',      label: 'Pull-up bar',        icon: '🔝' },
+    { id: 'power-tower',     label: 'Power tower',        icon: '🗼' },
+    { id: 'gymnastic-rings', label: 'Gymnastic rings',    icon: '⭕' },
+    { id: 'cable',           label: 'Cable machine',      icon: '⚙️' },
+    { id: 'machine',         label: 'Gym machines',       icon: '🏭' },
+    { id: 'resistance-band', label: 'Resistance bands',   icon: '〰️' },
+    { id: 'kettlebell',      label: 'Kettlebell',         icon: '⚫' },
   ];
 
   // ── Program library ──────────────────────────────────────────────────────
@@ -1906,6 +1908,195 @@ const Programs = (() => {
         },
       ],
     },
+
+    // ── POWER TOWER ──────────────────────────────────────────────────────────
+    {
+      id: 'tower_fullbody_12min',
+      name: '12 Min Full Body Calisthenics (Power Tower)',
+      description: 'Follow-along circuit hitting pull, push, dip, and core using a power tower. Parallettes can sub for push-ups.',
+      level: 'Beginner',
+      frequency: 'Single circuit',
+      equipment: ['power-tower'],
+      videoId: 'ZOiDStlKrOw',
+      days: [
+        {
+          name: 'Full Body Circuit',
+          exercises: [
+            { name: 'Wide-Grip Pull-Up',   sets: 3, reps: 8,  restSeconds: 45 },
+            { name: 'Inverted Row',        sets: 3, reps: 10, restSeconds: 45 },
+            { name: 'Triceps Dip',         sets: 3, reps: 10, restSeconds: 45 },
+            { name: 'Push-Up',             sets: 3, reps: 12, restSeconds: 45 },
+            { name: 'Hanging Knee Raise',  sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Plank',               sets: 3, reps: 30, restSeconds: 30, timed: true },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'tower_upper_20min',
+      name: '20 Min Power Tower Upper Body',
+      description: 'Total upper-body session on the power tower: pull-ups, chin-ups, dips, push-ups, and hanging core work.',
+      level: 'Intermediate',
+      frequency: 'Single session',
+      equipment: ['power-tower'],
+      videoId: 'dEuEZvGDxLI',
+      days: [
+        {
+          name: 'Upper Body',
+          exercises: [
+            { name: 'Wide-Grip Pull-Up',   sets: 4, reps: 8,  restSeconds: 90 },
+            { name: 'Close-Grip Pull-Up',  sets: 3, reps: 8,  restSeconds: 90 },
+            { name: 'Triceps Dip',         sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Push-Up',             sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Hanging Knee Raise',  sets: 4, reps: 15, restSeconds: 60 },
+            { name: 'Hanging Leg Raise',   sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Plank',               sets: 3, reps: 45, restSeconds: 45, timed: true },
+          ],
+        },
+      ],
+    },
+
+    // ── GYMNASTIC RINGS ──────────────────────────────────────────────────────
+    {
+      id: 'rings_beginner_start',
+      name: 'How to Start Calisthenics with Rings Only',
+      description: 'Best beginner rings workout. Ring rows, push-ups, assisted dips and pull-ups, plus ring core work.',
+      level: 'Beginner',
+      frequency: 'Single session',
+      equipment: ['gymnastic-rings'],
+      videoId: 'i_9EoXX3Hmw',
+      days: [
+        {
+          name: 'Rings Circuit',
+          exercises: [
+            { name: 'Inverted Row',       sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Push-Up',            sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Triceps Dip',        sets: 3, reps: 8,  restSeconds: 90 },
+            { name: 'Wide-Grip Pull-Up',  sets: 3, reps: 5,  restSeconds: 90 },
+            { name: 'Plank',              sets: 3, reps: 30, restSeconds: 45, timed: true },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'rings_beginner_circuit',
+      name: 'Beginner Calisthenics Rings Workout',
+      description: 'Full beginner rings session: rows at multiple angles, push-ups, dips, pull-ups, ring holds, and lower-body filler.',
+      level: 'Beginner',
+      frequency: 'Single session',
+      equipment: ['gymnastic-rings'],
+      videoId: 'H2dE7-ZoxpA',
+      days: [
+        {
+          name: 'Full Body Circuit',
+          exercises: [
+            { name: 'Inverted Row',              sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Push-Up',                   sets: 3, reps: 12, restSeconds: 60 },
+            { name: 'Triceps Dip',               sets: 3, reps: 8,  restSeconds: 90 },
+            { name: 'Wide-Grip Pull-Up',         sets: 3, reps: 5,  restSeconds: 90 },
+            { name: 'Plank',                     sets: 3, reps: 30, restSeconds: 45, timed: true },
+            { name: 'Bodyweight Squat',          sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Bodyweight Walking Lunge',  sets: 3, reps: 10, restSeconds: 60 },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'rings_beginner_20min',
+      name: '20 Min Rings Workout for Beginners',
+      description: 'Timed interval circuit on the rings: rows, push-ups, dips, static holds, and core finishers.',
+      level: 'Beginner',
+      frequency: '20 min circuit',
+      equipment: ['gymnastic-rings'],
+      videoId: 'AVfCDyG70DU',
+      days: [
+        {
+          name: 'Rings Circuit',
+          exercises: [
+            { name: 'Inverted Row',      sets: 4, reps: 10, restSeconds: 45 },
+            { name: 'Push-Up',           sets: 4, reps: 12, restSeconds: 45 },
+            { name: 'Triceps Dip',       sets: 4, reps: 8,  restSeconds: 60 },
+            { name: 'Plank',             sets: 4, reps: 30, restSeconds: 30, timed: true },
+            { name: 'Close Grip Push-Up',sets: 3, reps: 12, restSeconds: 45 },
+          ],
+        },
+      ],
+    },
+
+    // ── CALISTHENICS + KETTLEBELL ────────────────────────────────────────────
+    {
+      id: 'cali_kb_combo',
+      name: 'Calisthenics × Kettlebells Combo',
+      description: 'Killer combo pairing calisthenics and a single kettlebell in supersets: swings + pull-ups, goblet squats + push-ups, presses, rows, and core.',
+      level: 'Intermediate',
+      frequency: 'Single session',
+      equipment: ['power-tower', 'kettlebell'],
+      videoId: 'DmRS8RPCqWM',
+      days: [
+        {
+          name: 'Full Body Supersets',
+          exercises: [
+            { name: 'Kettlebell Swing',         sets: 4, reps: 15, restSeconds: 45 },
+            { name: 'Wide-Grip Pull-Up',        sets: 4, reps: 8,  restSeconds: 45 },
+            { name: 'Kettlebell Goblet Squat',  sets: 4, reps: 10, restSeconds: 60 },
+            { name: 'Push-Up',                  sets: 4, reps: 15, restSeconds: 45 },
+            { name: 'Kettlebell Military Press',sets: 3, reps: 8,  restSeconds: 60 },
+            { name: 'Kettlebell Row',           sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Bodyweight Walking Lunge', sets: 3, reps: 12, restSeconds: 45 },
+            { name: 'Plank',                    sets: 3, reps: 45, restSeconds: 30, timed: true },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'rings_kb_conditioner',
+      name: 'Rings + Kettlebell Pull/Push Conditioner',
+      description: 'Conditioning circuit alternating ring pull and push moves with kettlebell swings and loaded carries. Great as a holiday or travel workout.',
+      level: 'Intermediate',
+      frequency: 'Conditioning circuit',
+      equipment: ['gymnastic-rings', 'kettlebell'],
+      videoId: 'IMXKS4zRd3E',
+      days: [
+        {
+          name: 'Pull/Push Circuit',
+          exercises: [
+            { name: 'Inverted Row',             sets: 4, reps: 10, restSeconds: 45 },
+            { name: 'Push-Up',                  sets: 4, reps: 12, restSeconds: 45 },
+            { name: 'Triceps Dip',              sets: 4, reps: 8,  restSeconds: 60 },
+            { name: 'Kettlebell Swing',         sets: 5, reps: 15, restSeconds: 45 },
+            { name: 'Kettlebell Clean and Press',sets: 3, reps: 6, restSeconds: 60 },
+            { name: 'Kettlebell Row',           sets: 3, reps: 10, restSeconds: 60 },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'kb_rings_part1',
+      name: 'Kettlebell and Gymnastics Rings – Part 1',
+      description: 'Rounds pairing a ring move with a kettlebell move each round: swings, goblet squats, ring rows, push-ups, and core finishers.',
+      level: 'Intermediate',
+      frequency: 'Single session',
+      equipment: ['gymnastic-rings', 'kettlebell'],
+      videoId: 'nphjsz6S-s4',
+      days: [
+        {
+          name: 'Combo Rounds',
+          exercises: [
+            { name: 'Kettlebell Swing',        sets: 4, reps: 15, restSeconds: 60 },
+            { name: 'Inverted Row',            sets: 4, reps: 10, restSeconds: 60 },
+            { name: 'Kettlebell Goblet Squat', sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Push-Up',                sets: 4, reps: 12, restSeconds: 60 },
+            { name: 'Triceps Dip',            sets: 3, reps: 8,  restSeconds: 90 },
+            { name: 'Plank',                  sets: 3, reps: 45, restSeconds: 45, timed: true },
+          ],
+        },
+      ],
+    },
   ];
 
   // ── Filter logic ─────────────────────────────────────────────────────────
@@ -2018,6 +2209,7 @@ const Programs = (() => {
           </div>
         </div>
         <p class="program-card-desc">${p.description}</p>
+        ${p.videoId ? `<a class="program-video-link" href="https://www.youtube.com/watch?v=${p.videoId}" target="_blank" rel="noopener">▶ Watch video</a>` : ''}
         <div class="program-card-days">
           ${p.days.map(d => `<span class="program-day-pill">${d.name}</span>`).join('')}
         </div>

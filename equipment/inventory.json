@@ -1,0 +1,32 @@
+{
+  "equipment": [
+    {
+      "id": "power-tower",
+      "name": "Power Tower",
+      "dbType": "BODY_ONLY",
+      "exercises": ["pull-up", "chin-up", "dip", "leg raise", "push-up"],
+      "image": "619VAzQHcBL._AC_SL1500_.jpg"
+    },
+    {
+      "id": "parallettes",
+      "name": "Push-up Bars / Parallettes",
+      "dbType": "BODY_ONLY",
+      "exercises": ["push-up", "l-sit", "handstand push-up", "dip"],
+      "image": "61lxwAuol+L._AC_SL1500_.jpg"
+    },
+    {
+      "id": "gymnastic-rings",
+      "name": "Gymnastic Rings",
+      "dbType": "BODY_ONLY",
+      "exercises": ["ring row", "ring dip", "ring push-up", "muscle-up"],
+      "image": "71MyBVx5zzL._AC_SL1500_.jpg"
+    },
+    {
+      "id": "kettlebell-35",
+      "name": "Kettlebell (35 lbs)",
+      "dbType": "KETTLEBELLS",
+      "weightLbs": 35,
+      "image": null
+    }
+  ]
+}
