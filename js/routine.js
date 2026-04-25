@@ -227,9 +227,10 @@ const Routine = (() => {
             primaryMuscle: byName.primaryMuscle?.[0] || ex.primaryMuscle || '',
           });
         } else {
-          // Not in DB — mark row so menu shows "Replace" instead of "View", but no visual badge
-          const row = document.querySelector(`#rd-exercises .rd-ex-row[data-index="${i}"]`);
-          if (row) row.classList.add('rd-ex-stale');
+          // Not in DB at all — prefix with custom_ so stale check is skipped going forward
+          Storage.updateExInRoutine(r.id, i, {
+            exId: 'custom_' + exId.replace(/^custom_/, ''),
+          });
         }
       }
     }

@@ -2246,7 +2246,7 @@ const Programs = (() => {
       day.exercises.forEach(ex => {
         const dbEx = allExercises.find(e => e.displayName.toLowerCase() === ex.name.toLowerCase());
         Storage.addExerciseToRoutine(r.id, {
-          id:           dbEx?.id || ex.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          id:           dbEx?.id || 'custom_' + ex.name.toLowerCase().replace(/[^a-z0-9]+/g, '_'),
           displayName:  ex.name,
           equipment:    dbEx?.equipment || '',
           primaryMuscle: dbEx?.primaryMuscle || [],
