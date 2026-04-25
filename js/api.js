@@ -313,15 +313,22 @@ const API = (() => {
 
   async function _loadCommunityIndex() {
     if (_communityIndex !== null) return _communityIndex;
-    const cached = Storage.getCached('community_index');
-    if (cached) { _communityIndex = new Set(cached); return _communityIndex; }
     try {
       const res = await fetch(`${COMMUNITY_BASE}/index.json`);
       if (!res.ok) { _communityIndex = new Set(); return _communityIndex; }
       const data = await res.json();
-      _communityIndex = new Set(data.slugs || []);
-      Storage.setCached('community_index', [..._communityIndex]);
-    } catch { _communityIndex = new Set(); }
+      const slugs = data.slugs || [];
+      // Bust stale exercise cache entries for any slug not yet cached
+      const cachedSlugs = Storage.getCached('community_index') || [];
+      const cachedSet = new Set(cachedSlugs);
+      slugs.forEach(s => { if (!cachedSet.has(s)) Storage.clearCacheEntry('community_ex_' + s); });
+      Storage.setCached('community_index', slugs);
+      _communityIndex = new Set(slugs);
+    } catch {
+      // Offline fallback — use localStorage cache if available
+      const cached = Storage.getCached('community_index');
+      _communityIndex = new Set(cached || []);
+    }
     return _communityIndex;
   }
 

@@ -94,6 +94,13 @@ const Storage = (() => {
     if (!getCacheIndex()[cacheKey]) return null;
     return read(`${KEYS.exCache}_${cacheKey}`, null);
   }
+  function clearCacheEntry(cacheKey) {
+    const idx = getCacheIndex();
+    delete idx[cacheKey];
+    write(KEYS.exCacheIdx, idx);
+    localStorage.removeItem(`${KEYS.exCache}_${cacheKey}`);
+  }
+
   function clearExCache() {
     const idx = getCacheIndex();
     Object.keys(idx).forEach(k => localStorage.removeItem(`${KEYS.exCache}_${k}`));
@@ -258,7 +265,7 @@ const Storage = (() => {
 
   return {
     getSettings, saveSettings,
-    getCached, setCached, clearExCache,
+    getCached, setCached, clearCacheEntry, clearExCache,
     getVideoCache, setVideoCache, saveVideoId, getVideoId, mergeVideoCache,
     clearAuth,
     getCustomMedia, saveCustomMedia, getCustomMediaFor, mergeCustomMedia,
