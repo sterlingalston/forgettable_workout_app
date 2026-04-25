@@ -233,6 +233,27 @@ const App = (() => {
 
   // ── Init ──────────────────────────────────────────────────────────────────
 
+  // One-time migration: normalize custom_ exercise IDs from hyphens to underscores
+  // so they match the IDs in data/exercises.json
+  function migrateCustomExerciseIds() {
+    if (localStorage.getItem('wk_migrated_custom_ids_v1')) return;
+    Storage.clearExCache(); // force reload so data/exercises.json gets merged in
+    const routines = Storage.getRoutines();
+    for (const routine of routines) {
+      let changed = false;
+      const updatedExercises = routine.exercises.map(ex => {
+        const exId = ex.exId || '';
+        if (!exId.startsWith('custom_')) return ex;
+        const normalized = exId.replace(/-/g, '_');
+        if (normalized === exId) return ex;
+        changed = true;
+        return { ...ex, exId: normalized };
+      });
+      if (changed) Storage.updateRoutine(routine.id, { exercises: updatedExercises });
+    }
+    localStorage.setItem('wk_migrated_custom_ids_v1', '1');
+  }
+
   function init() {
     // Bottom nav
     document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -268,6 +289,7 @@ const App = (() => {
     document.getElementById('rest-skip-btn')?.addEventListener('click', Timer.skipRest);
     document.getElementById('rest-add-btn')?.addEventListener('click', () => Timer.addRestTime(30));
 
+    migrateCustomExerciseIds();
     setupSettings();
     showView('routines');
     document.getElementById('header-title')?.classList.add('header-title-brand');

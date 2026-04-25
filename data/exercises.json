@@ -1,0 +1,200 @@
+[
+  {
+    "id": "custom_push_up",
+    "name": "Push-Up",
+    "category": "Strength",
+    "level": "Beginner",
+    "mechanic": "Compound",
+    "force": "Push",
+    "equipment": "Body Only",
+    "primaryMuscles": ["chest"],
+    "secondaryMuscles": ["triceps", "shoulders"],
+    "instructions": [
+      "Place your hands slightly wider than shoulder-width on the floor.",
+      "Keep your body in a straight line from head to heels.",
+      "Lower your chest to just above the floor by bending your elbows.",
+      "Press back up to the starting position."
+    ],
+    "images": []
+  },
+  {
+    "id": "custom_close_grip_push_up",
+    "name": "Close Grip Push-Up",
+    "category": "Strength",
+    "level": "Beginner",
+    "mechanic": "Compound",
+    "force": "Push",
+    "equipment": "Body Only",
+    "primaryMuscles": ["triceps"],
+    "secondaryMuscles": ["chest", "shoulders"],
+    "instructions": [
+      "Place your hands directly below your shoulders or slightly narrower.",
+      "Keep your elbows close to your body throughout the movement.",
+      "Lower your chest toward the floor under control.",
+      "Press back up to full arm extension."
+    ],
+    "images": []
+  },
+  {
+    "id": "custom_wide_grip_pull_up",
+    "name": "Wide-Grip Pull-Up",
+    "category": "Strength",
+    "level": "Intermediate",
+    "mechanic": "Compound",
+    "force": "Pull",
+    "equipment": "Body Only",
+    "primaryMuscles": ["lats"],
+    "secondaryMuscles": ["biceps", "middle back"],
+    "instructions": [
+      "Grip the bar wider than shoulder-width with an overhand grip.",
+      "Hang at full arm extension with your core engaged.",
+      "Pull your chest toward the bar by driving your elbows down and back.",
+      "Lower yourself under control back to the dead hang."
+    ],
+    "images": []
+  },
+  {
+    "id": "custom_close_grip_pull_up",
+    "name": "Close-Grip Pull-Up",
+    "category": "Strength",
+    "level": "Intermediate",
+    "mechanic": "Compound",
+    "force": "Pull",
+    "equipment": "Body Only",
+    "primaryMuscles": ["lats"],
+    "secondaryMuscles": ["biceps", "middle back"],
+    "instructions": [
+      "Grip the bar with hands shoulder-width or slightly closer, palms facing away.",
+      "Hang at full arm extension.",
+      "Pull your chin above the bar by driving your elbows toward your hips.",
+      "Lower yourself under control back to the dead hang."
+    ],
+    "images": []
+  },
+  {
+    "id": "custom_triceps_dip",
+    "name": "Triceps Dip",
+    "category": "Strength",
+    "level": "Intermediate",
+    "mechanic": "Compound",
+    "force": "Push",
+    "equipment": "Body Only",
+    "primaryMuscles": ["triceps"],
+    "secondaryMuscles": ["chest", "shoulders"],
+    "instructions": [
+      "Grip the dip bars with arms fully extended and shoulders above your hands.",
+      "Keep your torso upright and lean slightly forward.",
+      "Lower yourself by bending your elbows until your upper arms are parallel to the floor.",
+      "Press back up to the starting position."
+    ],
+    "images": []
+  },
+  {
+    "id": "custom_hanging_knee_raise",
+    "name": "Hanging Knee Raise",
+    "category": "Strength",
+    "level": "Beginner",
+    "mechanic": "Isolation",
+    "force": "Pull",
+    "equipment": "Body Only",
+    "primaryMuscles": ["abdominals"],
+    "secondaryMuscles": ["forearms"],
+    "instructions": [
+      "Hang from a pull-up bar with an overhand grip, arms fully extended.",
+      "Engage your core and avoid swinging.",
+      "Raise your knees toward your chest by flexing your hips and abs.",
+      "Lower your legs back to the starting position under control."
+    ],
+    "images": []
+  },
+  {
+    "id": "custom_kettlebell_swing",
+    "name": "Kettlebell Swing",
+    "category": "Strength",
+    "level": "Intermediate",
+    "mechanic": "Compound",
+    "force": "Push",
+    "equipment": "Kettlebells",
+    "primaryMuscles": ["hamstrings"],
+    "secondaryMuscles": ["glutes", "lower back", "shoulders"],
+    "instructions": [
+      "Stand with feet shoulder-width apart, kettlebell on the floor in front of you.",
+      "Hinge at the hips and grip the kettlebell with both hands.",
+      "Hike the kettlebell back between your legs, then drive your hips forward explosively.",
+      "Let the kettlebell float to chest height, then hinge back and repeat."
+    ],
+    "images": []
+  },
+  {
+    "id": "custom_kettlebell_goblet_squat",
+    "name": "Kettlebell Goblet Squat",
+    "category": "Strength",
+    "level": "Beginner",
+    "mechanic": "Compound",
+    "force": "Push",
+    "equipment": "Kettlebells",
+    "primaryMuscles": ["quadriceps"],
+    "secondaryMuscles": ["glutes", "hamstrings"],
+    "instructions": [
+      "Hold the kettlebell by the horns at chest height.",
+      "Stand with feet slightly wider than shoulder-width, toes turned out.",
+      "Squat down keeping your chest tall and elbows inside your knees.",
+      "Drive through your heels to return to standing."
+    ],
+    "images": []
+  },
+  {
+    "id": "custom_kettlebell_military_press",
+    "name": "Kettlebell Military Press",
+    "category": "Strength",
+    "level": "Intermediate",
+    "mechanic": "Compound",
+    "force": "Push",
+    "equipment": "Kettlebells",
+    "primaryMuscles": ["shoulders"],
+    "secondaryMuscles": ["triceps"],
+    "instructions": [
+      "Clean the kettlebell to the rack position at shoulder height.",
+      "Brace your core and glutes.",
+      "Press the kettlebell straight overhead to full arm extension.",
+      "Lower it back to the rack position under control."
+    ],
+    "images": []
+  },
+  {
+    "id": "custom_kettlebell_row",
+    "name": "Kettlebell Row",
+    "category": "Strength",
+    "level": "Beginner",
+    "mechanic": "Compound",
+    "force": "Pull",
+    "equipment": "Kettlebells",
+    "primaryMuscles": ["middle back"],
+    "secondaryMuscles": ["lats", "biceps"],
+    "instructions": [
+      "Hinge forward at the hips with a flat back, kettlebell hanging below your chest.",
+      "Row the kettlebell toward your hip by driving your elbow back.",
+      "Squeeze your shoulder blade at the top of the movement.",
+      "Lower under control and repeat."
+    ],
+    "images": []
+  },
+  {
+    "id": "custom_kettlebell_clean_and_press",
+    "name": "Kettlebell Clean and Press",
+    "category": "Strength",
+    "level": "Intermediate",
+    "mechanic": "Compound",
+    "force": "Push",
+    "equipment": "Kettlebells",
+    "primaryMuscles": ["shoulders"],
+    "secondaryMuscles": ["triceps", "lats", "glutes"],
+    "instructions": [
+      "Start with the kettlebell on the floor between your feet.",
+      "Hike it back and clean it to the rack position in one smooth arc.",
+      "From the rack, press overhead to full extension.",
+      "Lower back to rack, then back to the floor and repeat."
+    ],
+    "images": []
+  }
+]

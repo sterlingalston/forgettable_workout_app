@@ -36,6 +36,32 @@ const API = (() => {
       _imageUrl:      imgUrl(ex),
     }));
 
+    // Merge local exercise additions
+    try {
+      const localRes = await fetch('data/exercises.json');
+      if (localRes.ok) {
+        const localRaw = await localRes.json();
+        const localIds = new Set(_cache.map(e => e.id));
+        const localExercises = localRaw
+          .filter(ex => !localIds.has(ex.id))
+          .map(ex => ({
+            id:              ex.id,
+            displayName:     ex.name,
+            category:        (ex.category || '').toUpperCase(),
+            level:           (ex.level    || '').toUpperCase(),
+            mechanic:        (ex.mechanic || '').toUpperCase(),
+            force:           (ex.force    || '').toUpperCase(),
+            equipment:       normaliseEquipment(ex.equipment),
+            primaryMuscle:   (ex.primaryMuscles   || []).map(m => m.toUpperCase().replace(/ /g, '_')),
+            secondaryMuscle: (ex.secondaryMuscles  || []).map(m => m.toUpperCase().replace(/ /g, '_')),
+            instructions:    ex.instructions || [],
+            imageUrl:        '',
+            _imageUrl:       '',
+          }));
+        _cache = [..._cache, ...localExercises];
+      }
+    } catch {}
+
     Storage.setCached('freedb_all', _cache);
     return _cache;
   }
