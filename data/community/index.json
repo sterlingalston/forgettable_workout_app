@@ -1,4 +1,12 @@
 {
   "version": 1,
-  "slugs": []
+  "slugs": [
+    "close-grip-pull-up",
+    "hanging-knee-raise",
+    "hanging-leg-raise",
+    "plank",
+    "push-up",
+    "triceps-dip",
+    "wide-grip-pull-up"
+  ]
 }
