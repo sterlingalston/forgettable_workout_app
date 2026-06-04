@@ -201,6 +201,51 @@ const Programs = (() => {
       ],
     },
 
+    {
+      id: 'bw_abs',
+      name: 'Bodyweight Abs',
+      description: 'Dedicated core routine — no equipment needed. Three days target anti-extension, flexion, and rotation.',
+      level: 'Beginner–Intermediate',
+      frequency: '3×/week',
+      equipment: [],
+      days: [
+        {
+          name: 'Day A — Plank & Stability',
+          exercises: [
+            { name: 'Plank',               sets: 3, reps: 30,  restSeconds: 45, timed: true },
+            { name: 'Dead Bug',            sets: 3, reps: 10,  restSeconds: 45 },
+            { name: 'Hollow Hold',         sets: 3, reps: 20,  restSeconds: 45, timed: true },
+            { name: 'Mountain Climber',    sets: 3, reps: 20,  restSeconds: 45 },
+            { name: 'Air Bicycle',         sets: 3, reps: 20,  restSeconds: 45 },
+            { name: 'Alternating Superman', sets: 3, reps: 12, restSeconds: 45 },
+          ],
+        },
+        {
+          name: 'Day B — Flexion & Crunch',
+          exercises: [
+            { name: 'Crunches',            sets: 3, reps: 20,  restSeconds: 45 },
+            { name: 'Reverse Crunch',      sets: 3, reps: 15,  restSeconds: 45 },
+            { name: 'Leg Raise',           sets: 3, reps: 12,  restSeconds: 60 },
+            { name: 'Alternating Toe Touch', sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Air Bicycle',         sets: 3, reps: 25,  restSeconds: 45 },
+            { name: 'Plank',               sets: 2, reps: 30,  restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Day C — Full Circuit',
+          exercises: [
+            { name: 'Plank',               sets: 3, reps: 45,  restSeconds: 45, timed: true },
+            { name: 'Air Bicycle',         sets: 4, reps: 20,  restSeconds: 30 },
+            { name: 'Reverse Crunch',      sets: 3, reps: 15,  restSeconds: 45 },
+            { name: 'Mountain Climber',    sets: 3, reps: 20,  restSeconds: 45 },
+            { name: 'Dead Bug',            sets: 3, reps: 12,  restSeconds: 45 },
+            { name: 'Hollow Hold',         sets: 2, reps: 25,  restSeconds: 45, timed: true },
+            { name: 'Russian Twist',       sets: 3, reps: 20,  restSeconds: 45 },
+          ],
+        },
+      ],
+    },
+
     // ── DUMBBELL ────────────────────────────────────────────────────────────
     {
       id: 'db_fullbody',
