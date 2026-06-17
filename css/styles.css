@@ -643,6 +643,7 @@ body {
   flex: 1;
 }
 .sw-controls { display: flex; gap: 6px; }
+.sw-display-pending { color: var(--text-muted); font-size: 18px; }
 
 .add-set-btn { margin-top: 8px; }
 

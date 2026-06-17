@@ -162,6 +162,16 @@ const Workout = (() => {
 
   function expandedHtml(ex, exIdx) {
     const rows = [];
+    // For timed exercises, only the first undone set gets the live stopwatch.
+    // Duplicate id="sw-display" in the DOM causes getElementById to always target Set 1.
+    let activeSIdx = -1;
+    if (ex.timed) {
+      for (let i = 0; i < ex.targetSets; i++) {
+        if (!ex.sets[i]?.done) { activeSIdx = i; break; }
+      }
+    }
+    // activeSIdx === -1 means all sets done — no live stopwatch needed.
+
     for (let s = 0; s < ex.targetSets; s++) {
       const set = ex.sets[s] || {};
       const done = !!set.done;
@@ -171,24 +181,46 @@ const Workout = (() => {
         const prevTimedHint = prevLog?.seconds != null
           ? `<div class="set-prev-hint">last: ${Timer.formatSeconds(prevLog.seconds)}</div>`
           : '';
-        rows.push(`
-          <div class="set-row ${done ? 'set-done' : ''}" data-set="${s}">
-            <span class="set-label">Set ${s+1}</span>
-            <div class="sw-wrap">
-              <div id="sw-display" class="sw-display">${Timer.formatMs(Timer.getSwElapsed())}</div>
-              ${prevTimedHint}
-            </div>
-            <div class="sw-controls">
-              <button class="sw-btn-start btn-sm">▶</button>
-              <button class="sw-btn-pause btn-sm hidden">⏸</button>
-              <button class="sw-btn-reset btn-sm">↺</button>
-            </div>
-            <button class="set-done-btn btn-sm ${done ? 'btn-done' : 'btn-outline'}"
-                    data-ex-index="${exIdx}" data-set-index="${s}">
-              ${done ? '✓' : 'Done'}
-            </button>
-            ${done ? `<button class="set-undo-btn btn-text" data-ex-index="${exIdx}" data-set-index="${s}">undo</button>` : ''}
-          </div>`);
+        if (done) {
+          rows.push(`
+            <div class="set-row set-done" data-set="${s}">
+              <span class="set-label">Set ${s+1}</span>
+              <div class="sw-wrap">
+                <div class="sw-display">${Timer.formatSeconds(set.seconds ?? 0)}</div>
+                ${prevTimedHint}
+              </div>
+              <button class="set-done-btn btn-sm btn-done"
+                      data-ex-index="${exIdx}" data-set-index="${s}">✓</button>
+              <button class="set-undo-btn btn-text" data-ex-index="${exIdx}" data-set-index="${s}">undo</button>
+            </div>`);
+        } else if (s === activeSIdx) {
+          rows.push(`
+            <div class="set-row" data-set="${s}">
+              <span class="set-label">Set ${s+1}</span>
+              <div class="sw-wrap">
+                <div id="sw-display" class="sw-display">${Timer.formatMs(Timer.getSwElapsed())}</div>
+                ${prevTimedHint}
+              </div>
+              <div class="sw-controls">
+                <button class="sw-btn-start btn-sm">▶</button>
+                <button class="sw-btn-pause btn-sm hidden">⏸</button>
+                <button class="sw-btn-reset btn-sm">↺</button>
+              </div>
+              <button class="set-done-btn btn-sm btn-outline"
+                      data-ex-index="${exIdx}" data-set-index="${s}">Done</button>
+            </div>`);
+        } else {
+          rows.push(`
+            <div class="set-row" data-set="${s}">
+              <span class="set-label">Set ${s+1}</span>
+              <div class="sw-wrap">
+                <div class="sw-display sw-display-pending">–</div>
+                ${prevTimedHint}
+              </div>
+              <button class="set-done-btn btn-sm btn-outline"
+                      data-ex-index="${exIdx}" data-set-index="${s}">Done</button>
+            </div>`);
+        }
       } else {
         const unit = Storage.getSettings().weightUnit || 'lbs';
         const prevHint = prevLog
