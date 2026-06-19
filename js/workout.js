@@ -387,12 +387,15 @@ const Workout = (() => {
   // ── Previous log lookup ───────────────────────────────────────────────────
 
   function getPrevSet(exId, setIdx) {
-    const logs = Storage.getLogs().filter(l => l.id !== log.id && l.finishedAt && l.routineId === log.routineId);
-    const prev = logs[0]; // most recent finished session for this routine
+    const allFinished = Storage.getLogs().filter(l => l.id !== log.id && l.finishedAt);
+    // Match by routineId first; fall back to routineName for logs saved before an ID migration
+    const prev = allFinished.find(l =>
+      l.routineId === log.routineId || l.routineName === log.routineName
+    );
     if (!prev) return null;
-    // Match by exId first; fall back to name match for logs with stale/repaired IDs
+    // Match exercise by exId first; fall back to name for logs with stale/repaired IDs
     const curEx = log.exercises.find(e => e.exId === exId);
-    const exLog = prev.exercises?.find(e => e.exId === exId)
+    const exLog = (exId ? prev.exercises?.find(e => e.exId === exId) : null)
                || (curEx ? prev.exercises?.find(e => e.name === curEx.name) : null);
     return exLog?.sets?.[setIdx] || null;
   }
