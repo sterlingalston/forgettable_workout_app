@@ -834,6 +834,47 @@ const Programs = (() => {
     },
 
     {
+      id: 'bw_kb_ppl',
+      name: 'Bodyweight + KB PPL',
+      description: 'Push/pull/legs hybrid using bodyweight moves and one kettlebell. Run 3 or 6 days/week.',
+      level: 'Intermediate',
+      frequency: '3–6×/week',
+      equipment: ['kettlebell'],
+      days: [
+        {
+          name: 'Push',
+          exercises: [
+            { name: 'Kettlebell Military Press',  sets: 4, reps: 8,  restSeconds: 90 },
+            { name: 'Push-Up',                    sets: 4, reps: 15, restSeconds: 60 },
+            { name: 'Close Grip Push-Up',         sets: 3, reps: 12, restSeconds: 60 },
+            { name: 'Kettlebell Halo',             sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Plank',                       sets: 3, reps: 45, restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Pull',
+          exercises: [
+            { name: 'Kettlebell Row',              sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Alternating Superman',        sets: 4, reps: 15, restSeconds: 45 },
+            { name: 'Kettlebell Single Leg Deadlift', sets: 3, reps: 8, restSeconds: 90 },
+            { name: 'Kettlebell Windmill',         sets: 3, reps: 5,  restSeconds: 90 },
+            { name: 'Air Bicycle',                 sets: 3, reps: 20, restSeconds: 45 },
+          ],
+        },
+        {
+          name: 'Legs',
+          exercises: [
+            { name: 'Kettlebell Goblet Squat',            sets: 4, reps: 12, restSeconds: 90 },
+            { name: 'Kettlebell Swing',                    sets: 4, reps: 20, restSeconds: 60 },
+            { name: 'Kettlebell Sumo Deadlift',            sets: 3, reps: 10, restSeconds: 90 },
+            { name: 'Bodyweight Bulgarian Split Squat',    sets: 3, reps: 10, restSeconds: 90 },
+            { name: 'Bodyweight Walking Lunge',            sets: 3, reps: 12, restSeconds: 60 },
+          ],
+        },
+      ],
+    },
+
+    {
       id: 'kb_ppl',
       name: 'Kettlebell PPL',
       description: '6-day push/pull/legs with a single kettlebell. Brutal conditioning and strength.',
