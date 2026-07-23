@@ -205,13 +205,24 @@ const Exercises = (() => {
 
   async function openDetail(id, fallbackName = null) {
     let ex;
-    const isCustom = String(id).startsWith('custom_');
+    let isCustom = String(id).startsWith('custom_');
 
     if (isCustom) {
       const found = Storage.getCustomExercises().find(e => e.id === id);
-      if (!found) { App.toast('Exercise not found'); return; }
-      ex = { primaryMuscle: [], secondaryMuscle: [], instructions: [], ...found };
-    } else {
+      if (found) {
+        ex = { primaryMuscle: [], secondaryMuscle: [], instructions: [], ...found };
+      } else {
+        // Local-DB additions also use custom_-prefixed IDs — fall through to DB lookup
+        try { ex = await API.getExercise(id); } catch {}
+        if (!ex && fallbackName) {
+          try { ex = await API.findByName(fallbackName); } catch {}
+        }
+        if (!ex) { App.toast('Exercise not found'); return; }
+        isCustom = false; // treat as a normal DB exercise from here on
+      }
+    }
+
+    if (!isCustom && !ex) {
       try { ex = await API.getExercise(id); }
       catch (e) { App.toast(e.message); return; }
       // Fallback: look up by display name (handles stale slugified IDs from program import)
@@ -301,7 +312,9 @@ const Exercises = (() => {
 
     modal.querySelector('#modal-media-edit')?.addEventListener('click', e => {
       e.stopPropagation();
-      openMediaEditor(modal, ex.displayName);
+      // Pass the caller's name too — routines/workouts look up custom media by
+      // their stored name, which can differ from the DB display name
+      openMediaEditor(modal, ex.displayName, fallbackName);
     });
 
     modal.querySelector('#modal-back-btn')?.addEventListener('click', e => {
@@ -423,7 +436,7 @@ const Exercises = (() => {
     } catch { return null; }
   }
 
-  function openMediaEditor(modal, exerciseName) {
+  function openMediaEditor(modal, exerciseName, altName = null) {
     const existing = Storage.getCustomMediaFor(exerciseName) || {};
     const wrap = modal.querySelector('#modal-media-wrap');
 
@@ -469,6 +482,11 @@ const Exercises = (() => {
         equipment: equipment || null,
       };
       Storage.saveCustomMedia(exerciseName, data);
+      // Also save under the caller's stored name when it differs, so routine
+      // and workout views (which look up by their own name) find the edit
+      if (altName && altName.toLowerCase() !== exerciseName.toLowerCase()) {
+        Storage.saveCustomMedia(altName, data);
+      }
       renderMedia(wrap, data.videoId, data.thumb, exerciseName);
 
       // Update equipment chip in detail modal if it changed
@@ -477,8 +495,9 @@ const Exercises = (() => {
         if (chipEl) chipEl.textContent = API.fmt(equipment);
       }
 
-      // Refresh routine pane video immediately if this exercise is currently expanded
+      // Refresh routine pane and active workout video immediately
       Routine.refreshDetail();
+      Workout.refreshVideo?.();
 
       try {
         await GithubSync.pushAll();

@@ -387,17 +387,25 @@ const Workout = (() => {
   // ── Previous log lookup ───────────────────────────────────────────────────
 
   function getPrevSet(exId, setIdx) {
-    const allFinished = Storage.getLogs().filter(l => l.id !== log.id && l.finishedAt);
-    // Match by routineId first; fall back to routineName for logs saved before an ID migration
-    const prev = allFinished.find(l =>
-      l.routineId === log.routineId || l.routineName === log.routineName
-    );
-    if (!prev) return null;
-    // Match exercise by exId first; fall back to name for logs with stale/repaired IDs
     const curEx = log.exercises.find(e => e.exId === exId);
-    const exLog = (exId ? prev.exercises?.find(e => e.exId === exId) : null)
-               || (curEx ? prev.exercises?.find(e => e.name === curEx.name) : null);
-    return exLog?.sets?.[setIdx] || null;
+    const nameKey = curEx?.name?.toLowerCase() || null;
+    // Gist sync merge appends remote logs out of order — sort newest-first explicitly
+    const finished = Storage.getLogs()
+      .filter(l => l.id !== log.id && l.finishedAt)
+      .sort((a, b) => b.finishedAt - a.finishedAt);
+    // Walk back to the most recent log containing this exercise, regardless of
+    // routine — survives routine renames, re-imports, and skipped exercises.
+    // Match by exId first; fall back to name for pre-migration logs.
+    for (const l of finished) {
+      const exLog = (exId ? l.exercises?.find(e => e.exId === exId) : null)
+                 || (nameKey ? l.exercises?.find(e => e.name?.toLowerCase() === nameKey) : null);
+      const doneSets = exLog?.sets?.filter(s => s?.done);
+      if (!doneSets?.length) continue;
+      return exLog.sets[setIdx]?.done
+        ? exLog.sets[setIdx]
+        : doneSets[Math.min(setIdx, doneSets.length - 1)];
+    }
+    return null;
   }
 
   // ── Finish + submit ───────────────────────────────────────────────────────
@@ -529,5 +537,13 @@ const Workout = (() => {
 
   function isActive() { return !!log && !log.finishedAt; }
 
-  return { start, resume, addExercise, isActive };
+  // Force the expanded exercise's video to reload (e.g. after a media edit)
+  function refreshVideo() {
+    if (!isActive()) return;
+    _lastVideoExIdx = null;
+    _lastVideoName  = null;
+    render();
+  }
+
+  return { start, resume, addExercise, isActive, refreshVideo };
 })();
