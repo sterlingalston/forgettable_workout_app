@@ -12,6 +12,7 @@ const Programs = (() => {
     { id: 'barbell',         label: 'Barbell',            icon: '🏋️' },
     { id: 'bench',           label: 'Bench',              icon: '🪑' },
     { id: 'pullup-bar',      label: 'Pull-up bar',        icon: '🔝' },
+    { id: 'parallettes',     label: 'Parallettes',        icon: '🤸' },
     { id: 'power-tower',     label: 'Power tower',        icon: '🗼' },
     { id: 'gymnastic-rings', label: 'Gymnastic rings',    icon: '⭕' },
     { id: 'cable',           label: 'Cable machine',      icon: '⚙️' },
@@ -72,28 +73,30 @@ const Programs = (() => {
     {
       id: 'bw_ppl',
       name: 'Bodyweight Push/Pull/Legs',
-      description: 'Intermediate calisthenics split. 3 days on, 1 rest, repeat.',
+      description: 'Intermediate calisthenics split with pull-up bar and parallettes. 3 days on, 1 rest, repeat.',
       level: 'Intermediate',
       frequency: '3–6×/week',
-      equipment: [],
+      equipment: ['pullup-bar', 'parallettes'],
       days: [
         {
           name: 'Push',
           exercises: [
             { name: 'Push-Up',              sets: 4, reps: 15, restSeconds: 60 },
-            { name: 'Close Grip Push-Up',   sets: 3, reps: 12, restSeconds: 60 },
             { name: 'Triceps Dip',          sets: 3, reps: 10, restSeconds: 90 },
             { name: 'Pike Push-Up',         sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Close Grip Push-Up',   sets: 3, reps: 12, restSeconds: 60 },
+            { name: 'L-Sit',                sets: 3, reps: 15, restSeconds: 60, timed: true },
             { name: 'Plank',                sets: 3, reps: 45, restSeconds: 45, timed: true },
           ],
         },
         {
           name: 'Pull',
           exercises: [
-            { name: 'Alternating Superman', sets: 4, reps: 12, restSeconds: 60 },
+            { name: 'Pull-Up',              sets: 4, reps: 8,  restSeconds: 120 },
+            { name: 'Wide-Grip Pull-Up',    sets: 3, reps: 6,  restSeconds: 120 },
             { name: 'Inverted Row',         sets: 3, reps: 10, restSeconds: 90 },
-            { name: 'Bodyweight Curl',      sets: 3, reps: 12, restSeconds: 60 },
-            { name: 'Air Bicycle',          sets: 3, reps: 20, restSeconds: 45 },
+            { name: 'Hanging Knee Raise',   sets: 3, reps: 12, restSeconds: 60 },
+            { name: 'Alternating Superman', sets: 3, reps: 15, restSeconds: 45 },
           ],
         },
         {
@@ -836,29 +839,31 @@ const Programs = (() => {
     {
       id: 'bw_kb_ppl',
       name: 'Bodyweight + KB PPL',
-      description: 'Push/pull/legs hybrid using bodyweight moves and one kettlebell. Run 3 or 6 days/week.',
+      description: 'Push/pull/legs hybrid: one kettlebell, pull-up bar, and parallettes. Run 3 or 6 days/week.',
       level: 'Intermediate',
       frequency: '3–6×/week',
-      equipment: ['kettlebell'],
+      equipment: ['kettlebell', 'pullup-bar', 'parallettes'],
       days: [
         {
           name: 'Push',
           exercises: [
             { name: 'Kettlebell Military Press',  sets: 4, reps: 8,  restSeconds: 90 },
             { name: 'Push-Up',                    sets: 4, reps: 15, restSeconds: 60 },
-            { name: 'Close Grip Push-Up',         sets: 3, reps: 12, restSeconds: 60 },
+            { name: 'Triceps Dip',                sets: 3, reps: 10, restSeconds: 90 },
             { name: 'Kettlebell Halo',             sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'L-Sit',                       sets: 3, reps: 15, restSeconds: 60, timed: true },
             { name: 'Plank',                       sets: 3, reps: 45, restSeconds: 45, timed: true },
           ],
         },
         {
           name: 'Pull',
           exercises: [
+            { name: 'Pull-Up',                     sets: 4, reps: 8,  restSeconds: 120 },
             { name: 'Kettlebell Row',              sets: 4, reps: 10, restSeconds: 90 },
-            { name: 'Alternating Superman',        sets: 4, reps: 15, restSeconds: 45 },
+            { name: 'Close-Grip Pull-Up',          sets: 3, reps: 8,  restSeconds: 120 },
             { name: 'Kettlebell Single Leg Deadlift', sets: 3, reps: 8, restSeconds: 90 },
+            { name: 'Hanging Knee Raise',          sets: 3, reps: 12, restSeconds: 60 },
             { name: 'Kettlebell Windmill',         sets: 3, reps: 5,  restSeconds: 90 },
-            { name: 'Air Bicycle',                 sets: 3, reps: 20, restSeconds: 45 },
           ],
         },
         {
