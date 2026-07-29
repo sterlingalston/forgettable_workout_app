@@ -259,6 +259,14 @@ const Routine = (() => {
     if (custom?.videoId) { if (!wrap.isConnected) return; wrap.innerHTML = _ytWrap(custom.videoId, exerciseName); return; }
     if (custom?.thumb)   { if (!wrap.isConnected) return; wrap.innerHTML = `<img class="wk-video-frame" src="${custom.thumb}" alt="${escHtml(exerciseName)}" loading="lazy">`; return; }
 
+    // User-created custom exercise stores its own video/thumb on the exercise
+    // object itself (wk_custom_exercises), not in wk_custom_media — check that too
+    if (exId && String(exId).startsWith('custom_')) {
+      const customEx = Storage.getCustomExercises().find(e => e.id === exId);
+      if (customEx?.videoId) { if (!wrap.isConnected) return; wrap.innerHTML = _ytWrap(customEx.videoId, exerciseName); return; }
+      if (customEx?.thumb)   { if (!wrap.isConnected) return; wrap.innerHTML = `<img class="wk-video-frame" src="${customEx.thumb}" alt="${escHtml(exerciseName)}" loading="lazy">`; return; }
+    }
+
     // Resolve canonical DB name so community/YouTube lookup matches the right exercise
     let lookupName = exerciseName;
     if (exId && !String(exId).startsWith('custom_')) {
