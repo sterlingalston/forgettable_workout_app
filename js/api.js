@@ -197,9 +197,37 @@ const API = (() => {
     { handle: 'BSNTraining' },
   ];
 
-  // Hardcoded video overrides — preferred videos for specific exercises
+  // Hardcoded video overrides — preferred videos for specific exercises.
+  // A `null` value means "no YouTube search for this one": the channel search
+  // returns wrong videos for these names, so the fitnessprogramer GIF is kept.
   const HARDCODED_VIDEOS = {
     'bodyweight walking lunge': 'tQNktxPkSeE',
+
+    // band_knee_kick program (verified against channel titles, Sep 2026)
+    'banded glute bridge':                              'NrTHNJBWl5c', // My PT Hub — Banded Glute Bridges
+    'resistance band lateral walk':                     'M5uxEQH5BUM', // NASM — Lateral Band Walking
+    'band side lying clam':                             'V_AnVxKPFlY', // NASM — Clamshells
+    'bodyweight box squat':                             '-GaRp6_b2vk', // NASM — Box Squat
+    'seated leg extension with resistance band':        null,
+    'standing leg curl with resistance band':           'nryFYmxflcU', // Onnit — Banded Leg Curl
+    'wall sit':                                         'LCjvngoH-mY', // Onnit — Wall Sit
+    'bodyweight standing calf raise':                   null,
+    'hip circles':                                      null,
+    'standing leg raise with resistance band':          null,
+    'banded standing glute kickback':                   null,
+    'banded fire hydrant':                              null,
+    'band seated hip external rotation':                null,
+    'band seated hip internal rotation':                'ccxer2XAv1k', // NASM — Hip Internal Rotation
+    'banded walk':                                      '9aLcb5a7390', // NASM — Forward and Back Band Walking
+    'hook kick':                                        null,
+    'banded step-up':                                   'URHdW9js6DM', // NASM — Proper Step Up Form
+    'banded split squat':                               null,
+    'lateral step-up':                                  'fVRKGAp1iHw', // NASM — Step-Up to Balance Frontal
+    'banded single leg glute bridge':                   'lHXShY-FivU', // NASM — Single-Leg Floor Bridge
+    'standing straight leg raise with resistance band': null,
+    'reverse lunge knee lift':                          null,
+    'single leg calf raise':                            null,
+    'kneeling hip flexor stretch':                      null,
   };
 
   async function resolveChannelId(ch, ytKey) {
@@ -274,8 +302,8 @@ const API = (() => {
 
   async function getYouTubeVideoId(exerciseName) {
     // Hardcoded overrides always win
-    const hardcoded = HARDCODED_VIDEOS[exerciseName.toLowerCase()];
-    if (hardcoded) return hardcoded;
+    const key = exerciseName.toLowerCase();
+    if (key in HARDCODED_VIDEOS) return HARDCODED_VIDEOS[key];
 
     const ytKey = Storage.getSettings().youtubeApiKey || _dyk();
     if (!ytKey) return null;

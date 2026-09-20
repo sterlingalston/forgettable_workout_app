@@ -768,7 +768,7 @@ const Programs = (() => {
             { name: 'Seated Leg Extension with Resistance Band', sets: 3, reps: 15, restSeconds: 45 },
             { name: 'Standing Leg Curl with Resistance Band',    sets: 3, reps: 12, restSeconds: 45 },
             { name: 'Wall Sit',                                  sets: 3, reps: 30, restSeconds: 60, timed: true },
-            { name: 'Calf Raise with Resistance Band',           sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Bodyweight Standing Calf Raise',            sets: 3, reps: 15, restSeconds: 45 },
           ],
         },
         {
@@ -781,7 +781,7 @@ const Programs = (() => {
             { name: 'Band Seated Hip External Rotation',         sets: 3, reps: 15, restSeconds: 30 },
             { name: 'Band Seated Hip Internal Rotation',         sets: 3, reps: 15, restSeconds: 30 },
             { name: 'Banded Walk',                               sets: 3, reps: 12, restSeconds: 45 },
-            { name: 'Kicks Leg Bent',                            sets: 3, reps: 20, restSeconds: 45 },
+            { name: 'Hook Kick',                                 sets: 3, reps: 10, restSeconds: 45 },
           ],
         },
         {
