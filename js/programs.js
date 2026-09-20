@@ -781,7 +781,7 @@ const Programs = (() => {
             { name: 'Band Seated Hip External Rotation',         sets: 3, reps: 15, restSeconds: 30 },
             { name: 'Band Seated Hip Internal Rotation',         sets: 3, reps: 15, restSeconds: 30 },
             { name: 'Banded Walk',                               sets: 3, reps: 12, restSeconds: 45 },
-            { name: 'Hook Kick',                                 sets: 3, reps: 10, restSeconds: 45 },
+            { name: 'Muay Thai Roundhouse Kick',                 sets: 3, reps: 10, restSeconds: 45 },
           ],
         },
         {

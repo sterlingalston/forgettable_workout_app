@@ -203,31 +203,31 @@ const API = (() => {
   const HARDCODED_VIDEOS = {
     'bodyweight walking lunge': 'tQNktxPkSeE',
 
-    // band_knee_kick program (verified against channel titles, Sep 2026)
+    // band_knee_kick program (title/embed-verified, Sep 2026)
     'banded glute bridge':                              'NrTHNJBWl5c', // My PT Hub — Banded Glute Bridges
     'resistance band lateral walk':                     'M5uxEQH5BUM', // NASM — Lateral Band Walking
     'band side lying clam':                             'V_AnVxKPFlY', // NASM — Clamshells
     'bodyweight box squat':                             '-GaRp6_b2vk', // NASM — Box Squat
-    'seated leg extension with resistance band':        null,
-    'standing leg curl with resistance band':           'nryFYmxflcU', // Onnit — Banded Leg Curl
+    'seated leg extension with resistance band':        'yLQ3NZLLZ6A', // Alyssa Kuhn (arthritis PT) — Seated Banded Leg Extension
+    'standing leg curl with resistance band':           'BCGWoSRC_P4', // Olympia Gymnastics — Standing Banded Hamstring Curls
     'wall sit':                                         'LCjvngoH-mY', // Onnit — Wall Sit
-    'bodyweight standing calf raise':                   null,
-    'hip circles':                                      null,
-    'standing leg raise with resistance band':          null,
-    'banded standing glute kickback':                   null,
-    'banded fire hydrant':                              null,
-    'band seated hip external rotation':                null,
-    'band seated hip internal rotation':                'ccxer2XAv1k', // NASM — Hip Internal Rotation
+    'bodyweight standing calf raise':                   'rynHywMM6hA', // PriorityStrength — Standing Body Weight Calf Raise
+    'hip circles':                                      'D_kQzMB_HkY', // Sporting Health Club — standing hip circles
+    'standing leg raise with resistance band':          'EXRuvztckGA', // Elite Sport & Spine — Banded Hip Flexion
+    'banded standing glute kickback':                   'kK5RKh_abCE', // Funsized — Mini Band Standing Glute Kickbacks
+    'banded fire hydrant':                              'k6WI1adIiHM', // Rehab My Patient — Banded Fire Hydrant
+    'band seated hip external rotation':                'sT0gXVnj1xg', // Rehab My Patient — Hip External Rotation Band Sitting
+    'band seated hip internal rotation':                '-jCfRGIq7QI', // Dani Winks — Seated Hip Internal Rotation with a Band
     'banded walk':                                      '9aLcb5a7390', // NASM — Forward and Back Band Walking
-    'hook kick':                                        null,
-    'banded step-up':                                   'URHdW9js6DM', // NASM — Proper Step Up Form
-    'banded split squat':                               null,
-    'lateral step-up':                                  'fVRKGAp1iHw', // NASM — Step-Up to Balance Frontal
+    'muay thai roundhouse kick':                        'Y6KQl6WQKQw', // Tiger Muay Thai — Roundhouse Kick Technique by Samart Payakaroon
+    'banded step-up':                                   'hvxGZBZlOxg', // Jared Hamilton — Banded step ups
+    'banded split squat':                               'OSIEmB3QEZs', // StrongHER Fitness — Mini Band Split Squat
+    'lateral step-up':                                  'sXW9aOo03P8', // MedBridge — Lateral Step-up
     'banded single leg glute bridge':                   'lHXShY-FivU', // NASM — Single-Leg Floor Bridge
-    'standing straight leg raise with resistance band': null,
-    'reverse lunge knee lift':                          null,
-    'single leg calf raise':                            null,
-    'kneeling hip flexor stretch':                      null,
+    'standing straight leg raise with resistance band': '4qr26RNU3EQ', // Live Lean TV — Standing Banded Hip Abduction
+    'reverse lunge knee lift':                          'pa3fq5cLeAA', // E3 Rehab — Reverse Lunge to Knee Drive
+    'single leg calf raise':                            'qPd73snQfUs', // HSS — Single-Leg Calf Raise
+    'kneeling hip flexor stretch':                      'mzPvzMivukw', // HSS — Half-Kneeling Hip Flexor Stretch
   };
 
   async function resolveChannelId(ch, ytKey) {
