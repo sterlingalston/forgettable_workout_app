@@ -514,6 +514,53 @@ const Programs = (() => {
       ],
     },
 
+    {
+      id: 'db_runners',
+      name: 'Dumbbell Strength for Runners',
+      description: 'Strength work for runners with one pair of dumbbells: single-leg strength, glutes and hamstrings, calves, and the core that holds your form late in a run. 2–3 sessions a week on easy or rest days; Day C is optional.',
+      level: 'Beginner–Intermediate',
+      frequency: '2–3×/week',
+      equipment: ['dumbbell'],
+      days: [
+        {
+          name: 'Single-Leg Strength',
+          exercises: [
+            { name: 'Dumbbell Goblet Squat',            sets: 3, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Bulgarian Split Squat',   sets: 3, reps: 8,  restSeconds: 90 },
+            { name: 'Dumbbell Step-Up',                 sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Dumbbell Single Leg Deadlift',     sets: 3, reps: 8,  restSeconds: 60 },
+            { name: 'Standing Calf Raise with Dumbbell',sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Dead Bug',                         sets: 3, reps: 10, restSeconds: 45 },
+            { name: 'Side Plank',                       sets: 3, reps: 30, restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Posterior Chain & Hips',
+          exercises: [
+            { name: 'Dumbbell Romanian Deadlift',       sets: 4, reps: 10, restSeconds: 90 },
+            { name: 'Dumbbell Reverse Lunge',           sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Dumbbell Lateral Step Up',         sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Dumbbell Glute Bridge',            sets: 3, reps: 12, restSeconds: 60 },
+            { name: 'Dumbbell Row',                     sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Bird Dog',                         sets: 3, reps: 10, restSeconds: 30 },
+            { name: 'Plank',                            sets: 3, reps: 45, restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Power & Core (optional)',
+          exercises: [
+            { name: 'Dumbbell Walking Lunge',           sets: 3, reps: 12, restSeconds: 60 },
+            { name: 'Dumbbell Push Press',              sets: 3, reps: 8,  restSeconds: 90 },
+            { name: 'Dumbbell Goblet Curtsey Lunge',    sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Single-Leg Dumbbell Hip Thrust',   sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Single Leg Calf Raise',            sets: 3, reps: 12, restSeconds: 45 },
+            { name: 'Dumbbell Renegade Row',            sets: 3, reps: 8,  restSeconds: 60 },
+            { name: 'Superman',                         sets: 3, reps: 12, restSeconds: 30 },
+          ],
+        },
+      ],
+    },
+
     // ── BARBELL ─────────────────────────────────────────────────────────────
     {
       id: 'starting_strength',

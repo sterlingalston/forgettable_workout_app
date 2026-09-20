@@ -211,7 +211,7 @@ const API = (() => {
     'seated leg extension with resistance band':        'yLQ3NZLLZ6A', // Alyssa Kuhn (arthritis PT) — Seated Banded Leg Extension
     'standing leg curl with resistance band':           'BCGWoSRC_P4', // Olympia Gymnastics — Standing Banded Hamstring Curls
     'wall sit':                                         'LCjvngoH-mY', // Onnit — Wall Sit
-    'bodyweight standing calf raise':                   'rynHywMM6hA', // PriorityStrength — Standing Body Weight Calf Raise
+    'bodyweight standing calf raise':                   'aZh9tCFh46o', // Center For Total Back Care — PT Shows Standing Calf Raises
     'hip circles':                                      'D_kQzMB_HkY', // Sporting Health Club — standing hip circles
     'standing leg raise with resistance band':          'EXRuvztckGA', // Elite Sport & Spine — Banded Hip Flexion
     'banded standing glute kickback':                   'kK5RKh_abCE', // Funsized — Mini Band Standing Glute Kickbacks
@@ -228,6 +228,28 @@ const API = (() => {
     'reverse lunge knee lift':                          'pa3fq5cLeAA', // E3 Rehab — Reverse Lunge to Knee Drive
     'single leg calf raise':                            'qPd73snQfUs', // HSS — Single-Leg Calf Raise
     'kneeling hip flexor stretch':                      'mzPvzMivukw', // HSS — Half-Kneeling Hip Flexor Stretch
+
+    // db_runners program (title/embed-verified, Sep 2026)
+    'dumbbell goblet squat':                            'Xjo_fY9Hl9w', // Live Lean TV — Dumbbell Goblet Squat
+    'dumbbell bulgarian split squat':                   'Fmjj7wFJWRE', // The Active Life — Bulgarian Split Squat with Dumbbells
+    'dumbbell step-up':                                 '9ZknEYboBOQ', // Bobby Maximus — Dumbbell Step-up
+    'dumbbell single leg deadlift':                     'lI8-igvsnVQ', // The Active Life — Dumbbell Single Leg RDL
+    'standing calf raise with dumbbell':                'ADIDoYt_ko4', // OPEX — Dumbbell Standing Calf Raise
+    'dead bug':                                         'xtTIb6dC-vI', // MedBridge — Dead Bug
+    'side plank':                                       'H7H2_a4p68Y', // Pursuit PT — Side Plank
+    'dumbbell romanian deadlift':                       'xAL7lHwj30E', // Onnit — Dumbbell Romanian Deadlift
+    'dumbbell reverse lunge':                           'UoQcIFYTN_o', // Live Lean TV — Alternating Dumbbell Reverse Lunge
+    'dumbbell lateral step up':                         'OjJz_pQ87Y0', // FitSkiing — Lateral Dumbbell Step Up
+    'dumbbell glute bridge':                            'cruqsnAyU6A', // PureGym — Glute Bridge With A Dumbbell
+    'dumbbell row':                                     'DMo3HJoawrU', // Renaissance Periodization — Single Arm Supported Dumbbell Row
+    'bird dog':                                         'b6zcIxFkuN4', // B3 Physical Therapy — Bird Dog
+    'plank':                                            'GQE8ASRA7t0', // Release PT — Front Plank
+    'dumbbell walking lunge':                           'I34ysEkPK7w', // Bobby Maximus — Dumbbell Walking Lunge
+    'dumbbell push press':                              'vuaYVK8xyqo', // NASM — Dumbbell Push Press
+    'dumbbell goblet curtsey lunge':                    'h-JJzoLXg7w', // Functional Bodybuilding — Dumbbell Goblet Curtsy Lunge
+    'single-leg dumbbell hip thrust':                   'J3qfu-rQgus', // The Barbell Physio — Single Leg Dumbbell Hip Thrust
+    'dumbbell renegade row':                            'Oh2o-WACBJk', // TWD Fitness — Renegade Rows (Beginner)
+    'superman':                                         'PKQlXa3qdJo', // AskDoctorJo — Prone Superman
   };
 
   async function resolveChannelId(ch, ytKey) {
