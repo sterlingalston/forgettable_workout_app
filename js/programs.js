@@ -750,6 +750,56 @@ const Programs = (() => {
       ],
     },
 
+    {
+      id: 'band_knee_kick',
+      name: 'Band Knee Armor + Kick Speed',
+      description: 'Fabric loop bands (light/medium/heavy) for arthritic knees and faster Muay Thai kicks. Low-impact quad, glute, and hip work, then banded hip drive and rotation for teeps, knees, and roundhouses. Stop any rep that causes sharp knee pain.',
+      level: 'Beginner–Intermediate',
+      frequency: '3×/week',
+      equipment: ['resistance-band'],
+      days: [
+        {
+          name: 'Knee Armor',
+          exercises: [
+            { name: 'Banded Glute Bridge',                       sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Resistance Band Lateral Walk',              sets: 3, reps: 12, restSeconds: 45 },
+            { name: 'Band Side Lying Clam',                      sets: 3, reps: 15, restSeconds: 30 },
+            { name: 'Bodyweight Box Squat',                      sets: 3, reps: 12, restSeconds: 60 },
+            { name: 'Seated Leg Extension with Resistance Band', sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Standing Leg Curl with Resistance Band',    sets: 3, reps: 12, restSeconds: 45 },
+            { name: 'Wall Sit',                                  sets: 3, reps: 30, restSeconds: 60, timed: true },
+            { name: 'Calf Raise with Resistance Band',           sets: 3, reps: 15, restSeconds: 45 },
+          ],
+        },
+        {
+          name: 'Kick Speed',
+          exercises: [
+            { name: 'Hip Circles',                               sets: 2, reps: 10, restSeconds: 30 },
+            { name: 'Standing Leg Raise with Resistance Band',   sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Banded Standing Glute Kickback',            sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Banded Fire Hydrant',                       sets: 3, reps: 15, restSeconds: 30 },
+            { name: 'Band Seated Hip External Rotation',         sets: 3, reps: 15, restSeconds: 30 },
+            { name: 'Band Seated Hip Internal Rotation',         sets: 3, reps: 15, restSeconds: 30 },
+            { name: 'Banded Walk',                               sets: 3, reps: 12, restSeconds: 45 },
+            { name: 'Kicks Leg Bent',                            sets: 3, reps: 20, restSeconds: 45 },
+          ],
+        },
+        {
+          name: 'Support Leg',
+          exercises: [
+            { name: 'Banded Step-Up',                            sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Banded Split Squat',                        sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Lateral Step-Up',                           sets: 3, reps: 10, restSeconds: 45 },
+            { name: 'Banded Single Leg Glute Bridge',            sets: 3, reps: 12, restSeconds: 45 },
+            { name: 'Standing Straight Leg Raise with Resistance Band', sets: 3, reps: 15, restSeconds: 30 },
+            { name: 'Reverse Lunge Knee Lift',                   sets: 3, reps: 10, restSeconds: 45 },
+            { name: 'Single Leg Calf Raise',                     sets: 3, reps: 12, restSeconds: 45 },
+            { name: 'Kneeling Hip Flexor Stretch',               sets: 2, reps: 30, restSeconds: 30, timed: true },
+          ],
+        },
+      ],
+    },
+
     // ── KETTLEBELL ───────────────────────────────────────────────────────────
     {
       id: 'kb_fullbody',
