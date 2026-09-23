@@ -710,6 +710,51 @@ const Programs = (() => {
       ],
     },
 
+    {
+      id: 'kot_knee_ability',
+      name: 'Knees Over Toes — Knee Ability',
+      description: "Ben Patrick's ATG/Knees Over Toes approach, bodyweight only: build knee resilience by loading the joint through full range instead of avoiding it. Starts with backward walking, tibialis and calf work, then adds split squats, hinges and hamstring eccentrics. Arthritis rule — keep pain at or under 3/10 during and after; if it lingers past 24 h, cut the range or the sets. Backward walking works on a treadmill, outdoors, or up a slope; no sled needed.",
+      level: 'Beginner',
+      frequency: '3×/week',
+      equipment: [],
+      days: [
+        {
+          name: 'Knee Prep',
+          exercises: [
+            { name: 'Backward Walking',                 sets: 3, reps: 60, restSeconds: 60, timed: true },
+            { name: 'Tibialis Raise',                   sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Knees Over Toes Calf Raise',       sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'ATG Split Squat',                  sets: 3, reps: 8,  restSeconds: 90 },
+            { name: 'Wall Sit',                         sets: 3, reps: 30, restSeconds: 60, timed: true },
+            { name: 'Couch Stretch',                    sets: 2, reps: 45, restSeconds: 30, timed: true },
+          ],
+        },
+        {
+          name: 'Posterior Chain',
+          exercises: [
+            { name: 'Backward Walking',                 sets: 3, reps: 60, restSeconds: 60, timed: true },
+            { name: 'Seated Calf Raise',                sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Patrick Step',                     sets: 3, reps: 8,  restSeconds: 60 },
+            { name: 'Seated Good Morning',              sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Elephant Walk',                    sets: 2, reps: 30, restSeconds: 45, timed: true },
+            { name: 'Nordic Hamstring Curl',            sets: 2, reps: 5,  restSeconds: 90 },
+            { name: 'Standing Hamstring Stretch',       sets: 2, reps: 30, restSeconds: 30, timed: true },
+          ],
+        },
+        {
+          name: 'Integration',
+          exercises: [
+            { name: 'Backward Walking',                 sets: 3, reps: 60, restSeconds: 60, timed: true },
+            { name: 'Tibialis Raise',                   sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'ATG Split Squat',                  sets: 3, reps: 8,  restSeconds: 90 },
+            { name: 'Bodyweight Kneeling Sissy Squat',  sets: 3, reps: 8,  restSeconds: 60 },
+            { name: 'Single Leg Calf Raise',            sets: 3, reps: 12, restSeconds: 45 },
+            { name: 'Couch Stretch',                    sets: 2, reps: 45, restSeconds: 30, timed: true },
+          ],
+        },
+      ],
+    },
+
     // ── RESISTANCE BANDS ─────────────────────────────────────────────────────
     {
       id: 'band_fullbody',

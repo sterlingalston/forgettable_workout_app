@@ -208,8 +208,8 @@ const API = (() => {
     'resistance band lateral walk':                     'M5uxEQH5BUM', // NASM — Lateral Band Walking
     'band side lying clam':                             'V_AnVxKPFlY', // NASM — Clamshells
     'bodyweight box squat':                             '-GaRp6_b2vk', // NASM — Box Squat
-    'seated leg extension with resistance band':        'yLQ3NZLLZ6A', // Alyssa Kuhn (arthritis PT) — Seated Banded Leg Extension
-    'standing leg curl with resistance band':           'BCGWoSRC_P4', // Olympia Gymnastics — Standing Banded Hamstring Curls
+    'seated leg extension with resistance band':        'INNeoMEoX8Y', // MedBridge — Seated Knee Extension with Anchored Resistance
+    'standing leg curl with resistance band':           'XpG51BuqNAE', // ODEN Fitness — Band Standing Hamstring Curl
     'wall sit':                                         'LCjvngoH-mY', // Onnit — Wall Sit
     'bodyweight standing calf raise':                   'aZh9tCFh46o', // Center For Total Back Care — PT Shows Standing Calf Raises
     'hip circles':                                      'D_kQzMB_HkY', // Sporting Health Club — standing hip circles
@@ -217,9 +217,9 @@ const API = (() => {
     'banded standing glute kickback':                   'kK5RKh_abCE', // Funsized — Mini Band Standing Glute Kickbacks
     'banded fire hydrant':                              'k6WI1adIiHM', // Rehab My Patient — Banded Fire Hydrant
     'band seated hip external rotation':                'sT0gXVnj1xg', // Rehab My Patient — Hip External Rotation Band Sitting
-    'band seated hip internal rotation':                '-jCfRGIq7QI', // Dani Winks — Seated Hip Internal Rotation with a Band
+    'band seated hip internal rotation':                'o0aV-kdmPsY', // Rehab My Patient — Hip Internal Rotation Band Sitting
     'banded walk':                                      '9aLcb5a7390', // NASM — Forward and Back Band Walking
-    'muay thai roundhouse kick':                        'Y6KQl6WQKQw', // Tiger Muay Thai — Roundhouse Kick Technique by Samart Payakaroon
+    'muay thai roundhouse kick':                        'XbS2y-4mMVI', // Sean Fagan — How to throw a perfect Muay Thai kick
     'banded step-up':                                   'hvxGZBZlOxg', // Jared Hamilton — Banded step ups
     'banded split squat':                               'OSIEmB3QEZs', // StrongHER Fitness — Mini Band Split Squat
     'lateral step-up':                                  'sXW9aOo03P8', // MedBridge — Lateral Step-up
@@ -239,10 +239,10 @@ const API = (() => {
     'side plank':                                       'H7H2_a4p68Y', // Pursuit PT — Side Plank
     'dumbbell romanian deadlift':                       'xAL7lHwj30E', // Onnit — Dumbbell Romanian Deadlift
     'dumbbell reverse lunge':                           'UoQcIFYTN_o', // Live Lean TV — Alternating Dumbbell Reverse Lunge
-    'dumbbell lateral step up':                         'OjJz_pQ87Y0', // FitSkiing — Lateral Dumbbell Step Up
+    'dumbbell lateral step up':                         'CCdqnBLIUfU', // Facet Seven — Dumbbell Lateral Step Up
     'dumbbell glute bridge':                            'cruqsnAyU6A', // PureGym — Glute Bridge With A Dumbbell
     'dumbbell row':                                     'DMo3HJoawrU', // Renaissance Periodization — Single Arm Supported Dumbbell Row
-    'bird dog':                                         'b6zcIxFkuN4', // B3 Physical Therapy — Bird Dog
+    'bird dog':                                         'ZdAHe9_HeEw', // NASM — Bird Dog
     'plank':                                            'GQE8ASRA7t0', // Release PT — Front Plank
     'dumbbell walking lunge':                           'I34ysEkPK7w', // Bobby Maximus — Dumbbell Walking Lunge
     'dumbbell push press':                              'vuaYVK8xyqo', // NASM — Dumbbell Push Press
@@ -250,6 +250,20 @@ const API = (() => {
     'single-leg dumbbell hip thrust':                   'J3qfu-rQgus', // The Barbell Physio — Single Leg Dumbbell Hip Thrust
     'dumbbell renegade row':                            'Oh2o-WACBJk', // TWD Fitness — Renegade Rows (Beginner)
     'superman':                                         'PKQlXa3qdJo', // AskDoctorJo — Prone Superman
+
+    // kot_knee_ability program (title/embed-verified, all <= 45 s, Sep 2026)
+    'backward walking':                                 'BwaRNvSn_P0', // Synaptyx — Reverse Deadmill Walks
+    'tibialis raise':                                   'VzIcGAgBiaM', // The Barefoot Sprinter — Tibialis Wall Raises
+    'knees over toes calf raise':                       '6e0f2DxRNxw', // College Station PT — Knee Over Toes Calf Raise
+    'atg split squat':                                  'oVGns3iOxVw', // Core Blend Training — ATG Split Squat
+    'couch stretch':                                    'QB42mpL30gM', // CrossFit — Couch Stretch movement demo
+    'seated calf raise':                                'uJ7QH7pExh0', // The Physio Fix — Seated Soleus Calf Raises
+    'patrick step':                                     '16AjEFQADvI', // Helix Gym — Patrick Step-up (ATG)
+    'seated good morning':                              'tdRGFa0SibM', // Greg Pignataro — ATG Level 1 Seated Goodmorning standard
+    'elephant walk':                                    'fnih_6w_JjA', // PureGym — Elephant Walks
+    'nordic hamstring curl':                            'Y4c4Rljx3Co', // Lifestyle Fitness Studio — Nordic Hamstring Curl (assisted)
+    'standing hamstring stretch':                       '29jVlG6w4IU', // NHS inform — Standing hamstring stretch
+    'bodyweight kneeling sissy squat':                  'gzcXksjqufI', // Boulder Athletics — Kneeling Sissy Squat
   };
 
   async function resolveChannelId(ch, ytKey) {
