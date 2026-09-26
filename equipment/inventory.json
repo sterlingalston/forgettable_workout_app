@@ -46,7 +46,7 @@
     },
     {
       "id": "fabric-bands",
-      "name": "CALIA Fabric Resistance Bands (3-pack: light/medium/heavy)",
+      "name": "CALIA Fabric Bands \u2013 3 Pack (light/medium/heavy)",
       "dbType": "BANDS",
       "exercises": [
         "lateral walk",
@@ -59,7 +59,13 @@
         "step-up",
         "split squat"
       ],
-      "image": null
+      "image": null,
+      "notes": "Fabric loop bands with interior silicone ridges (non-slip). The three bands combine to give 7 resistance levels: L, M, H, L+M, L+H, M+H, L+M+H.",
+      "resistanceLevels": [
+        "light",
+        "medium",
+        "heavy"
+      ]
     },
     {
       "id": "ankle-weights",

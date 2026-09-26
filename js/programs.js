@@ -759,7 +759,7 @@ const Programs = (() => {
     {
       id: 'kot_band_ankle',
       name: 'Knees Over Toes — Bands & Ankle Weights',
-      description: "The ATG/Knees Over Toes progression loaded with fabric loop bands and ankle weights. Ankle weights add resistance to the knee-extension and hip work that bodyweight can't load; the loop bands anchor the tibialis raise and the Spanish squat, and assist the Nordic curl. Same arthritis rule — pain at or under 3/10 during and after, and back off the load before you back off the range. Start with the lightest band and the lowest weight setting.",
+      description: "The ATG/Knees Over Toes progression loaded with fabric loop bands and ankle weights. Ankle weights add resistance to the knee-extension and hip work that bodyweight can't load; the loop bands anchor the tibialis raise and the Spanish squat, and assist the Nordic curl. Same arthritis rule — pain at or under 3/10 during and after, and back off the load before you back off the range. Progression: the three bands stack for 7 resistance levels (L, M, H, L+M, L+H, M+H, L+M+H), so add a band before you add range. Start with the light band and the lowest weight setting.",
       level: 'Beginner–Intermediate',
       frequency: '3×/week',
       equipment: ['resistance-band', 'ankle-weights'],
