@@ -60,6 +60,20 @@
         "split squat"
       ],
       "image": null
+    },
+    {
+      "id": "ankle-weights",
+      "name": "Ankle Weights",
+      "dbType": "OTHER",
+      "exercises": [
+        "leg extension",
+        "standing leg curl",
+        "straight leg raise",
+        "backward walking",
+        "glute kickback",
+        "hip abduction"
+      ],
+      "image": null
     }
   ]
 }

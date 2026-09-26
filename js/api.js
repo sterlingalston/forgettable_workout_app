@@ -264,6 +264,14 @@ const API = (() => {
     'nordic hamstring curl':                            'Y4c4Rljx3Co', // Lifestyle Fitness Studio — Nordic Hamstring Curl (assisted)
     'standing hamstring stretch':                       '29jVlG6w4IU', // NHS inform — Standing hamstring stretch
     'bodyweight kneeling sissy squat':                  'gzcXksjqufI', // Boulder Athletics — Kneeling Sissy Squat
+
+    // kot_band_ankle program (title/embed-verified, all <= 45 s, Sep 2026)
+    'banded tibialis raise':                            'Rxy6XyTZlZ4', // Ben Pavlovich — Banded Tibialis Raise
+    'spanish squat':                                    'szTHOnCwZpc', // MVMT Performance — Knee Pain Fix: Spanish Squat
+    'band assisted nordic curl':                        'Ur5xe2Qp-oM', // Chris Chang — Band Assisted Nordic Hamstring Curl
+    'ankle weight leg extension':                       'YdZf6xwI_Tc', // PhysiHub Library — Knee Extension (ankle weight, chair sitting)
+    'ankle weight standing leg curl':                   'WfVudyaH1Vg', // Continuous Motion PT — Standing Hamstring Curl with Ankle Weight
+    'ankle weight straight leg raise':                  'yvZ1nQ_Gge8', // Mackinzie Edwards — Single Leg Straight Leg Raise w/ Ankle Weight
   };
 
   async function resolveChannelId(ch, ytKey) {

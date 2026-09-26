@@ -19,6 +19,7 @@ const Programs = (() => {
     { id: 'machine',         label: 'Gym machines',       icon: '🏭' },
     { id: 'resistance-band', label: 'Resistance bands',   icon: '〰️' },
     { id: 'kettlebell',      label: 'Kettlebell',         icon: '⚫' },
+    { id: 'ankle-weights',   label: 'Ankle weights',      icon: '🦵' },
   ];
 
   // ── Program library ──────────────────────────────────────────────────────
@@ -750,6 +751,52 @@ const Programs = (() => {
             { name: 'Bodyweight Kneeling Sissy Squat',  sets: 3, reps: 8,  restSeconds: 60 },
             { name: 'Single Leg Calf Raise',            sets: 3, reps: 12, restSeconds: 45 },
             { name: 'Couch Stretch',                    sets: 2, reps: 45, restSeconds: 30, timed: true },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'kot_band_ankle',
+      name: 'Knees Over Toes — Bands & Ankle Weights',
+      description: "The ATG/Knees Over Toes progression loaded with fabric loop bands and ankle weights. Ankle weights add resistance to the knee-extension and hip work that bodyweight can't load; the loop bands anchor the tibialis raise and the Spanish squat, and assist the Nordic curl. Same arthritis rule — pain at or under 3/10 during and after, and back off the load before you back off the range. Start with the lightest band and the lowest weight setting.",
+      level: 'Beginner–Intermediate',
+      frequency: '3×/week',
+      equipment: ['resistance-band', 'ankle-weights'],
+      days: [
+        {
+          name: 'Loaded Knee Prep',
+          exercises: [
+            { name: 'Backward Walking',                 sets: 3, reps: 60, restSeconds: 60, timed: true },
+            { name: 'Banded Tibialis Raise',            sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Knees Over Toes Calf Raise',       sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Spanish Squat',                    sets: 3, reps: 30, restSeconds: 60, timed: true },
+            { name: 'ATG Split Squat',                  sets: 3, reps: 8,  restSeconds: 90 },
+            { name: 'Couch Stretch',                    sets: 2, reps: 45, restSeconds: 30, timed: true },
+          ],
+        },
+        {
+          name: 'Posterior Chain',
+          exercises: [
+            { name: 'Backward Walking',                 sets: 3, reps: 60, restSeconds: 60, timed: true },
+            { name: 'Seated Calf Raise',                sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Patrick Step',                     sets: 3, reps: 8,  restSeconds: 60 },
+            { name: 'Seated Good Morning',              sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Band Assisted Nordic Curl',        sets: 2, reps: 5,  restSeconds: 90 },
+            { name: 'Elephant Walk',                    sets: 2, reps: 30, restSeconds: 45, timed: true },
+            { name: 'Standing Hamstring Stretch',       sets: 2, reps: 30, restSeconds: 30, timed: true },
+          ],
+        },
+        {
+          name: 'Quad & Hip Isolation',
+          exercises: [
+            { name: 'Backward Walking',                 sets: 3, reps: 60, restSeconds: 60, timed: true },
+            { name: 'Ankle Weight Leg Extension',       sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Ankle Weight Standing Leg Curl',   sets: 3, reps: 12, restSeconds: 45 },
+            { name: 'Ankle Weight Straight Leg Raise',  sets: 3, reps: 12, restSeconds: 45 },
+            { name: 'Banded Standing Glute Kickback',   sets: 3, reps: 15, restSeconds: 45 },
+            { name: 'Resistance Band Lateral Walk',     sets: 3, reps: 12, restSeconds: 45 },
+            { name: 'Single Leg Calf Raise',            sets: 3, reps: 12, restSeconds: 45 },
           ],
         },
       ],
