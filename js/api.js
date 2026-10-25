@@ -272,6 +272,30 @@ const API = (() => {
     'ankle weight leg extension':                       'YdZf6xwI_Tc', // PhysiHub Library — Knee Extension (ankle weight, chair sitting)
     'ankle weight standing leg curl':                   'WfVudyaH1Vg', // Continuous Motion PT — Standing Hamstring Curl with Ankle Weight
     'ankle weight straight leg raise':                  'yvZ1nQ_Gge8', // Mackinzie Edwards — Single Leg Straight Leg Raise w/ Ankle Weight
+    // The Rep Theory programs (title/embed-verified, all <= 45 s, Oct 2026)
+    'push-up bottom hold':                              'liMTDAfz3FI', // Michael Brasch — Push Up Isometric (hold) explained
+    'split squat hold':                                 'egByzktIWZo', // Derek Ward — Split Squat ISO Hold
+    'split squat':                                      'YuLqw3kHPaw', // Face-Off Fitness — Body Weight Split Squat
+    'bulgarian split squat':                            'or1frhkjBDc', // Andrew Kwong — Bulgarian Split Squat Setup & Form Tips
+    'pull-up negative':                                 'jBSMDqs7OzM', // PureGym — How To Do Negative Pull Ups
+    'hollow body hold':                                 'Xk-JcNj6lfY', // Summit Performance Club — How To: Hollow Body Hold
+    'wall handstand':                                   'mzwqZ1CBl0c', // Mia Gianelli — Wall walk into wall facing handstand hold
+    'planche lean':                                     'oVpte1edulI', // Daniel Hristov — How To Do Planche Lean
+    'long-lever plank':                                 'OQV15N2quLo', // Vices Fitness — Long lever plank
+    'y raise':                                          'w1AWGKubE5U', // Performance Course — Prone Y Raise
+    't raise':                                          'i-jEU2pBdzM', // Michael Brasch — Prone T Raises
+    'door row':                                         'w9M7m0ztUXo', // Ron Edwards — DoorWay Row
+    'towel lat pulldown hold':                          'qzrKM2pTjbY', // Margaux Schmidt Fit — Standing Lat Pulldowns with Towel
+    'floor slide pull':                                 'TLWkxT0YiHE', // Alexandra Galysheva — Floor Towel Pull (closest named equivalent)
+    'one-arm backpack row':                             'ZRSGpBUVcNw', // PureGym — How To Do Single Arm Dumbbell Rows
+    'towel curl isometric':                             'sw-Aub13_YM', // Austin Jochum — Overcoming Isometric Towel Curls
+    'isometric chest press':                            'anxpxp0rbHs', // Strong Made Simple — Isometric Chest Squeeze
+    'doorway push isometric':                           '1YI9CfSFKm8', // Alex Butts MPH CSCS — Isometric wall press
+    'suitcase carry':                                   'dRbHULlxBLI', // Jack Thomas — How to do a Kettlebell Suitcase Carry
+    "farmer's walk":                                    '4Ly1EMfJk6Y', // Rehab Hero — Farmers Carry form
+    'bear hug carry':                                   'cCkTI2isjJk', // The Mobility Joint — Sandbag Bear Hug Carry
+    'pinch carry':                                      'P8nH0DDhBGI', // UCLA Athletic Performance — Plate Pinch Farmer Carry
+    'weighted backpack walk':                           '_SIDlE2ODj4', // NeuStrength — Weighted Backpack Walk
   };
 
   async function resolveChannelId(ch, ytKey) {

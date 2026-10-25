@@ -2377,6 +2377,180 @@ const Programs = (() => {
         },
       ],
     },
+
+    // ── THE REP THEORY (youtube.com/@thereptheory111) ───────────────────────
+    // Transcribed from the channel's own videos. Set/rep/hold prescriptions are
+    // his; equipment substitutions use the power tower, rings and kettlebell in
+    // equipment/inventory.json in place of his improvised tables and chairs.
+    {
+      id: 'rt_90_roadmap',
+      name: 'Rep Theory 90 — Calisthenics Roadmap',
+      description: "The channel's own 90-day roadmap, in three 30-day phases. Phase 1 builds the pattern (he is explicit that month-one gains are nervous-system, not size, so chase clean reps and not a pump). Phase 2 raises the leverage and adds a tendon day. Phase 3 keeps Phase 2 and opens each session with one skill while you are fresh. Progression rule throughout: three clean sets of 12 earns the next step — \"not when you feel like it, when your numbers say so.\" Benchmark three numbers on day 0 and retest at day 60: max clean push-ups, straight-body plank, and bar hang. Three days a week is the prescription; he warns that training daily is what wrecks wrists and elbows by week two. Eat slightly above maintenance with ~1.6 g protein per kg bodyweight.",
+      level: 'Beginner',
+      frequency: '3×/week (+1 holds day in Phase 2+)',
+      equipment: ['power-tower'],
+      days: [
+        {
+          name: 'Phase 1 — Foundation (Days 1–30)',
+          exercises: [
+            { name: 'Push-Up',                   sets: 3, reps: 8,  restSeconds: 60 },
+            { name: 'Inverted Row',              sets: 3, reps: 8,  restSeconds: 60 },
+            { name: 'Split Squat',               sets: 3, reps: 8,  restSeconds: 60 },
+            { name: 'Push-Up Bottom Hold',       sets: 2, reps: 25, restSeconds: 45, timed: true },
+            { name: 'Wall Sit',                  sets: 2, reps: 25, restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Phase 2 — Build (Days 31–60)',
+          exercises: [
+            { name: 'Decline Push-Up',           sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Pike Push-Up',              sets: 3, reps: 8,  restSeconds: 60 },
+            { name: 'Pull-Up Negative',          sets: 3, reps: 5,  restSeconds: 90 },
+            { name: 'Bulgarian Split Squat',     sets: 3, reps: 10, restSeconds: 90 },
+            { name: 'Triceps Dip',               sets: 3, reps: 8,  restSeconds: 60 },
+          ],
+        },
+        {
+          name: 'Phase 2 — Tendon Holds Day',
+          exercises: [
+            { name: 'Push-Up Bottom Hold',       sets: 4, reps: 25, restSeconds: 60, timed: true },
+            { name: 'Split Squat Hold',          sets: 4, reps: 25, restSeconds: 60, timed: true },
+            { name: 'Wall Sit',                  sets: 3, reps: 30, restSeconds: 45, timed: true },
+          ],
+        },
+        {
+          name: 'Phase 3 — Skills (Days 61–90)',
+          exercises: [
+            { name: 'Planche Lean',              sets: 5, reps: 8,  restSeconds: 45, timed: true },
+            { name: 'L-Sit',                     sets: 4, reps: 15, restSeconds: 60, timed: true },
+            { name: 'Wall Handstand',            sets: 4, reps: 20, restSeconds: 60, timed: true },
+            { name: 'Decline Push-Up',           sets: 3, reps: 12, restSeconds: 60 },
+            { name: 'Pull-Up',                   sets: 3, reps: 5,  restSeconds: 90 },
+            { name: 'Bulgarian Split Squat',     sets: 3, reps: 12, restSeconds: 90 },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'rt_isometrics',
+      name: 'Rep Theory — Isometric Strength',
+      description: "Six holds on the channel's own three-day week: Monday and Friday are the long-hold days, Wednesday is the explosive day. The rule that governs all of it — long holds sit at about 7/10 effort so the last five seconds are a fight, while the short overcoming pushes are all-out from the first instant (\"don't ease into it, go from zero to everything\"). Long holds build tendon stiffness and some muscle; the short pushes teach the nervous system to fire everything at once. Breathe out as you push and never hold your breath, since hard holds raise blood pressure while you do them; stop if a joint hurts rather than burns. Give it 12 weeks before judging it. Self-test is the push-up bottom hold: under 15s start from the knees, 15–30s run the plan as written, 30–60s add a backpack or elevate the feet, over a minute go straight to the hardest versions.",
+      level: 'Beginner–Intermediate',
+      frequency: '3×/week (~15 min)',
+      equipment: [],
+      days: [
+        {
+          name: 'Long Holds (Mon / Fri)',
+          exercises: [
+            { name: 'Push-Up Bottom Hold',       sets: 4, reps: 25, restSeconds: 60, timed: true },
+            { name: 'Split Squat Hold',          sets: 4, reps: 25, restSeconds: 60, timed: true },
+            { name: 'L-Sit',                     sets: 4, reps: 10, restSeconds: 60, timed: true },
+          ],
+        },
+        {
+          name: 'Overcoming Strength (Wed)',
+          exercises: [
+            { name: 'Towel Curl Isometric',      sets: 5, reps: 5,  restSeconds: 45, timed: true },
+            { name: 'Isometric Chest Press',     sets: 5, reps: 5,  restSeconds: 45, timed: true },
+            { name: 'Doorway Push Isometric',    sets: 5, reps: 5,  restSeconds: 45, timed: true },
+            { name: 'Hollow Body Hold',          sets: 4, reps: 25, restSeconds: 60, timed: true },
+            { name: 'Wall Handstand',            sets: 4, reps: 20, restSeconds: 60, timed: true },
+          ],
+        },
+        {
+          name: '5-Minute Version (busy day)',
+          exercises: [
+            { name: 'Push-Up Bottom Hold',       sets: 1, reps: 25, restSeconds: 30, timed: true },
+            { name: 'Split Squat Hold',          sets: 2, reps: 25, restSeconds: 30, timed: true },
+            { name: 'Doorway Push Isometric',    sets: 5, reps: 5,  restSeconds: 30, timed: true },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'rt_morning_core',
+      name: 'Rep Theory — Morning Core',
+      description: "Ten minutes of holds, built for the first hour after waking. No sit-ups and no toe touches early — overnight the spinal discs take on water and sit tight, so loaded flexion hits them hardest first thing; he cites a trial where people with ongoing back pain changed nothing but avoiding early-morning bending and saw pain drop significantly over six months. So every move here holds a position instead of bending the spine. Side planks start on your weaker side, and the left/right gap matters more than the total: more than about 10 seconds of difference is your weak link, and that is the side that gives out when you carry, lift or land. Add 5 seconds to the holds each week, or step up to the harder version. Short on time, do the side plank and the hard plank — those two cover the most. The hard plank puts the elbows forward under your eyes rather than your shoulders, which a study found worked upper abs, lower abs and obliques significantly harder.",
+      level: 'Beginner',
+      frequency: 'Daily (~10 min)',
+      equipment: [],
+      days: [
+        {
+          name: 'Morning Core',
+          exercises: [
+            { name: 'Glute Bridge',              sets: 2, reps: 12, restSeconds: 30 },
+            { name: 'Bird Dog',                  sets: 6, reps: 8,  restSeconds: 20, timed: true },
+            { name: 'Side Plank',                sets: 4, reps: 30, restSeconds: 30, timed: true },
+            { name: 'Hollow Body Hold',          sets: 3, reps: 25, restSeconds: 30, timed: true },
+            { name: 'Long-Lever Plank',          sets: 3, reps: 20, restSeconds: 30, timed: true },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'rt_carries',
+      name: 'Rep Theory — Loaded Carries',
+      description: "Five carries ranked worst to best, with the suitcase carry at number one: all the load on one side pulls you over at every step, so the muscles around the whole waist fire together and brace the trunk — real core strength is refusing to bend, not bending. Pick three carries a session (he recommends the suitcase, the farmer's walk and whichever you like most), 40 seconds each, a minute of rest, three rounds, two or three times a week. On off days take the backpack for a walk — start near a tenth of your bodyweight for 20 minutes and add a book when it gets easy. Form: hips back and flat back on the pickup, never round to grab the load; short quiet steps like carrying a full cup you can't spill; chest up, shoulders down away from the ears, small breaths behind a braced stomach. If you lean, it's too heavy. Switch hands every round on the one-sided carries. Self-test is holding a loaded jug in each hand — under 30 seconds and your grip is holding the rest of you back.",
+      level: 'Beginner',
+      frequency: '2–3×/week',
+      equipment: ['kettlebell'],
+      days: [
+        {
+          name: 'Carry Day',
+          exercises: [
+            { name: 'Suitcase Carry',            sets: 6, reps: 40, restSeconds: 60, timed: true },
+            { name: "Farmer's Walk",             sets: 3, reps: 40, restSeconds: 60, timed: true },
+            { name: 'Bear Hug Carry',            sets: 3, reps: 40, restSeconds: 60, timed: true },
+          ],
+        },
+        {
+          name: 'Grip Focus',
+          exercises: [
+            { name: 'Suitcase Carry',            sets: 6, reps: 40, restSeconds: 60, timed: true },
+            { name: 'Pinch Carry',               sets: 3, reps: 40, restSeconds: 60, timed: true },
+            { name: "Farmer's Walk",             sets: 3, reps: 40, restSeconds: 60, timed: true },
+          ],
+        },
+        {
+          name: 'Off-Day Backpack Walk',
+          exercises: [
+            { name: 'Weighted Backpack Walk',    sets: 1, reps: 1200, restSeconds: 0, timed: true },
+          ],
+        },
+      ],
+    },
+
+    {
+      id: 'rt_back_no_bar',
+      name: 'Rep Theory — Back Without a Bar',
+      description: "Back work for a home setup with no pull-up bar, two or three times a week: each session takes one row, one pull-down and the Y/T raises at the end — about 10 hard sets a week. One rule governs every move: pull with your elbows, not your hands, and keep them close to your sides, which studies on rows found makes the lats work harder. Take sets close to failure, stopping with one or two reps left, and rest about a minute. Pull at least as much as you push — if you do push-ups three times a week, your back gets the same. Self-test is the Y hold: under 30 seconds means your upper back is the weak link, so do the Y/T raises every session rather than only at the end. Door rows rank first here because your own bodyweight is the load and the angle gets harder as you walk your feet in; test the handles with a small lean before the first rep.",
+      level: 'Beginner',
+      frequency: '2–3×/week',
+      equipment: [],
+      days: [
+        {
+          name: 'Back A',
+          exercises: [
+            { name: 'Door Row',                  sets: 3, reps: 12, restSeconds: 60 },
+            { name: 'Towel Lat Pulldown Hold',   sets: 5, reps: 10, restSeconds: 45, timed: true },
+            { name: 'Y Raise',                   sets: 3, reps: 12, restSeconds: 45 },
+            { name: 'T Raise',                   sets: 3, reps: 12, restSeconds: 45 },
+          ],
+        },
+        {
+          name: 'Back B',
+          exercises: [
+            { name: 'One-Arm Backpack Row',      sets: 3, reps: 15, restSeconds: 60 },
+            { name: 'Floor Slide Pull',          sets: 3, reps: 10, restSeconds: 60 },
+            { name: 'Y Raise',                   sets: 3, reps: 12, restSeconds: 45 },
+            { name: 'T Raise',                   sets: 3, reps: 12, restSeconds: 45 },
+          ],
+        },
+      ],
+    },
   ];
 
   // ── Filter logic ─────────────────────────────────────────────────────────
