@@ -2551,6 +2551,35 @@ const Programs = (() => {
         },
       ],
     },
+
+    // ── TARA'S CLASS ─────────────────────────────────────────────────────────
+    {
+      id: 'taras_class',
+      name: "Tara's Class",
+      description: "Group class circuit from Tara: 50 wall balls to start, then a banded and dumbbell block, slam balls, a plank/core block, wall walks, ab mat sit-ups, and a finisher done together. D&B means down and back. Wall walks can be swapped for 20 donkey kicks. Rep counts marked each side are per side. Finisher lunges are stationary on the toes of ankle-weighted legs: 2 counts up, pulse 3 at the bottom and come up, then 3 counts down and up on 1, with pulses for 20 seconds. Finisher prone series: one knee down for a tricep push-up hold, then with that knee still down lower and lift the other leg, hold the leg stationary while doing push-ups, then pulse with the push-ups, then switch sides. Sets and reps were not written for every move, so those default to one set of 10.",
+      level: 'Intermediate',
+      frequency: 'Single session',
+      equipment: ['dumbbell', 'resistance-band', 'ankle-weights'],
+      days: [
+        {
+          name: 'Class Circuit',
+          exercises: [
+            { name: 'Wall Ball',                                  sets: 1, reps: 50, restSeconds: 30 },
+            { name: 'Banded Walking Lunge Curl (D&B)',            sets: 1, reps: 1,  restSeconds: 0 },
+            { name: 'Banded Side Squat Press + Chest Fly',        sets: 1, reps: 10, restSeconds: 0 },
+            { name: 'Lateral Lunge with Dumbbells (each side)',   sets: 1, reps: 20, restSeconds: 30 },
+            { name: 'Slam Ball',                                  sets: 1, reps: 50, restSeconds: 30 },
+            { name: 'Pop-In Curl-Out Plank',                      sets: 1, reps: 10, restSeconds: 0 },
+            { name: 'Plank Row with Knee Tap',                    sets: 1, reps: 10, restSeconds: 0 },
+            { name: 'Bird Feeder Single Leg Deadlift (each side)',sets: 1, reps: 25, restSeconds: 30 },
+            { name: 'Wall Walk (or Donkey Kicks x20)',            sets: 1, reps: 10, restSeconds: 30 },
+            { name: 'Ab Mat Sit-Up',                              sets: 1, reps: 50, restSeconds: 30 },
+            { name: 'Stationary Lunge Pulse with Ankle Weights',  sets: 1, reps: 20, restSeconds: 30, timed: true },
+            { name: 'Prone Series (Tricep Push-Up, Leg Lift, Pulses)', sets: 1, reps: 10, restSeconds: 0 },
+          ],
+        },
+      ],
+    },
   ];
 
   // ── Filter logic ─────────────────────────────────────────────────────────
