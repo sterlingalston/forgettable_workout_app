@@ -296,6 +296,19 @@ const API = (() => {
     'bear hug carry':                                   'cCkTI2isjJk', // The Mobility Joint — Sandbag Bear Hug Carry
     'pinch carry':                                      'P8nH0DDhBGI', // UCLA Athletic Performance — Plate Pinch Farmer Carry
     'weighted backpack walk':                           '_SIDlE2ODj4', // NeuStrength — Weighted Backpack Walk
+    // Tara's Class program (title/embed-verified, all <= 45 s, Nov 2026)
+    'wall ball':                                          'WGM7FjbDJUA', // CrossFit OYL — Wall Balls: The Do's & Don't's
+    'banded walking lunge curl (d&b)':                    'A9xJgu9ILcE', // The Project Academy — Resistance Band Lunge & Bicep Curl Compound
+    'banded side squat press + chest fly':                'FoI9umCKmcI', // CJ Koegel — Resistance Band Squat to Overhead Press (squat+press half only; chest fly not shown)
+    'lateral lunge with dumbbells (each side)':           '8ANwlFziwtk', // The Strong Collective — Dumbbell Lateral Lunge
+    'slam ball':                                          'fsamLrm70Po', // The GRIND Fitness — Slam Ball Movements
+    'pop-in curl-out plank':                              'uU07XYzQbCw', // KT Fitness — Plank Knee Tuck (closest read of the pop-in/curl-out cue)
+    'plank row with knee tap':                            'cwQ60ewHMpk', // FIT.nl — Plank Row (Renegade Row) form tutorial (knee tap not shown)
+    'bird feeder single leg deadlift (each side)':        'kNZlId2h7i8', // SET FOR SET — Single Leg Deadlift, right vs wrong
+    'wall walk (or donkey kicks x20)':                    'eW9yGpqfmA0', // Monroe Miller — Wall Walk technique
+    'ab mat sit-up':                                      '_HDZODOx7Zw', // CrossFit — The AbMat Sit-up
+    'stationary lunge pulse with ankle weights':          'VilorR6n0fE', // Brittany Kohnke — Stationary Lunge Pulse
+    'prone series (tricep push-up, leg lift, pulses)':    'kVxVqkJRK_w', // Gina Love — Tricep Push Up On Knees (base position of the series)
   };
 
   async function resolveChannelId(ch, ytKey) {
