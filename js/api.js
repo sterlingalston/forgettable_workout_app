@@ -299,16 +299,44 @@ const API = (() => {
     // Tara's Class program (title/embed-verified, all <= 45 s, Nov 2026)
     'wall ball':                                          'WGM7FjbDJUA', // CrossFit OYL — Wall Balls: The Do's & Don't's
     'banded walking lunge curl (d&b)':                    'A9xJgu9ILcE', // The Project Academy — Resistance Band Lunge & Bicep Curl Compound
-    'banded side squat press + chest fly':                'FoI9umCKmcI', // CJ Koegel — Resistance Band Squat to Overhead Press (squat+press half only; chest fly not shown)
+    'banded side squat press + chest fly':                'GUvkuwjz_mI', // Ashley Clemens — Lateral Squat to Overhead Press (lateral squat+press; chest fly not shown)
     'lateral lunge with dumbbells (each side)':           '8ANwlFziwtk', // The Strong Collective — Dumbbell Lateral Lunge
     'slam ball':                                          'fsamLrm70Po', // The GRIND Fitness — Slam Ball Movements
     'pop-in curl-out plank':                              'uU07XYzQbCw', // KT Fitness — Plank Knee Tuck (closest read of the pop-in/curl-out cue)
-    'plank row with knee tap':                            'cwQ60ewHMpk', // FIT.nl — Plank Row (Renegade Row) form tutorial (knee tap not shown)
+    'plank row with knee tap':                            'GrmUgL58a3M', // She's So Fit — Renegade Row to Knee Tucks
     'bird feeder single leg deadlift (each side)':        'kNZlId2h7i8', // SET FOR SET — Single Leg Deadlift, right vs wrong
     'wall walk (or donkey kicks x20)':                    'eW9yGpqfmA0', // Monroe Miller — Wall Walk technique
     'ab mat sit-up':                                      '_HDZODOx7Zw', // CrossFit — The AbMat Sit-up
     'stationary lunge pulse with ankle weights':          'VilorR6n0fE', // Brittany Kohnke — Stationary Lunge Pulse
     'prone series (tricep push-up, leg lift, pulses)':    'kVxVqkJRK_w', // Gina Love — Tricep Push Up On Knees (base position of the series)
+    // Tara's Class — Class Circuit 2 (title/embed-verified, all <= 45 s, Nov 2026)
+    'air squat (buy-in, break 90 degrees)':               'i8oGQ03wqZc', // CrossFit — Air Squat
+    'lateral squat moving shoulder press (d&b)':          'GUvkuwjz_mI', // Ashley Clemens — Lateral Squat to Overhead Press
+    'donkey kick on wall':                                'hIEyEE2Vjyc', // Physical Balance — Donkey Kick to Wall Assisted Handstand
+    'sumo squat curl press':                              'KCsxaJ707NI', // SweatwithSarah — Sumo squat to curl to press
+    'dumbbell snatch (each side)':                        'PCwOb4tyrv0', // Movement Physio — Alternating Single-arm Dumbbell Snatch
+    'kick on heavy bag (each side)':                      '3o8SiyDAZwY', // Niina Carita — Roundhouse kicks with a heavy bag
+    'jump rope':                                          'OmZtq5Gy_sE', // Lauren Jumps — beginner jump rope technique
+    // Pilates Abs & Legs program (title/embed-verified, all < 1 min, Nov 2026)
+    'the hundred':                                        'rHHn0WkkAYo', // FitLara Barre & Pilates — How to do the Hundred
+    'pilates roll-up':                                    '8v2wgTg-8F8', // Pilates with Chelsea — Pilates Roll Up fix
+    'single leg stretch':                                 '-5-NRRq6q1M', // PILATESOLOGY — Single Leg Stretch with Alisa Wyatt
+    'double leg stretch':                                 'qD58bbjzcm0', // PILATESOLOGY — Double Leg Stretch with Alisa Wyatt
+    'criss-cross':                                        'mOjEhdOCwRo', // Performance Fit Pilates — Pilates Criss-Cross tutorial
+    'double straight leg stretch':                        'FFHcwST9wwc', // The Posture Practice — Double Straight Leg Stretch (lift/lower)
+    'reverse crunch with pilates ball':                   'n7vfNOLhDc0', // Rafael Gomes — Reverse Crunch on ball (large ball shown; small ball goes between the ankles)
+    'teaser':                                             '6QjFIEirbZg', // Performance Fit Pilates — Pilates Teaser
+    'pilates ball inner thigh squeeze':                   'S7wqQdMZW1U', // Traci Fisher — Inner thigh ball squeeze
+    'side-lying leg lift with ankle weights':             'ZsHxt32RU0A', // Studio 360 Fitness — Side Lying Leg Raise with Ankle Weights
+    'ankle weight donkey kick':                           'sN-RNP_jvRY', // DEMIC — Donkey Kick form (add the ankle weights per the program)
+    'single leg circles with ankle weights':              'psqFJfYBxUs', // FitLara Barre & Pilates — How to do a single leg circle
+    'pilates swimming':                                   'ihgt3JL04Uo', // Bennie Barre Pilates Studio — Swimming
+    'leg pull front':                                     'SZNl0yLkT_U', // Sabrina's Pilates — Leg Pull Front
+    'pilates scissors with ankle weights':                'kMJ_p5wK8-0', // Disa Bennett — Pilates Scissors
+    'bicycle crunch':                                     'Or3BkGOTt8Y', // Workout Worthy — Bicycle Crunches the right way
+    'banded curtsy lunge':                                '7uy0WymD0Xs', // L Tee — Curtsy lunges with Band
+    'pilates ball plank knee tuck':                       'Y7Co714HNWs', // Studio in the Heights NYC — Plank Knee Tuck on ball (large ball shown)
+    'pilates side kick series':                           '0REl1f5VVkE', // FitLara Barre & Pilates — How to do a Side Kick
   };
 
   async function resolveChannelId(ch, ytKey) {

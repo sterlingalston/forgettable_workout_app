@@ -20,6 +20,8 @@ const Programs = (() => {
     { id: 'resistance-band', label: 'Resistance bands',   icon: '〰️' },
     { id: 'kettlebell',      label: 'Kettlebell',         icon: '⚫' },
     { id: 'ankle-weights',   label: 'Ankle weights',      icon: '🦵' },
+    { id: 'pilates-ball',    label: 'Pilates ball',       icon: '🔵' },
+    { id: 'yoga-mat',        label: 'Yoga mat',           icon: '🧘' },
   ];
 
   // ── Program library ──────────────────────────────────────────────────────
@@ -2590,6 +2592,60 @@ const Programs = (() => {
             { name: 'Kick on Heavy Bag (each side)',              sets: 3, reps: 20,  restSeconds: 0 },
             { name: 'Ab Mat Sit-Up',                              sets: 3, reps: 20,  restSeconds: 0 },
             { name: 'Jump Rope',                                  sets: 3, reps: 100, restSeconds: 60 },
+          ],
+        },
+      ],
+    },
+
+    // ── PILATES (apartment) ──────────────────────────────────────────────────
+    {
+      id: 'pilates_abs_legs',
+      name: 'Pilates Abs & Legs (Apartment)',
+      description: "A hard mat-Pilates block for abs and legs, built for an apartment: everything happens on the mat or against a wall, with no jumping and nothing that thumps the floor. Three days — deep core, legs and glutes, then a burnout that mixes both. What makes it challenging is tempo and time under tension, not load: move slowly, keep the lower back printed into the mat on every ab exercise, and keep the ribs down. The Pilates ball is the small soft ball — squeeze it to about half its depth and hold that squeeze for the whole set, which is what turns the inner thighs and deep core on. Loop bands sit just above the knees unless the exercise says otherwise, and the three CALIA bands stack for 7 levels, so add a band before you add reps. Ankle weights load the long-lever leg work; start at the lowest setting, since a straight leg at the end of a long lever is far heavier than it feels. Rest 30-45 s between sets and stop any set the moment your lower back lifts or your neck takes over — in Pilates a broken rep counts for nothing.",
+      level: 'Intermediate–Advanced',
+      frequency: '3×/week',
+      equipment: ['ankle-weights', 'pilates-ball', 'resistance-band', 'yoga-mat'],
+      days: [
+        {
+          name: 'Deep Core',
+          exercises: [
+            { name: 'The Hundred',                        sets: 1, reps: 100, restSeconds: 45 },
+            { name: 'Pilates Roll-Up',                    sets: 3, reps: 10,  restSeconds: 30 },
+            { name: 'Single Leg Stretch',                 sets: 3, reps: 20,  restSeconds: 30 },
+            { name: 'Double Leg Stretch',                 sets: 3, reps: 15,  restSeconds: 30 },
+            { name: 'Criss-Cross',                        sets: 3, reps: 20,  restSeconds: 30 },
+            { name: 'Double Straight Leg Stretch',        sets: 3, reps: 12,  restSeconds: 45 },
+            { name: 'Reverse Crunch with Pilates Ball',   sets: 3, reps: 15,  restSeconds: 30 },
+            { name: 'Teaser',                             sets: 3, reps: 8,   restSeconds: 45 },
+            { name: 'Side Plank',                         sets: 3, reps: 40,  restSeconds: 30, timed: true },
+          ],
+        },
+        {
+          name: 'Legs & Glutes',
+          exercises: [
+            { name: 'Banded Glute Bridge',                sets: 3, reps: 20,  restSeconds: 30 },
+            { name: 'Pilates Ball Inner Thigh Squeeze',   sets: 3, reps: 25,  restSeconds: 30 },
+            { name: 'Band Side Lying Clam',               sets: 3, reps: 20,  restSeconds: 30 },
+            { name: 'Side-Lying Leg Lift with Ankle Weights', sets: 3, reps: 15, restSeconds: 30 },
+            { name: 'Banded Fire Hydrant',                sets: 3, reps: 15,  restSeconds: 30 },
+            { name: 'Ankle Weight Donkey Kick',           sets: 3, reps: 15,  restSeconds: 30 },
+            { name: 'Single Leg Circles with Ankle Weights', sets: 3, reps: 10, restSeconds: 30 },
+            { name: 'Wall Sit',                           sets: 3, reps: 45,  restSeconds: 45, timed: true },
+            { name: 'Banded Walk',                        sets: 3, reps: 20,  restSeconds: 30 },
+          ],
+        },
+        {
+          name: 'Burnout — Abs & Legs',
+          exercises: [
+            { name: 'Pilates Swimming',                   sets: 3, reps: 20,  restSeconds: 30 },
+            { name: 'Leg Pull Front',                     sets: 3, reps: 10,  restSeconds: 45 },
+            { name: 'Pilates Scissors with Ankle Weights',sets: 3, reps: 20,  restSeconds: 30 },
+            { name: 'Bicycle Crunch',                     sets: 3, reps: 30,  restSeconds: 30 },
+            { name: 'Banded Curtsy Lunge',                sets: 3, reps: 12,  restSeconds: 45 },
+            { name: 'Banded Single Leg Glute Bridge',     sets: 3, reps: 15,  restSeconds: 30 },
+            { name: 'Pilates Ball Plank Knee Tuck',       sets: 3, reps: 15,  restSeconds: 30 },
+            { name: 'Pilates Side Kick Series',           sets: 3, reps: 15,  restSeconds: 30 },
+            { name: 'Hollow Body Hold',                   sets: 3, reps: 40,  restSeconds: 45, timed: true },
           ],
         },
       ],
