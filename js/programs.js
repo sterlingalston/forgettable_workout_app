@@ -2561,7 +2561,7 @@ const Programs = (() => {
       description: "Group class circuit from Tara: 50 wall balls to start, then a banded and dumbbell block, slam balls, a plank/core block, wall walks, ab mat sit-ups, and a finisher done together. D&B means down and back. Wall walks can be swapped for 20 donkey kicks. Rep counts marked each side are per side. Finisher lunges are stationary on the toes of ankle-weighted legs: 2 counts up, pulse 3 at the bottom and come up, then 3 counts down and up on 1, with pulses for 20 seconds. Finisher prone series: one knee down for a tricep push-up hold, then with that knee still down lower and lift the other leg, hold the leg stationary while doing push-ups, then pulse with the push-ups, then switch sides. Sets and reps were not written for every move, so those default to one set of 10. Class Circuit 2 starts with a 100 air squat buy-in (break 90 degrees), then 3 rounds of 30-20-10 reps through the list, so its reps show the 20-rep average per round. Interval Training is one continuous circuit in blocks (lunges and side squat presses, mountain climbers, kettlebell squats, a banded squat series, jump squats, a lunge series, plank and side-lying work, then weighted reverse crunches); D&B means down and back, KB means kettlebell, and the KB moves use 12 reps. Rep counts were not written for most moves, so those default to 10.",
       level: 'Intermediate',
       frequency: 'Single session',
-      equipment: ['dumbbell', 'resistance-band', 'ankle-weights', 'kettlebell'],
+      equipment: ['dumbbell', 'resistance-band', 'ankle-weights'],
       days: [
         {
           name: 'Class Circuit',
