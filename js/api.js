@@ -337,6 +337,27 @@ const API = (() => {
     'banded curtsy lunge':                                '7uy0WymD0Xs', // L Tee — Curtsy lunges with Band
     'pilates ball plank knee tuck':                       'Y7Co714HNWs', // Studio in the Heights NYC — Plank Knee Tuck on ball (large ball shown)
     'pilates side kick series':                           '0REl1f5VVkE', // FitLara Barre & Pilates — How to do a Side Kick
+    // Tara's Class — Interval Training (title/embed-verified, all < 1 min, Nov 2026)
+    'walking pump lunge (d&b)':                           '4yufW6hH1_k', // Lindsay Huelse — double pulse walking lunges
+    'side squat chest press (d&b)':                       'AQ-Q0KuyVBc', // Bullett Performance — 1-DB Lateral Squat (chest press not shown)
+    'single lunge front raise down, single lunge side raise back': 'mJilHWIBWO8', // Andrew Kwong — Dumbbell Static Lunge (base lunge; the raises are not shown)
+    'kb squat upright row':                               '0KdF4_5EU5I', // Gerardi Performance — Kettlebell Squat To Upright Row
+    'kb sit-in squat, weight down, lift and lower heels': 'to6ozQas8uQ', // Bree Porter — Squat hold + calf raise
+    'kb on-toes press with both arms':                    'n8CDhxxc-hU', // Adriell Mayes — Kettlebell Two Hand Press, standing (on-toes not shown)
+    'stationary banded squat series':                     'xbTqsTDhPQc', // Body By Eb — Banded Squat
+    'squat tray press':                                   '5iYHZ61Fjo4', // FarmFedYinzer — Dumbbell Squat Press (tray-style palms-up press not shown)
+    'single squat overhead press':                        'UipBcISeiGU', // DO MORE CrossFit — Dumbbell Thruster movement standards
+    'squat down 2 up 2':                                  'ynGMRGkozU4', // The Jordy PT — Tempo Squat
+    'squat pulse 3, up on 4':                             'f8PPWkHSqOk', // Hlwatkinsfit — Pulse Squat
+    'squat hold, pulse 8':                                'KWkIjJZXCSE', // Squat Pulse — hold at the bottom and pulse
+    'squat up on toes':                                   'k_j0U4mzDX0', // SweatwithSarah — Squat to calf raise
+    'jump squat':                                         'IfqrxS_-8oU', // Girls Gone Strong — Jump Squats
+    'single lunge with curl':                             'qNrXTimqCpk', // canfitpro — Dumbbell Lunge and Bicep Curl
+    'lunge up on toes':                                   'dlgdGxCsDgQ', // Ian Perry — Iso Lunge Calf Raise
+    'plank with band':                                    'wi3klZDmq0I', // Doctor Brent Bedford — Mini Band Plank
+    'plank elbows to hands':                              'BVL9DQViado', // HOOK'D FITNESS — Alternating Up Down Planks
+    'side lying lift':                                    'wnPETxNuXsM', // Mobility Doc — Side Leg Lifts done right
+    'weighted reverse crunch':                            '7gbNdBy6iFk', // Tom Fysh — Weighted reverse crunch
   };
 
   async function resolveChannelId(ch, ytKey) {
