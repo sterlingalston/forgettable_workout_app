@@ -206,13 +206,13 @@ const API = (() => {
     // band_knee_kick program (title/embed-verified, Sep 2026)
     'banded glute bridge':                              'NrTHNJBWl5c', // My PT Hub — Banded Glute Bridges
     'resistance band lateral walk':                     'M5uxEQH5BUM', // NASM — Lateral Band Walking
-    'band side lying clam':                             'V_AnVxKPFlY', // NASM — Clamshells
+    'band side lying clam':                             '6rWe6tLc_KM', // FIT Sisters — Banded Clamshell
     'bodyweight box squat':                             '-GaRp6_b2vk', // NASM — Box Squat
-    'seated leg extension with resistance band':        'INNeoMEoX8Y', // MedBridge — Seated Knee Extension with Anchored Resistance
+    'seated leg extension with resistance band':        'FxrjLWEwcF4', // Benji Physio — Seated Resistance Band Knee Extension
     'standing leg curl with resistance band':           'XpG51BuqNAE', // ODEN Fitness — Band Standing Hamstring Curl
     'wall sit':                                         'LCjvngoH-mY', // Onnit — Wall Sit
     'bodyweight standing calf raise':                   'aZh9tCFh46o', // Center For Total Back Care — PT Shows Standing Calf Raises
-    'hip circles':                                      'D_kQzMB_HkY', // Sporting Health Club — standing hip circles
+    'hip circles':                                      'x-5h_QUOem8', // Mobility Doc — Hip Circles
     'standing leg raise with resistance band':          'EXRuvztckGA', // Elite Sport & Spine — Banded Hip Flexion
     'banded standing glute kickback':                   'kK5RKh_abCE', // Funsized — Mini Band Standing Glute Kickbacks
     'banded fire hydrant':                              'k6WI1adIiHM', // Rehab My Patient — Banded Fire Hydrant
@@ -220,10 +220,10 @@ const API = (() => {
     'band seated hip internal rotation':                'o0aV-kdmPsY', // Rehab My Patient — Hip Internal Rotation Band Sitting
     'banded walk':                                      '9aLcb5a7390', // NASM — Forward and Back Band Walking
     'muay thai roundhouse kick':                        'XbS2y-4mMVI', // Sean Fagan — How to throw a perfect Muay Thai kick
-    'banded step-up':                                   'hvxGZBZlOxg', // Jared Hamilton — Banded step ups
+    'banded step-up':                                   'hvxGZBZlOxg', // Jared Hamilton — Banded step ups [visually checked: no banded step-up demo exists at <45 s; movement correct, add the band yourself]
     'banded split squat':                               'OSIEmB3QEZs', // StrongHER Fitness — Mini Band Split Squat
-    'lateral step-up':                                  'sXW9aOo03P8', // MedBridge — Lateral Step-up
-    'banded single leg glute bridge':                   'lHXShY-FivU', // NASM — Single-Leg Floor Bridge
+    'lateral step-up':                                  'Vr7G2yzb9f4', // Movement Physio — Lateral Step-up
+    'banded single leg glute bridge':                   'lHXShY-FivU', // NASM — Single-Leg Floor Bridge [visually checked: demo is bodyweight; no verifiable banded version found]
     'standing straight leg raise with resistance band': '4qr26RNU3EQ', // Live Lean TV — Standing Banded Hip Abduction
     'reverse lunge knee lift':                          'pa3fq5cLeAA', // E3 Rehab — Reverse Lunge to Knee Drive
     'single leg calf raise':                            'qPd73snQfUs', // HSS — Single-Leg Calf Raise
@@ -235,14 +235,14 @@ const API = (() => {
     'dumbbell step-up':                                 '9ZknEYboBOQ', // Bobby Maximus — Dumbbell Step-up
     'dumbbell single leg deadlift':                     'lI8-igvsnVQ', // The Active Life — Dumbbell Single Leg RDL
     'standing calf raise with dumbbell':                'ADIDoYt_ko4', // OPEX — Dumbbell Standing Calf Raise
-    'dead bug':                                         'xtTIb6dC-vI', // MedBridge — Dead Bug
+    'dead bug':                                         'o4GKiEoYClI', // Pursuit Physical Therapy — Dead Bug for core stability
     'side plank':                                       'H7H2_a4p68Y', // Pursuit PT — Side Plank
     'dumbbell romanian deadlift':                       'xAL7lHwj30E', // Onnit — Dumbbell Romanian Deadlift
     'dumbbell reverse lunge':                           'UoQcIFYTN_o', // Live Lean TV — Alternating Dumbbell Reverse Lunge
     'dumbbell lateral step up':                         'CCdqnBLIUfU', // Facet Seven — Dumbbell Lateral Step Up
     'dumbbell glute bridge':                            'cruqsnAyU6A', // PureGym — Glute Bridge With A Dumbbell
     'dumbbell row':                                     'DMo3HJoawrU', // Renaissance Periodization — Single Arm Supported Dumbbell Row
-    'bird dog':                                         'ZdAHe9_HeEw', // NASM — Bird Dog
+    'bird dog':                                         'Yap7kqAFHYo', // Spine Center & Orthopaedics Atlanta — Bird Dog Exercise
     'plank':                                            'GQE8ASRA7t0', // Release PT — Front Plank
     'dumbbell walking lunge':                           'I34ysEkPK7w', // Bobby Maximus — Dumbbell Walking Lunge
     'dumbbell push press':                              'vuaYVK8xyqo', // NASM — Dumbbell Push Press
@@ -266,7 +266,7 @@ const API = (() => {
     'bodyweight kneeling sissy squat':                  'gzcXksjqufI', // Boulder Athletics — Kneeling Sissy Squat
 
     // kot_band_ankle program (title/embed-verified, all <= 45 s, Sep 2026)
-    'banded tibialis raise':                            'Rxy6XyTZlZ4', // Ben Pavlovich — Banded Tibialis Raise
+    'banded tibialis raise':                            'mz69Ls8Hntk', // Casper Hessellund — Tibialis anterior raises with band
     'spanish squat':                                    'szTHOnCwZpc', // MVMT Performance — Knee Pain Fix: Spanish Squat
     'band assisted nordic curl':                        'Ur5xe2Qp-oM', // Chris Chang — Band Assisted Nordic Hamstring Curl
     'ankle weight leg extension':                       'YdZf6xwI_Tc', // PhysiHub Library — Knee Extension (ankle weight, chair sitting)
@@ -307,7 +307,7 @@ const API = (() => {
     'bird feeder single leg deadlift (each side)':        'kNZlId2h7i8', // SET FOR SET — Single Leg Deadlift, right vs wrong
     'wall walk (or donkey kicks x20)':                    'eW9yGpqfmA0', // Monroe Miller — Wall Walk technique
     'ab mat sit-up':                                      '_HDZODOx7Zw', // CrossFit — The AbMat Sit-up
-    'stationary lunge pulse with ankle weights':          'VilorR6n0fE', // Brittany Kohnke — Stationary Lunge Pulse
+    'stationary lunge pulse with ankle weights':          'VilorR6n0fE', // Brittany Kohnke — Stationary Lunge Pulse [visually checked: demo is unweighted; ankle weights are the program’s added load]
     'prone series (tricep push-up, leg lift, pulses)':    'kVxVqkJRK_w', // Gina Love — Tricep Push Up On Knees (base position of the series)
     // Tara's Class — Class Circuit 2 (title/embed-verified, all <= 45 s, Nov 2026)
     'air squat (buy-in, break 90 degrees)':               'i8oGQ03wqZc', // CrossFit — Air Squat
@@ -328,11 +328,11 @@ const API = (() => {
     'teaser':                                             '6QjFIEirbZg', // Performance Fit Pilates — Pilates Teaser
     'pilates ball inner thigh squeeze':                   'S7wqQdMZW1U', // Traci Fisher — Inner thigh ball squeeze
     'side-lying leg lift with ankle weights':             'ZsHxt32RU0A', // Studio 360 Fitness — Side Lying Leg Raise with Ankle Weights
-    'ankle weight donkey kick':                           'sN-RNP_jvRY', // DEMIC — Donkey Kick form (add the ankle weights per the program)
-    'single leg circles with ankle weights':              'psqFJfYBxUs', // FitLara Barre & Pilates — How to do a single leg circle
+    'ankle weight donkey kick':                           'sN-RNP_jvRY', // DEMIC — Donkey Kick form (add the ankle weights per the program) [visually checked: form demo is unweighted; add the ankle weights per the program]
+    'single leg circles with ankle weights':              'psqFJfYBxUs', // FitLara Barre & Pilates — How to do a single leg circle [visually checked: demo is unweighted; ankle weights are the program’s added load]
     'pilates swimming':                                   'ihgt3JL04Uo', // Bennie Barre Pilates Studio — Swimming
     'leg pull front':                                     'SZNl0yLkT_U', // Sabrina's Pilates — Leg Pull Front
-    'pilates scissors with ankle weights':                'kMJ_p5wK8-0', // Disa Bennett — Pilates Scissors
+    'pilates scissors with ankle weights':                'kMJ_p5wK8-0', // Disa Bennett — Pilates Scissors [visually checked: demo is unweighted; ankle weights are the program’s added load]
     'bicycle crunch':                                     'Or3BkGOTt8Y', // Workout Worthy — Bicycle Crunches the right way
     'banded curtsy lunge':                                '7uy0WymD0Xs', // L Tee — Curtsy lunges with Band
     'pilates ball plank knee tuck':                       'Y7Co714HNWs', // Studio in the Heights NYC — Plank Knee Tuck on ball (large ball shown)
@@ -340,7 +340,7 @@ const API = (() => {
     // Tara's Class — Interval Training (title/embed-verified, all < 1 min, Nov 2026)
     'walking pump lunge (d&b)':                           '4yufW6hH1_k', // Lindsay Huelse — double pulse walking lunges
     'side squat chest press (d&b)':                       'AQ-Q0KuyVBc', // Bullett Performance — 1-DB Lateral Squat (chest press not shown)
-    'single lunge front raise down, single lunge side raise back': 'mJilHWIBWO8', // Andrew Kwong — Dumbbell Static Lunge (base lunge; the raises are not shown)
+    'single lunge front raise down, single lunge side raise back': '162j0bubW0g', // True Fitness Windsor — Stationary Lunge with DB Front Raises
     'kb squat upright row':                               '0KdF4_5EU5I', // Gerardi Performance — Kettlebell Squat To Upright Row
     'kb sit-in squat, weight down, lift and lower heels': 'to6ozQas8uQ', // Bree Porter — Squat hold + calf raise
     'kb on-toes press with both arms':                    'n8CDhxxc-hU', // Adriell Mayes — Kettlebell Two Hand Press, standing (on-toes not shown)
@@ -349,7 +349,7 @@ const API = (() => {
     'single squat overhead press':                        'UipBcISeiGU', // DO MORE CrossFit — Dumbbell Thruster movement standards
     'squat down 2 up 2':                                  'ynGMRGkozU4', // The Jordy PT — Tempo Squat
     'squat pulse 3, up on 4':                             'f8PPWkHSqOk', // Hlwatkinsfit — Pulse Squat
-    'squat hold, pulse 8':                                'KWkIjJZXCSE', // Squat Pulse — hold at the bottom and pulse
+    'squat hold, pulse 8':                                'f8PPWkHSqOk', // Hlwatkinsfit — Pulse Squat (hold at the bottom and pulse)
     'squat up on toes':                                   'k_j0U4mzDX0', // SweatwithSarah — Squat to calf raise
     'jump squat':                                         'IfqrxS_-8oU', // Girls Gone Strong — Jump Squats
     'single lunge with curl':                             'qNrXTimqCpk', // canfitpro — Dumbbell Lunge and Bicep Curl
