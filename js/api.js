@@ -344,7 +344,7 @@ const API = (() => {
     'kb squat upright row':                               '0KdF4_5EU5I', // Gerardi Performance — Kettlebell Squat To Upright Row
     'kb sit-in squat, weight down, lift and lower heels': 'to6ozQas8uQ', // Bree Porter — Squat hold + calf raise
     'kb on-toes press with both arms':                    'n8CDhxxc-hU', // Adriell Mayes — Kettlebell Two Hand Press, standing (on-toes not shown)
-    'stationary banded squat series':                     'xbTqsTDhPQc', // Body By Eb — Banded Squat
+    'stationary banded squat series':                     'XjW00-M98Bs', // Theory of Motion — Squat with Mini Band Around Knees
     'squat tray press':                                   '5iYHZ61Fjo4', // FarmFedYinzer — Dumbbell Squat Press (tray-style palms-up press not shown)
     'single squat overhead press':                        'UipBcISeiGU', // DO MORE CrossFit — Dumbbell Thruster movement standards
     'squat down 2 up 2':                                  'ynGMRGkozU4', // The Jordy PT — Tempo Squat
