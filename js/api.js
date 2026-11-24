@@ -299,7 +299,8 @@ const API = (() => {
     // Tara's Class program (title/embed-verified, all <= 45 s, Nov 2026)
     'wall ball':                                          'WGM7FjbDJUA', // CrossFit OYL — Wall Balls: The Do's & Don't's
     'banded walking lunge curl (d&b)':                    'A9xJgu9ILcE', // The Project Academy — Resistance Band Lunge & Bicep Curl Compound
-    'banded side squat press + chest fly':                'GUvkuwjz_mI', // Ashley Clemens — Lateral Squat to Overhead Press (lateral squat+press; chest fly not shown)
+    'banded side squat press':                            'GUvkuwjz_mI', // Ashley Clemens — Lateral Squat to Overhead Press [visually checked: lateral squat + press; band is the program's added load]
+    'banded chest fly':                                   'XGimAvnrc60', // Taylored Physical Therapy — Chest Fly with Band [visually checked: band anchored behind, arms open wide and close]
     'lateral lunge with dumbbells (each side)':           '8ANwlFziwtk', // The Strong Collective — Dumbbell Lateral Lunge
     'slam ball':                                          'fsamLrm70Po', // The GRIND Fitness — Slam Ball Movements
     'pop-in curl-out plank':                              'uU07XYzQbCw', // KT Fitness — Plank Knee Tuck (closest read of the pop-in/curl-out cue)
@@ -308,7 +309,9 @@ const API = (() => {
     'wall walk (or donkey kicks x20)':                    'eW9yGpqfmA0', // Monroe Miller — Wall Walk technique
     'ab mat sit-up':                                      '_HDZODOx7Zw', // CrossFit — The AbMat Sit-up
     'stationary lunge pulse with ankle weights':          'VilorR6n0fE', // Brittany Kohnke — Stationary Lunge Pulse [visually checked: demo is unweighted; ankle weights are the program’s added load]
-    'prone series (tricep push-up, leg lift, pulses)':    'kVxVqkJRK_w', // Gina Love — Tricep Push Up On Knees (base position of the series)
+    'prone tricep push-up (knee down)':                   'kVxVqkJRK_w', // Gina Love — Tricep Push Up On Knees [visually checked]
+    'prone leg lift (push-up hold)':                      'Akf3IP0H9fA', // DAREBEE — Elbow Plank Leg Raises [visually checked: straight leg lifts from a prone hold; the class holds the tricep push-up position instead]
+    'tricep push-up pulse':                               '2iX_ADskqG8', // Casper Hessellund — Pulse push up [visually checked: pulses held at the bottom; the class uses a close tricep hand position]
     // Tara's Class — Class Circuit 2 (title/embed-verified, all <= 45 s, Nov 2026)
     'air squat (buy-in, break 90 degrees)':               'i8oGQ03wqZc', // CrossFit — Air Squat
     'lateral squat moving shoulder press (d&b)':          'GUvkuwjz_mI', // Ashley Clemens — Lateral Squat to Overhead Press
@@ -339,13 +342,16 @@ const API = (() => {
     'pilates side kick series':                           '0REl1f5VVkE', // FitLara Barre & Pilates — How to do a Side Kick
     // Tara's Class — Interval Training (title/embed-verified, all < 1 min, Nov 2026)
     'walking pump lunge (d&b)':                           '4yufW6hH1_k', // Lindsay Huelse — double pulse walking lunges
-    'side squat chest press (d&b)':                       'AQ-Q0KuyVBc', // Bullett Performance — 1-DB Lateral Squat (chest press not shown)
+    'side squat (d&b)':                                   'AQ-Q0KuyVBc', // Bullett Performance — 1-DB Lateral Squat [visually checked]
+    'standing dumbbell chest press':                      'OdwjYvKzGME', // Briana Hawkins — Standing DB Chest Press [visually checked: standing, dumbbells pressed forward from the chest]
     'single lunge front raise down, single lunge side raise back': '162j0bubW0g', // True Fitness Windsor — Stationary Lunge with DB Front Raises
     'kb squat upright row':                               '0KdF4_5EU5I', // Gerardi Performance — Kettlebell Squat To Upright Row
     'kb sit-in squat, weight down, lift and lower heels': 'to6ozQas8uQ', // Bree Porter — Squat hold + calf raise
-    'kb on-toes press with both arms':                    'n8CDhxxc-hU', // Adriell Mayes — Kettlebell Two Hand Press, standing (on-toes not shown)
+    'kb two-hand press':                                  'n8CDhxxc-hU', // Adriell Mayes — Kettlebell Two Hand Press, standing [visually checked]
+    'standing heel raise (on toes)':                      'aZh9tCFh46o', // Center For Total Back Care — PT Shows Standing Calf Raises [visually checked: chair for balance, heels raised]
     'stationary banded squat series':                     'XjW00-M98Bs', // Theory of Motion — Squat with Mini Band Around Knees
-    'squat tray press':                                   '5iYHZ61Fjo4', // FarmFedYinzer — Dumbbell Squat Press (tray-style palms-up press not shown)
+    'air squat':                                          'i8oGQ03wqZc', // CrossFit — Air Squat [visually checked]
+    'tray press (palms-up)':                              'zHwyTDJe2x8', // Kevinleenfitness — Standing underhand dumbbell shoulder press [visually checked: standing, palms-up press overhead]
     'single squat overhead press':                        'UipBcISeiGU', // DO MORE CrossFit — Dumbbell Thruster movement standards
     'squat down 2 up 2':                                  'ynGMRGkozU4', // The Jordy PT — Tempo Squat
     'squat pulse 3, up on 4':                             'f8PPWkHSqOk', // Hlwatkinsfit — Pulse Squat
